@@ -2,6 +2,7 @@
 
 <?php
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\OrderController;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LookupController;
@@ -18,6 +19,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 // Routes for ecommerce website
 Route::get('/', function () { return view('index'); });
 Route::get('/index', function () { return view('index'); });
+Route::get('/order', [OrderController::class, 'create'])->name('order.create');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');
 
 // Routes for dashboard
 Route::get('/admin/index', function () {
@@ -90,4 +93,3 @@ Route::get('/admin/reports', function () {
 Route::get('/admin/payments', function () {
     return view('admin.payments.index');
 })->name('admin.payments.index');
-

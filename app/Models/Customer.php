@@ -25,4 +25,9 @@ class Customer extends Model
         'CustomerUpdateBy',
         'CustomerUpdateDate',
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Orders::class, 'CustomerID', 'CustomerID');
+    }
 }

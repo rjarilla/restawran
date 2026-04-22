@@ -16,7 +16,12 @@ class Product extends Model
         'ProductID', 'ProductName', 'ProductDescription', 'ProductCategoryID',
         'ProductQuantityTypeID', 'ProductImagePath', 'ProductPrice', 
         'ProductOnDiscount', 'ProductPriceSale', 'ProductStatus', 
-        'ProductUpdatedBy', 'ProductUpdatedDate'
+        'ProductDiscountStartDate', 'ProductDiscountEndDate', 'ProductUpdatedBy', 'ProductUpdatedDate'
     ];
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetails::class, 'ProductID', 'ProductID');
+    }
 }
 ?>
