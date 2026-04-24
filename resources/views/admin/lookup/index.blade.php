@@ -59,8 +59,6 @@
                     <a href="{{ route('admin.lookup.edit', $lookup->LookupID) }}" class="btn btn-sm btn-warning">Edit</a>
                     <form action="{{ route('admin.lookup.destroy', $lookup->LookupID) }}" method="POST" style="display:inline-block;">
                         @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
                     </form>
                 </td>
             </tr>

@@ -104,6 +104,6 @@
     </main>
 
     <?php include_once resource_path('views/admin/partials/scripts.html'); ?>  
-    <script src="@@webRoot/assets/js/vendors/password.js"></script>
+    <script src="/public/assets/js/vendors/password.js"></script>
   </body>
 </html>
