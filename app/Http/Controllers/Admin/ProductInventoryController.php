@@ -42,10 +42,10 @@ class ProductInventoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ProductID' => 'required|string|max:255',
-            'ProductQuantity' => 'required|numeric',
+            'ProductID' => 'required|string|max:255|exists:Product,ProductID',
+            'ProductQuantity' => 'required|integer|min:0',
             'ProductBatchDeliveryDate' => 'required|date',
-            'ProductBatchExpiry' => 'required|date',
+            'ProductBatchExpiry' => 'required|date|after_or_equal:ProductBatchDeliveryDate',
             'ProductReceivedBy' => 'required|string|max:255',
         ]);
 
@@ -71,10 +71,10 @@ class ProductInventoryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'ProductID' => 'required|string|max:255',
-            'ProductQuantity' => 'required|numeric',
+            'ProductID' => 'required|string|max:255|exists:Product,ProductID',
+            'ProductQuantity' => 'required|integer|min:0',
             'ProductBatchDeliveryDate' => 'required|date',
-            'ProductBatchExpiry' => 'required|date',
+            'ProductBatchExpiry' => 'required|date|after_or_equal:ProductBatchDeliveryDate',
             'ProductReceivedBy' => 'required|string|max:255',
         ]);
 

@@ -74,21 +74,31 @@
                                 <div class="row g-4">
                                     @foreach ($products as $product)
                                         <div class="col-md-6">
-                                            <div class="card h-100 border-0 shadow-sm">
+                                            <div class="card h-100 border-0 shadow-sm {{ $product->is_available ? '' : 'bg-light-subtle' }}">
                                                 <img
                                                     src="{{ asset($product->ProductImagePath ?: 'assets/images/products/default.png') }}"
-                                                    class="card-img-top"
+                                                    class="card-img-top {{ $product->is_available ? '' : 'opacity-50' }}"
                                                     alt="{{ $product->ProductName }}"
                                                     style="height: 220px; object-fit: cover;"
                                                 >
                                                 <div class="card-body d-flex flex-column">
                                                     <div class="d-flex justify-content-between align-items-start mb-2">
                                                         <h5 class="card-title mb-0">{{ $product->ProductName }}</h5>
-                                                        <span class="badge bg-primary rounded-pill">PHP {{ number_format($product->display_price, 2) }}</span>
+                                                        @if ($product->is_available)
+                                                            <span class="badge bg-primary rounded-pill">PHP {{ number_format($product->display_price, 2) }}</span>
+                                                        @else
+                                                            <span class="badge bg-danger rounded-pill">NOT AVAILABLE</span>
+                                                        @endif
                                                     </div>
                                                     <p class="card-text text-muted flex-grow-1">
                                                         {{ $product->ProductDescription ?: 'Freshly prepared and ready for your order.' }}
                                                     </p>
+                                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                                        <small class="text-muted">Available stock</small>
+                                                        <strong class="{{ $product->is_available ? 'text-success' : 'text-danger' }}">
+                                                            {{ $product->available_quantity }}
+                                                        </strong>
+                                                    </div>
                                                     <div class="row g-2 align-items-end">
                                                         <div class="col-6">
                                                             <label class="form-label mb-1" for="item-{{ $product->ProductID }}">Quantity</label>
@@ -97,11 +107,14 @@
                                                                 type="number"
                                                                 min="0"
                                                                 step="1"
+                                                                max="{{ $product->available_quantity }}"
                                                                 class="form-control item-quantity"
                                                                 name="items[{{ $product->ProductID }}]"
-                                                                value="{{ old('items.' . $product->ProductID, 0) }}"
+                                                                value="{{ $product->is_available ? old('items.' . $product->ProductID, 0) : 0 }}"
                                                                 data-name="{{ $product->ProductName }}"
                                                                 data-price="{{ $product->display_price }}"
+                                                                data-max="{{ $product->available_quantity }}"
+                                                                @disabled(!$product->is_available)
                                                             >
                                                         </div>
                                                         <div class="col-6 text-end">
@@ -227,6 +240,11 @@
                 const lines = [];
 
                 quantityInputs.forEach((input) => {
+                    const max = parseInt(input.dataset.max || '0', 10);
+                    if (max >= 0 && parseInt(input.value || '0', 10) > max) {
+                        input.value = max;
+                    }
+
                     const quantity = parseFloat(input.value || '0');
                     if (quantity > 0) {
                         const price = parseFloat(input.dataset.price || '0');
