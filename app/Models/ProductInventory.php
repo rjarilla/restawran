@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductInventory extends Model
 {
-    protected $table = 'ProductInventory';
+    protected $table = 'productinventory';
     protected $primaryKey = 'ProductBatchID';
     public $incrementing = false;
     protected $keyType = 'string';

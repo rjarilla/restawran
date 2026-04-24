@@ -1,6 +1,9 @@
 <?php
 
+
 namespace App\Repositories;
+
+use Illuminate\Support\Str;
 
 use App\Models\Lookup;
 use App\Repositories\Interfaces\LookupRepositoryInterface;

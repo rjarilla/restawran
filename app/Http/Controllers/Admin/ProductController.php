@@ -5,40 +5,64 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\EloquentProductRepository;
+use App\Repositories\EloquentLookupRepository;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
-use Intervention\Image\Facades\Image;
+use Intervention\Image\Laravel\Facades\Image;
 
 class ProductController extends Controller
 {
     protected $productRepo;
+    protected $lookupRepo;
 
-    public function __construct(EloquentProductRepository $productRepo)
+    public function __construct(EloquentProductRepository $productRepo, EloquentLookupRepository $lookupRepo)
     {
         $this->productRepo = $productRepo;
+        $this->lookupRepo = $lookupRepo;
     }
 
     public function index(Request $request)
     {
         $query = $request->input('search');
+        $category_filter = $request->input('category_filter');
+        $quantity_filter = $request->input('quantity_filter');
+        $status_filter = $request->input('status_filter');
+        $sort_by = $request->input('sort_by', 'ProductUpdatedDate');
+        $sort_order = $request->input('sort_order', 'desc');
+
         $productModel = app(\App\Models\Product::class);
-        $products = $productModel->when($query, function($q) use ($query) {
-                $q->where('ProductName', 'like', "%$query%")
-                  ->orWhere('ProductDescription', 'like', "%$query%")
-                  ->orWhere('ProductCategoryID', 'like', "%$query%")
-                  ->orWhere('ProductQuantityTypeID', 'like', "%$query%")
-                  ->orWhere('ProductStatus', 'like', "%$query%")
-                  ->orWhere('ProductID', 'like', "%$query%") ;
+        $products = $productModel->leftJoin('lookup as category_lookup', 'product.ProductCategoryID', '=', 'category_lookup.LookupID')
+            ->leftJoin('lookup as quantity_lookup', 'product.ProductQuantityTypeID', '=', 'quantity_lookup.LookupID')
+            ->leftJoin('lookup as status_lookup', 'product.ProductStatus', '=', 'status_lookup.LookupID')
+            ->select('product.*', 'category_lookup.LookupValue as category_value', 'quantity_lookup.LookupValue as quantity_value', 'status_lookup.LookupValue as status_value')
+            ->when($query, function($q) use ($query) {
+                $q->where('product.ProductName', 'like', "%$query%")
+                  ->orWhere('product.ProductDescription', 'like', "%$query%")
+                  ->orWhere('product.ProductID', 'like', "%$query%");
             })
-            ->orderByDesc('ProductUpdatedDate')
+            ->when($category_filter, function($q) use ($category_filter) {
+                $q->where('category_lookup.LookupValue', 'like', "%$category_filter%");
+            })
+            ->when($quantity_filter, function($q) use ($quantity_filter) {
+                $q->where('quantity_lookup.LookupValue', 'like', "%$quantity_filter%");
+            })
+            ->when($status_filter, function($q) use ($status_filter) {
+                $q->where('status_lookup.LookupValue', 'like', "%$status_filter%");
+            })
+            ->orderBy($sort_by, $sort_order)
             ->paginate(10)
-            ->appends(['search' => $query]);
-        return view('admin.product.index', compact('products', 'query'));
+            ->appends(request()->query());
+
+        return view('admin.product.index', compact('products', 'query', 'category_filter', 'quantity_filter', 'status_filter', 'sort_by', 'sort_order'));
     }
 
     public function create()
     {
-        return view('admin.product.create');
+        $allLookups = $this->lookupRepo->all();
+        $categories = $allLookups->filter(function($item) { return $item->LookupCategory === 'PROD' && $item->LookupName === 'CATEGORY'; })->values();
+        $quantityTypes = $allLookups->filter(function($item) { return $item->LookupCategory === 'PROD' && $item->LookupName === 'QUANTITY'; })->values();
+        $statuses = $allLookups->filter(function($item) { return $item->LookupCategory === 'PROD' && $item->LookupName === 'STATUS'; })->values();
+        return view('admin.product.create', compact('categories', 'quantityTypes', 'statuses'));
     }
 
     public function store(Request $request)
@@ -69,17 +93,57 @@ class ProductController extends Controller
             $normalPath = 'assets/images/products/normal/' . $filename;
             $thumbPath = 'assets/images/products/thumbs/' . $filename;
 
-            // Save normal (200x200)
-            $img = Image::make($image->getRealPath())->fit(200, 200, function ($constraint) {
+            $imageSize = getImageSize($image);
+            $imageWidth = $imageSize[0];
+            $imageHeight = $imageSize[1];
+
+            $DESIRED_WIDTH = 200;
+
+            $proportionalHeight = round(($DESIRED_WIDTH * $imageHeight) / $imageWidth);
+
+            $originalImage = imageCreateFromJPEG($image);
+
+            $resizedImage = imageCreateTrueColor($DESIRED_WIDTH, $proportionalHeight);
+            imageCopyResampled($resizedImage, $originalImage, 0, 0, 0, 0, $DESIRED_WIDTH, $proportionalHeight, $imageWidth, $imageHeight);
+
+            imageJPEG($resizedImage, public_path($normalPath), 90);
+            imagedestroy($originalImage);
+            imagedestroy($resizedImage);
+
+            $DESIRED_WIDTH = 200;
+
+            $proportionalHeight = round(($DESIRED_WIDTH * $imageHeight) / $imageWidth);
+
+            $originalImage = imageCreateFromJPEG($image);
+
+            $resizedImage = imageCreateTrueColor($DESIRED_WIDTH, $proportionalHeight);
+            imageCopyResampled($resizedImage, $originalImage, 0, 0, 0, 0, $DESIRED_WIDTH, $proportionalHeight, $imageWidth, $imageHeight);
+
+            imageJPEG($resizedImage, public_path($normalPath), 90);
+            
+            imagedestroy($resizedImage);                                                   
+
+            $DESIRED_WIDTH = 80;
+            $proportionalHeight = round(($DESIRED_WIDTH * $imageHeight) / $imageWidth);
+            $resizedImage = imageCreateTrueColor($DESIRED_WIDTH, $proportionalHeight);
+            imageCopyResampled($resizedImage, $originalImage, 0, 0, 0, 0, $DESIRED_WIDTH, $proportionalHeight, $imageWidth, $imageHeight);
+
+            imageJPEG($resizedImage, public_path($thumbPath), 90);
+            
+            imagedestroy($resizedImage);
+            imagedestroy($originalImage);
+
+           /**   // Save normal (200x200)
+            $img = Image::read($image->getRealPath())->fit(200, 200, function ($constraint) {
                 $constraint->upsize();
             });
             $img->save(public_path($normalPath));
 
             // Save thumbnail (80x80)
-            $imgThumb = Image::make($image->getRealPath())->fit(80, 80, function ($constraint) {
+            $imgThumb = Image::read($image->getRealPath())->fit(80, 80, function ($constraint) {
                 $constraint->upsize();
             });
-            $imgThumb->save(public_path($thumbPath));
+            $imgThumb->save(public_path($thumbPath));**/
 
             $imagePath = $normalPath;
         } elseif ($request->input('ExistingProductImage')) {
@@ -99,7 +163,11 @@ class ProductController extends Controller
         if (!$product) {
             return redirect()->route('admin.product.index')->with('error', 'Product not found.');
         }
-        return view('admin.product.edit', compact('product'));
+        $allLookups = $this->lookupRepo->all();
+        $categories = $allLookups->filter(function($item) { return $item->LookupCategory === 'PROD' && $item->LookupName === 'CATEGORY'; })->values();
+        $quantityTypes = $allLookups->filter(function($item) { return $item->LookupCategory === 'PROD' && $item->LookupName === 'QUANTITY'; })->values();
+        $statuses = $allLookups->filter(function($item) { return $item->LookupCategory === 'PROD' && $item->LookupName === 'STATUS'; })->values();
+        return view('admin.product.edit', compact('product', 'categories', 'quantityTypes', 'statuses'));
     }
 
     public function update(Request $request, $id)
@@ -126,23 +194,66 @@ class ProductController extends Controller
         $imagePath = null;
         if ($request->hasFile('ProductImage')) {
             $image = $request->file('ProductImage');
-            $filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
-            $normalPath = 'assets/images/products/normal/' . $filename;
-            $thumbPath = 'assets/images/products/thumbs/' . $filename;
-
+            //$filename = Str::uuid() . '.' . $image->getClientOriginalExtension();
+            $filename = pathinfo($image->getClientOriginalName(), PATHINFO_FILENAME) . '.' . $image->getClientOriginalExtension();
+            $normalPath = '/assets/images/products/normal/' . $filename;
+            $thumbPath = '/assets/images/products/thumbs/' . $filename;
+            try {
             // Save normal (200x200)
-            $img = Image::make($image->getRealPath())->fit(200, 200, function ($constraint) {
+       /*     $img = Image::read($image->getRealPath())->fit(200, 200, function ($constraint) {
                 $constraint->upsize();
             });
             $img->save(public_path($normalPath));
 
             // Save thumbnail (80x80)
-            $imgThumb = Image::make($image->getRealPath())->fit(80, 80, function ($constraint) {
+            $imgThumb = Image::read($image->getRealPath())->fit(80, 80, function ($constraint) {
                 $constraint->upsize();
             });
-            $imgThumb->save(public_path($thumbPath));
+            $imgThumb->save(public_path($thumbPath));*/
+            $imageSize = getImageSize($image);
+            $imageWidth = $imageSize[0];
+            $imageHeight = $imageSize[1];
+
+            $DESIRED_WIDTH = 200;
+
+            $proportionalHeight = round(($DESIRED_WIDTH * $imageHeight) / $imageWidth);
+
+            $originalImage = imageCreateFromJPEG($image);
+
+            $resizedImage = imageCreateTrueColor($DESIRED_WIDTH, $proportionalHeight);
+            imageCopyResampled($resizedImage, $originalImage, 0, 0, 0, 0, $DESIRED_WIDTH, $proportionalHeight, $imageWidth, $imageHeight);
+
+            imageJPEG($resizedImage, public_path($normalPath), 90);
+            imagedestroy($originalImage);
+            imagedestroy($resizedImage);
+
+            $DESIRED_WIDTH = 200;
+
+            $proportionalHeight = round(($DESIRED_WIDTH * $imageHeight) / $imageWidth);
+
+            $originalImage = imageCreateFromJPEG($image);
+
+            $resizedImage = imageCreateTrueColor($DESIRED_WIDTH, $proportionalHeight);
+            imageCopyResampled($resizedImage, $originalImage, 0, 0, 0, 0, $DESIRED_WIDTH, $proportionalHeight, $imageWidth, $imageHeight);
+
+            imageJPEG($resizedImage, public_path($normalPath), 90);
+            
+            imagedestroy($resizedImage);                                                   
+
+            $DESIRED_WIDTH = 80;
+            $proportionalHeight = round(($DESIRED_WIDTH * $imageHeight) / $imageWidth);
+            $resizedImage = imageCreateTrueColor($DESIRED_WIDTH, $proportionalHeight);
+            imageCopyResampled($resizedImage, $originalImage, 0, 0, 0, 0, $DESIRED_WIDTH, $proportionalHeight, $imageWidth, $imageHeight);
+
+            imageJPEG($resizedImage, public_path($thumbPath), 90);
+            
+            imagedestroy($resizedImage);
+            imagedestroy($originalImage);
 
             $imagePath = $normalPath;
+            } catch (\Exception $e) {
+                return redirect()->back()->with('error', 'Image processing failed: ' . $e->getMessage())->withInput();
+            }
         } elseif ($request->input('ExistingProductImage')) {
             $imagePath = $request->input('ExistingProductImage');
         }

@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use Illuminate\Support\Str;
+
 use App\Models\Users;
 use App\Models\UserProfile;
 use App\Models\UserProfPrivileges;
@@ -27,7 +29,7 @@ class EloquentUsersRepository implements UsersRepositoryInterface
         // Eloquent: eager load relationships for a single model
         $user = $this->model->find($id);
         if ($user) {
-            $user->load(['userProfile', 'userProfilePrivileges']);
+            $user->load(['userprofile', 'userprofileprivileges']);
         }
         return $user;
     }
@@ -71,7 +73,7 @@ class EloquentUsersRepository implements UsersRepositoryInterface
     {
         $user = $this->model->where('UserName', $userName)->first();
         if ($user && $user->UserPassword === md5($password)) {
-            $user->load(['userProfile', 'userProfilePrivileges']);
+            $user->load(['userprofile', 'userprofileprivileges']);
             return $user;
         }
         return null;

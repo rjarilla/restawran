@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Lookup extends Model
 {
-    protected $table = 'Lookup';
+    protected $table = 'lookup';
     protected $primaryKey = 'LookupID';
     public $incrementing = false;
     protected $keyType = 'string';

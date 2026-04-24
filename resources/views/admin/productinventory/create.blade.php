@@ -5,8 +5,13 @@
     <form action="{{ route('admin.productinventory.store') }}" method="POST">
         @csrf
         <div class="mb-3">
-            <label for="ProductID" class="form-label">Product ID</label>
-            <input type="text" class="form-control @error('ProductID') is-invalid @enderror" id="ProductID" name="ProductID" value="{{ old('ProductID') }}">
+            <label for="ProductID" class="form-label">Product</label>
+            <select class="form-control @error('ProductID') is-invalid @enderror" id="ProductID" name="ProductID">
+                <option value="">Select Product</option>
+                @foreach($products as $product)
+                    <option value="{{ $product->ProductID }}" {{ old('ProductID') == $product->ProductID ? 'selected' : '' }}>{{ $product->ProductName }}</option>
+                @endforeach
+            </select>
             @error('ProductID')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -29,13 +34,6 @@
             <label for="ProductBatchExpiry" class="form-label">Expiry</label>
             <input type="date" class="form-control @error('ProductBatchExpiry') is-invalid @enderror" id="ProductBatchExpiry" name="ProductBatchExpiry" value="{{ old('ProductBatchExpiry') }}">
             @error('ProductBatchExpiry')
-                <div class="invalid-feedback">{{ $message }}</div>
-            @enderror
-        </div>
-        <div class="mb-3">
-            <label for="ProductReceivedBy" class="form-label">Received By</label>
-            <input type="text" class="form-control @error('ProductReceivedBy') is-invalid @enderror" id="ProductReceivedBy" name="ProductReceivedBy" value="{{ old('ProductReceivedBy') }}">
-            @error('ProductReceivedBy')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>

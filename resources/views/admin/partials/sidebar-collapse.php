@@ -11,7 +11,7 @@
     <!-- Nav item -->
  
     <li class="nav-item">
-      <a class="nav-link" href="../" target="_blank"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg"
+      <a class="nav-link" href="." target="_blank"><span class="nav-icon"><svg xmlns="http://www.w3.org/2000/svg"
             width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
             stroke-linecap="round" stroke-linejoin="round"
             class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-bag">
@@ -27,7 +27,7 @@
       <hr class="mx-5 nav-line mb-1" />
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/admin/lookup">
+      <a class="nav-link" href="/public/admin/lookup">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-list">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -58,7 +58,7 @@
       </a>
       <ul class="dropdown-menu flex-column">
         <li class="nav-item">
-          <a class="nav-link" href="/admin/product">
+          <a class="nav-link" href="/public/admin/product">
             <span class="nav-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-box">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -73,7 +73,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/admin/productinventory">
+          <a class="nav-link" href="/public/admin/productinventory">
             <span class="nav-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-database">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -103,7 +103,7 @@
       </a>
       <ul class="dropdown-menu flex-column">
         <li class="nav-item">
-          <a class="nav-link" href="/admin/users">
+          <a class="nav-link" href="/public/admin/users">
             <span class="nav-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -115,7 +115,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/admin/userprofile">
+          <a class="nav-link" href="/public/admin/userprofile">
             <span class="nav-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-id">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -130,7 +130,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="/admin/userprofprivileges">
+          <a class="nav-link" href="/public/admin/userprofprivileges">
             <span class="nav-icon">
               <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-key">
                 <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -148,7 +148,7 @@
   
 
     <li class="nav-item">
-      <a class="nav-link" href="/admin/orders">
+      <a class="nav-link" href="/public/admin/orders">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-receipt">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -162,7 +162,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/admin/payments">
+      <a class="nav-link" href="/public/admin/payments">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-credit-card">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
@@ -176,7 +176,7 @@
       </a>
     </li>
     <li class="nav-item">
-      <a class="nav-link" href="/admin/reports">
+      <a class="nav-link" href="/public/admin/reports">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-bar">
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />

@@ -3,6 +3,7 @@
 namespace App\Repositories;
 
 use App\Models\ProductInventory;
+use Illuminate\Support\Str;
 use App\Repositories\Interfaces\ProductInventoryRepositoryInterface;
 
 class EloquentProductInventoryRepository implements ProductInventoryRepositoryInterface
@@ -27,6 +28,7 @@ class EloquentProductInventoryRepository implements ProductInventoryRepositoryIn
     public function create(array $attributes)
     {
         $attributes['ProductInventoryID'] = (string) Str::uuid();
+        $attributes['ProductBatchID'] = (string) Str::uuid();
         $attributes['ProductInventoryUpdateDate'] = now();
         return $this->model->create($attributes);
     }

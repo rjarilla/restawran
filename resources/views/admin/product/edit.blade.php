@@ -21,14 +21,24 @@
         </div>
         <div class="mb-3">
             <label for="ProductCategoryID" class="form-label">Category</label>
-            <input type="text" class="form-control @error('ProductCategoryID') is-invalid @enderror" id="ProductCategoryID" name="ProductCategoryID" value="{{ old('ProductCategoryID', $product->ProductCategoryID) }}">
+            <select class="form-select @error('ProductCategoryID') is-invalid @enderror" id="ProductCategoryID" name="ProductCategoryID">
+                <option value="">Select Category</option>
+                @foreach($categories as $category)
+                    <option value="{{ $category->LookupID }}" {{ (old('ProductCategoryID', $product->ProductCategoryID) == $category->LookupID) ? 'selected' : '' }}>{{ $category->LookupValue }}</option>
+                @endforeach
+            </select>
             @error('ProductCategoryID')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
         <div class="mb-3">
             <label for="ProductQuantityTypeID" class="form-label">Quantity Type</label>
-            <input type="text" class="form-control @error('ProductQuantityTypeID') is-invalid @enderror" id="ProductQuantityTypeID" name="ProductQuantityTypeID" value="{{ old('ProductQuantityTypeID', $product->ProductQuantityTypeID) }}">
+            <select class="form-select @error('ProductQuantityTypeID') is-invalid @enderror" id="ProductQuantityTypeID" name="ProductQuantityTypeID">
+                <option value="">Select Quantity Type</option>
+                @foreach($quantityTypes as $type)
+                    <option value="{{ $type->LookupID }}" {{ (old('ProductQuantityTypeID', $product->ProductQuantityTypeID) == $type->LookupID) ? 'selected' : '' }}>{{ $type->LookupValue }}</option>
+                @endforeach
+            </select>
             @error('ProductQuantityTypeID')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
@@ -42,7 +52,12 @@
         </div>
         <div class="mb-3">
             <label for="ProductStatus" class="form-label">Status</label>
-            <input type="text" class="form-control @error('ProductStatus') is-invalid @enderror" id="ProductStatus" name="ProductStatus" value="{{ old('ProductStatus', $product->ProductStatus) }}">
+            <select class="form-select @error('ProductStatus') is-invalid @enderror" id="ProductStatus" name="ProductStatus">
+                <option value="">Select Status</option>
+                @foreach($statuses as $status)
+                    <option value="{{ $status->LookupID }}" {{ (old('ProductStatus', $product->ProductStatus) == $status->LookupID) ? 'selected' : '' }}>{{ $status->LookupValue }}</option>
+                @endforeach
+            </select>
             @error('ProductStatus')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

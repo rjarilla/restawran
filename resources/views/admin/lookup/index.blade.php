@@ -6,9 +6,29 @@
         <a href="{{ route('admin.lookup.create') }}" class="btn btn-primary">Add Lookup</a>
     </div>
     <form method="GET" action="{{ route('admin.lookup.index') }}" class="mb-3">
-        <div class="input-group">
-            <input type="text" name="search" class="form-control" placeholder="Search..." value="{{ request('search', $query ?? '') }}">
-            <button class="btn btn-outline-secondary" type="submit">Search</button>
+        <div class="row g-2">
+            <div class="col-md-3">
+                <input type="text" name="search" class="form-control" placeholder="Search all..." value="{{ request('search', '') }}">
+            </div>
+            <div class="col-md-2">
+                <input type="text" name="category_filter" class="form-control" placeholder="Filter by Category" value="{{ request('category_filter', '') }}">
+            </div>
+            <div class="col-md-2">
+                <input type="text" name="name_filter" class="form-control" placeholder="Filter by Name" value="{{ request('name_filter', '') }}">
+            </div>
+            <div class="col-md-2">
+                <select name="sort_by" class="form-select">
+                    <option value="date_desc" {{ request('sort_by', 'date_desc') == 'date_desc' ? 'selected' : '' }}>Newest First</option>
+                    <option value="date_asc" {{ request('sort_by') == 'date_asc' ? 'selected' : '' }}>Oldest First</option>
+                    <option value="category_asc" {{ request('sort_by') == 'category_asc' ? 'selected' : '' }}>Category (A-Z)</option>
+                    <option value="category_desc" {{ request('sort_by') == 'category_desc' ? 'selected' : '' }}>Category (Z-A)</option>
+                    <option value="name_asc" {{ request('sort_by') == 'name_asc' ? 'selected' : '' }}>Name (A-Z)</option>
+                    <option value="name_desc" {{ request('sort_by') == 'name_desc' ? 'selected' : '' }}>Name (Z-A)</option>
+                </select>
+            </div>
+            <div class="col-md-1">
+                <button class="btn btn-outline-secondary w-100" type="submit">Filter</button>
+            </div>
         </div>
     </form>
     @if(session('success'))
@@ -33,7 +53,7 @@
                 <td>{{ $lookup->LookupCategory }}</td>
                 <td>{{ $lookup->LookupName }}</td>
                 <td>{{ $lookup->LookupValue }}</td>
-                <td>{{ $lookup->LookupUpdateBy }}</td>
+                <td>{{ $lookup->UpdatedByName ?? $lookup->LookupUpdateBy }}</td>
                 <td>{{ $lookup->LookupUpdateDate }}</td>
                 <td>
                     <a href="{{ route('admin.lookup.edit', $lookup->LookupID) }}" class="btn btn-sm btn-warning">Edit</a>

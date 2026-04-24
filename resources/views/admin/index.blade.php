@@ -2,20 +2,20 @@
 <html lang="en">
 
 <head>
-  <?php include_once resource_path('views\admin\partials\head\head-meta.php'); ?>
+  <?php include_once resource_path('views/admin/partials/head/head-meta.php'); ?>
   <title>Restawran - Admin Dashboard</title>
-   <link rel="stylesheet" href="/node_modules/swiper/swiper-bundle.min.css" />
-  <?php include_once resource_path('views\admin\partials\head\head-links.php'); ?>
+   <link rel="stylesheet" href="/public/node_modules/swiper/swiper-bundle.min.css" />
+  <?php include_once resource_path('views/admin/partials/head/head-links.php'); ?>
 </head>
 
 <body>
   <!-- Vertical Sidebar -->
   <div>
-    <?php include_once resource_path('views\admin\partials\sidebar-collapse.php'); ?>
+    <?php include_once resource_path('views/admin/partials/sidebar-collapse.php'); ?>
 
     <!-- Main Content -->
     <div id="content" class="position-relative h-100">
-      <?php include_once resource_path("views\admin\partials/topbar-second.php")?>
+      <?php include_once resource_path("views/admin/partials/topbar-second.php")?>
       <!-- container -->
       <div class="custom-container">
         <!-- row -->
@@ -40,18 +40,18 @@
     </div>
   </div>
 
-  <?php include_once resource_path('views\admin\partials\scripts.html')?>
+  <?php include_once resource_path('views/admin/partials/scripts.html')?>
   <!-- jsvectormap -->
-  <script src="/assets/js/vendors/sidebarnav.js"></script>
-  <script src="/node_modules/jsvectormap/dist/js/jsvectormap.min.js"></script>
-  <script src="/node_modules/jsvectormap/dist/maps/world.js"></script>
-  <script src="/node_modules/jsvectormap/dist/maps/world-merc.js"></script>
-  <script src="/node_modules/apexcharts/dist/apexcharts.min.js"></script>
-  <script src="/assets/js/vendors/chart.js"></script>
-  <script src="/node_modules/choices.js/public/assets/scripts/choices.min.js"></script>
-  <script src="/assets/js/vendors/choice.js"></script>
-  <script src="/node_modules/swiper/swiper-bundle.min.js"></script>
-  <script src="/assets/js/vendors/swiper.js"></script>
+  <script src="/public/assets/js/vendors/sidebarnav.js"></script>
+  <script src="/public/node_modules/jsvectormap/dist/js/jsvectormap.min.js"></script>
+  <script src="/public/node_modules/jsvectormap/dist/maps/world.js"></script>
+  <script src="/public/node_modules/jsvectormap/dist/maps/world-merc.js"></script>
+  <script src="/public/node_modules/apexcharts/dist/apexcharts.min.js"></script>
+  <script src="/public/assets/js/vendors/chart.js"></script>
+  <script src="/public/node_modules/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="/public/assets/js/vendors/choice.js"></script>
+  <script src="/public/node_modules/swiper/swiper-bundle.min.js"></script>
+  <script src="/public/assets/js/vendors/swiper.js"></script>
 </body>
 
 </html>

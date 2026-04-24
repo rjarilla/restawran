@@ -6,18 +6,20 @@ use App\Http\Controllers\Admin\AuthController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LookupController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\ProductInventoryController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\UserProfileController;
 use App\Http\Controllers\Admin\UserProfPrivilegesController;
-use App\Http\Controllers\Admin\ProductInventoryController;
+use App\Http\Controllers\IndexController;
+
 // ProductInventory CRUD routes
 Route::get('/admin/productinventory', [ProductInventoryController::class, 'index'])->name('admin.productinventory.index');
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('productinventory', ProductInventoryController::class)->except(['index']);
 });
 // Routes for ecommerce website
-Route::get('/', function () { return view('index'); });
-Route::get('/index', function () { return view('index'); });
+Route::get('/', [IndexController::class, 'index']);
+Route::get('/index', [IndexController::class, 'index']);
 
 // Routes for dashboard
 Route::get('/admin/index', function () {
@@ -91,3 +93,14 @@ Route::get('/admin/payments', function () {
     return view('admin.payments.index');
 })->name('admin.payments.index');
 
+Route::get('/clear-config', function() {
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('view:clear');
+    return "Configuration cache cleared!";
+});
+
+Route::get('/php-migrate', function() {
+    Artisan::call('migrate');
+    return "Database migrated";
+});

@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class UserProfPrivileges extends Model
 {
-    protected $table = 'UserProfPrivileges';
+    protected $table = 'userprofprivileges';
     public $incrementing = false;
     public $timestamps = false;
     protected $primaryKey = null;

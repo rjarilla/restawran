@@ -18,7 +18,7 @@
         <thead>
             <tr>
                 <th>Batch ID</th>
-                <th>Product ID</th>
+                <th>Product Name</th>
                 <th>Quantity</th>
                 <th>Delivery Date</th>
                 <th>Expiry</th>
@@ -30,7 +30,7 @@
             @forelse($productinventories as $inventory)
             <tr>
                 <td>{{ $inventory->ProductBatchID }}</td>
-                <td>{{ $inventory->ProductID }}</td>
+                <td>{{ $inventory->ProductName }}</td>
                 <td>{{ $inventory->ProductQuantity }}</td>
                 <td>{{ $inventory->ProductBatchDeliveryDate }}</td>
                 <td>{{ $inventory->ProductBatchExpiry }}</td>

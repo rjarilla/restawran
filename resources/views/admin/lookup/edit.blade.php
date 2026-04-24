@@ -7,14 +7,26 @@
         @method('PUT')
         <div class="mb-3">
             <label for="LookupCategory" class="form-label">Category</label>
-            <input type="text" class="form-control @error('LookupCategory') is-invalid @enderror" id="LookupCategory" name="LookupCategory" value="{{ old('LookupCategory', $lookup->LookupCategory) }}">
+            <select class="form-select mb-2" id="LookupCategorySelect" onchange="document.getElementById('LookupCategory').value=this.value">
+                <option value="">-- Select Existing Category --</option>
+                @foreach($categories as $cat)
+                    <option value="{{ $cat }}" {{ (old('LookupCategory', $lookup->LookupCategory) == $cat) ? 'selected' : '' }}>{{ $cat }}</option>
+                @endforeach
+            </select>
+            <input type="text" class="form-control mt-2 @error('LookupCategory') is-invalid @enderror" id="LookupCategory" name="LookupCategory" placeholder="Or enter new category" value="{{ old('LookupCategory', $lookup->LookupCategory) }}">
             @error('LookupCategory')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
         <div class="mb-3">
             <label for="LookupName" class="form-label">Name</label>
-            <input type="text" class="form-control @error('LookupName') is-invalid @enderror" id="LookupName" name="LookupName" value="{{ old('LookupName', $lookup->LookupName) }}">
+            <select class="form-select mb-2" id="LookupNameSelect" onchange="document.getElementById('LookupName').value=this.value">
+                <option value="">-- Select Existing Name --</option>
+                @foreach($names as $name)
+                    <option value="{{ $name }}" {{ (old('LookupName', $lookup->LookupName) == $name) ? 'selected' : '' }}>{{ $name }}</option>
+                @endforeach
+            </select>
+            <input type="text" class="form-control mt-2 @error('LookupName') is-invalid @enderror" id="LookupName" name="LookupName" placeholder="Or enter new name" value="{{ old('LookupName', $lookup->LookupName) }}">
             @error('LookupName')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

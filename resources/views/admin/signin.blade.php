@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <?php include_once resource_path('views\admin\partials\head\head-meta.php'); ?>
+    <?php include_once resource_path('views/admin/partials/head/head-meta.php'); ?>
     <title>Sign In | Restawran - Admin Dashboard</title>
-    <?php include_once resource_path('views\admin\partials\head\head-links.php'); ?>
+    <?php include_once resource_path('views/admin/partials/head/head-links.php'); ?>
   </head>
 
   <body>
@@ -103,7 +103,7 @@
       </div>
     </main>
 
-    <?php include_once resource_path('views\admin\partials\scripts.html'); ?>  
+    <?php include_once resource_path('views/admin/partials/scripts.html'); ?>  
     <script src="@@webRoot/assets/js/vendors/password.js"></script>
   </body>
 </html>

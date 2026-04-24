@@ -11,7 +11,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        $this->app->bind('image', function($app) {
+            return new \Intervention\Image\ImageManager();
+        });
     }
 
     /**
@@ -19,6 +21,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
+        $loader = \Illuminate\Foundation\AliasLoader::getInstance();
+        $loader->alias('Image', \Intervention\Image\ImageManager::class);
     }
 }
