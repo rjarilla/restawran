@@ -18,4 +18,9 @@ class Payment extends Model
         'PaymentTotal',
         'PaymentChange',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Orders::class, 'OrderID', 'OrderID');
+    }
 }

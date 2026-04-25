@@ -3,6 +3,8 @@
 <?php
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\LookupController;
@@ -21,6 +23,10 @@ Route::get('/', function () { return view('index'); });
 Route::get('/index', function () { return view('index'); });
 Route::get('/order', [OrderController::class, 'create'])->name('order.create');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+
+// Payment routes
+Route::get('/payment', [PaymentController::class, 'showPaymentMethod'])->name('payment.method');
+Route::post('/payment', [PaymentController::class, 'processPayment'])->name('payment.process');
 
 // Routes for dashboard
 Route::get('/admin/index', function () {
@@ -89,7 +95,7 @@ Route::get('/admin/reports', function () {
     return view('admin.reports.index');
 })->name('admin.reports.index');
 
-// Payments default page
-Route::get('/admin/payments', function () {
-    return view('admin.payments.index');
-})->name('admin.payments.index');
+// Admin Payment routes
+Route::get('/admin/payments', [AdminPaymentController::class, 'index'])->name('admin.payments.index');
+Route::get('/admin/payments/{id}', [AdminPaymentController::class, 'show'])->name('admin.payments.show');
+Route::delete('/admin/payments/{id}', [AdminPaymentController::class, 'destroy'])->name('admin.payments.destroy');
