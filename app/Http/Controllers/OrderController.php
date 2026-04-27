@@ -104,6 +104,8 @@ class OrderController extends Controller
             ]);
         }
 
+        // Database save functionality commented out - redirecting to payment method instead
+        /*
         try {
             $order = DB::transaction(function () use ($request, $lineItems) {
                 $customer = Customer::create([
@@ -162,6 +164,37 @@ class OrderController extends Controller
                 ];
             })->all(),
         ]);
+        */
+
+        // Store order data in session for payment processing
+        session([
+            'pending_order' => [
+                'customer_details' => [
+                    'CustomerName' => $request->input('CustomerName'),
+                    'CustomerAddressLine1' => $request->input('CustomerAddressLine1'),
+                    'CustomerAddressLine2' => $request->input('CustomerAddressLine2', ''),
+                    'CustomerStreet' => $request->input('CustomerStreet'),
+                    'CustomerCity' => $request->input('CustomerCity'),
+                    'CustomerProvince' => $request->input('CustomerProvince'),
+                    'CustomerPostalCode' => $request->input('CustomerPostalCode'),
+                    'CustomerEmail' => $request->input('CustomerEmail'),
+                    'CustomerContactNumber' => $request->input('CustomerContactNumber'),
+                ],
+                'items' => $lineItems->map(function ($lineItem) {
+                    return [
+                        'product_id' => $lineItem['product']->ProductID,
+                        'product_name' => $lineItem['product']->ProductName,
+                        'quantity' => $lineItem['quantity'],
+                        'unit_price' => $lineItem['unit_price'],
+                        'line_total' => $lineItem['line_total'],
+                    ];
+                })->all(),
+                'total_amount' => round($lineItems->sum('line_total'), 2),
+            ]
+        ]);
+
+        // Redirect to payment method
+        return redirect()->route('payment.method');
     }
 
     private function getOrderableProducts(array $productIds = []): Collection

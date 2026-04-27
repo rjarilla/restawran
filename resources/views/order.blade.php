@@ -46,6 +46,14 @@
                     </div>
                 @endif
 
+                @if (session('payment_success'))
+                    <div class="alert alert-success mb-4">
+                        <h5 class="mb-2">{{ session('payment_success')['message'] }}</h5>
+                        <p class="mb-1"><strong>Payment Method:</strong> {{ ucfirst(str_replace('_', ' ', session('payment_success')['payment_method'])) }}</p>
+                        <p class="mb-0"><strong>Total Amount:</strong> PHP {{ session('payment_success')['total_amount'] }}</p>
+                    </div>
+                @endif
+
                 @if ($errors->any())
                     <div class="alert alert-danger mb-4">
                         <h5 class="mb-2">We couldn't place the order yet.</h5>
