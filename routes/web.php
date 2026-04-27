@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\UserProfileController;
 use App\Http\Controllers\Admin\UserProfPrivilegesController;
 use App\Http\Controllers\Admin\ProductInventoryController;
+use App\Http\Controllers\Admin\OrdersController;
 // ProductInventory CRUD routes
 Route::get('/admin/productinventory', [ProductInventoryController::class, 'index'])->name('admin.productinventory.index');
 Route::prefix('admin')->name('admin.')->group(function () {
@@ -79,10 +80,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('userprofprivileges', UserProfPrivilegesController::class)->except(['index']);
 });
 
-// Orders default pages
-Route::get('/admin/orders', function () {
-    return view('admin.orders.index');
-})->name('admin.orders.index');
+// Orders dashboard page
+Route::get('/admin/orders', [OrdersController::class, 'index'])->name('admin.orders.index');
 
 // Reports default pages
 Route::get('/admin/reports', function () {
