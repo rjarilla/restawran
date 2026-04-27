@@ -9,7 +9,8 @@ class OrdersController extends Controller
 {
     public function index()
     {
-        $orders = Orders::with(['customer', 'orderDetails'])
+        $orders = Orders::with(['customer', 'orderDetails', 'payment'])
+            ->whereHas('payment')
             ->orderByDesc('OrderDate')
             ->get();
 

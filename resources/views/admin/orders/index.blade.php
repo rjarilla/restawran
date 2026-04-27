@@ -4,10 +4,10 @@
     <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
         <div>
             <h2 class="mb-1">Orders Overview</h2>
-            <p class="text-body-secondary mb-0">Track recent orders and key sales numbers at a glance.</p>
+            <p class="text-body-secondary mb-0">Track recent paid orders and key sales numbers at a glance.</p>
         </div>
         <div class="text-md-end">
-            <small class="text-body-secondary d-block">Latest order</small>
+            <small class="text-body-secondary d-block">Latest paid order</small>
             <span class="fw-semibold">
                 {{ $latestOrderDate ? \Carbon\Carbon::parse($latestOrderDate)->format('M d, Y') : 'No orders yet' }}
             </span>
@@ -20,7 +20,7 @@
                 <div class="card-body">
                     <span class="text-body-secondary small text-uppercase">Total Orders</span>
                     <h3 class="mt-2 mb-1">{{ number_format($totalOrders) }}</h3>
-                    <p class="mb-0 text-body-secondary small">All recorded purchases</p>
+                    <p class="mb-0 text-body-secondary small">Orders with payment records</p>
                 </div>
             </div>
         </div>
@@ -29,7 +29,7 @@
                 <div class="card-body">
                     <span class="text-body-secondary small text-uppercase">Revenue</span>
                     <h3 class="mt-2 mb-1">PHP {{ number_format($totalRevenue, 2) }}</h3>
-                    <p class="mb-0 text-body-secondary small">Total value of all orders</p>
+                    <p class="mb-0 text-body-secondary small">Total value of paid orders</p>
                 </div>
             </div>
         </div>
@@ -58,7 +58,7 @@
             <div class="d-flex justify-content-between align-items-center">
                 <div>
                     <h4 class="mb-1">Recent Order Summary</h4>
-                    <p class="text-body-secondary mb-0 small">Showing the latest 10 orders.</p>
+                    <p class="text-body-secondary mb-0 small">Showing the latest 10 paid orders.</p>
                 </div>
             </div>
         </div>
@@ -85,7 +85,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="5" class="text-center py-4 text-body-secondary">No orders found.</td>
+                                <td colspan="5" class="text-center py-4 text-body-secondary">No paid orders found.</td>
                             </tr>
                         @endforelse
                     </tbody>
