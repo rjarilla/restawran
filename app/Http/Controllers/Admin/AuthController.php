@@ -41,44 +41,32 @@ class AuthController extends Controller
             $request->password
         );
 
-        // failed login
-        if (!$user) {
-            return back()
-                ->withInput()
-                ->with('login_error', 'Invalid username or password.');
-        }
+        if ($user) {
+            // Set session
+            Session::put('user_id', $user->UserID);
+            Session::put('user_name', $user->UserName);
 
-        // Regenerate session on successful login
-        $request->session()->regenerate();
+            $lookups = \App\Models\UserProfPrivileges::where('UserProfileID', $user->UserProfileID)
+                    ->join('lookup', 'userprofprivileges.UserPrivilegesID', '=', 'lookup.LookupID')
+                    ->select('lookup.LookupName', 'lookup.LookupValue')
+                    ->get();
 
-        // Store the actual user identifier used by the Users model
-        Session::put('user_id', $user->UserID );
-        Session::put('user_name', $user->UserName);
-        Session::put('user_role', $user->Role ?? null);
+            // Remember me
+            if ($request->has('remember')) {
+                Cookie::queue('remembered_username', $user->UserName, 60 * 24 * 30);
+            } else {
+                Cookie::queue(Cookie::forget('remembered_username'));
+            }
 
-        // remember me cookie
-        if ($request->has('remember')) {
-            Cookie::queue('remembered_username', $user->UserName, 60 * 24 * 30);
+            return redirect('admin/index');
         } else {
-            Cookie::queue(Cookie::forget('remembered_username'));
+            return redirect()->back()->withInput()->with('login_error', 'Invalid username or password.');
         }
-
-        // redirect to dashboard
-        return redirect()->route('admin.index');
     }
 
-    public function logout(Request $request)
+    public function logout()
     {
-        //Session::flush();
-        // 1. Clear all data from the session
-        $request->session()->forget('user_id');
-
-        // 2. Completely destroy the session and regenerate the ID (Best practice)
-        $request->session()->invalidate();
-
-        // 3. Regenerate the CSRF token to prevent token reuse
-        $request->session()->regenerateToken();
-    
-        return redirect('/admin/signin')->with('status', 'You have been logged out.');;
+        Session::flush();
+        return redirect('/admin');
     }
 }

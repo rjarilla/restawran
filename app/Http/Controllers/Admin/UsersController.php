@@ -33,7 +33,8 @@ class UsersController extends Controller
 
     public function create()
     {
-        return view('admin.users.create');
+        $profiles = \App\Models\UserProfile::orderBy('UserProfileID')->get();
+        return view('admin.users.create', compact('profiles'));
     }
 
     public function store(Request $request)
@@ -41,7 +42,7 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), [
             'UserName' => 'required|string|max:255',
             'UserPassword' => 'required|string|min:6',
-            'UserProfileID' => 'required|string|max:255',
+            'UserProfileID' => 'required|string|exists:userprofile,UserProfileID',
             'UserStatus' => 'required|string|max:255',
         ]);
 
@@ -59,10 +60,11 @@ class UsersController extends Controller
     public function edit($id)
     {
         $user = $this->usersRepo->find($id);
+        $profiles = \App\Models\UserProfile::orderBy('UserProfileID')->get();
         if (!$user) {
             return redirect()->route('admin.users.index')->with('error', 'User not found.');
         }
-        return view('admin.users.edit', compact('user'));
+        return view('admin.users.edit', compact('user', 'profiles'));
     }
 
     public function update(Request $request, $id)
@@ -70,7 +72,7 @@ class UsersController extends Controller
         $validator = Validator::make($request->all(), [
             'UserName' => 'required|string|max:255',
             'UserPassword' => 'nullable|string|min:6',
-            'UserProfileID' => 'required|string|max:255',
+            'UserProfileID' => 'required|string|exists:userprofile,UserProfileID',
             'UserStatus' => 'required|string|max:255',
         ]);
 

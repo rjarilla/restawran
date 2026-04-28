@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
+use App\Models\UserProfile;
 
 class UserProfPrivileges extends Model
 {
@@ -17,4 +19,14 @@ class UserProfPrivileges extends Model
         'UserProfPrivilegesUpdateDate',
         'UserProfPrivilegesUpdateBy',
     ];
+
+    public function userProfile()
+    {
+        return $this->belongsTo(UserProfile::class, 'UserProfileID', 'UserProfileID');
+    }
+
+    public function updatedByUser()
+    {
+        return $this->belongsTo(Users::class, 'UserProfPrivilegesUpdateBy', 'UserID');
+    }
 }

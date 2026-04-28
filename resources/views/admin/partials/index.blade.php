@@ -30,7 +30,7 @@
           </div>
           <div class="col-xl-4 col-lg-6">
             <!-- card -->
-         
+
           </div>
         </div>
         <!-- row -->

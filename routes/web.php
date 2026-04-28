@@ -89,7 +89,7 @@ Route::get('/admin/logout', [AuthController::class, 'logout'])->name('admin.logo
 */
 
 Route::prefix('admin')->name('admin.')->middleware(['check.admin.session'])->group(function () {
-    
+
     Route::resource('lookup', LookupController::class);
     Route::resource('product', ProductController::class);
     Route::resource('productinventory', ProductInventoryController::class);
@@ -100,7 +100,7 @@ Route::prefix('admin')->name('admin.')->middleware(['check.admin.session'])->gro
     Route::resource('orders', OrdersController::class);
     Route::resource('payments', AdminPaymentController::class);
     Route::resource('reports', ReportsController::class);
-    
+
     Route::get('orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');

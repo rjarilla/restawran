@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\EloquentUserProfPrivilegesRepository;
 use Illuminate\Support\Facades\Validator;
+use App\Models\UserProfile;
+use App\Models\Lookup;
+
 
 class UserProfPrivilegesController extends Controller
 {
@@ -18,27 +21,39 @@ class UserProfPrivilegesController extends Controller
 
     public function index(Request $request)
     {
-        $query = $request->input('search');
-        $privModel = app(\App\Models\UserProfPrivileges::class);
-        $userprofprivileges = $privModel->when($query, function($q) use ($query) {
-                $q->where('UserProfileID', 'like', "%$query%")
-                  ->orWhere('UserPrivilegesID', 'like', "%$query%") ;
-            })
+        $searchProfile   = $request->input('search_profile');
+        $searchPrivilege = $request->input('search_privilege');
+
+        $userProfiles = UserProfile::orderBy('UserProfileID')->get();
+        $privileges   = Lookup::where('LookupCategory', 'PRIV') // adjust LookupCategory value as needed
+                            ->orderBy('LookupName')
+                            ->get();
+
+        $userprofprivileges = \App\Models\UserProfPrivileges::with(['updatedByUser', 'userProfile'])
+            ->when($searchProfile,   fn($q) => $q->where('UserProfileID',   $searchProfile))
+            ->when($searchPrivilege, fn($q) => $q->where('UserPrivilegesID', $searchPrivilege))
             ->orderByDesc('UserProfPrivilegesUpdateDate')
             ->paginate(10)
-            ->appends(['search' => $query]);
-        return view('admin.userprofprivileges.index', compact('userprofprivileges', 'query'));
+            ->appends($request->only(['search_profile', 'search_privilege']));
+        // dd($userprofprivileges);
+        return view('admin.userprofprivileges.index', compact('userprofprivileges', 'userProfiles', 'privileges'));
     }
 
     public function create()
     {
-        return view('admin.userprofprivileges.create');
+        $userProfiles = UserProfile::orderBy('UserProfileID')->get();
+        $privileges   = Lookup::where('LookupCategory', 'PRIV')
+                            ->orderBy('LookupName')
+                            ->get();
+
+        return view('admin.userprofprivileges.create', compact('userProfiles', 'privileges'));
     }
+
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'UserProfileID' => 'required|string|max:255',
+            'UserProfileID'    => 'required|string|max:255',
             'UserPrivilegesID' => 'required|string|max:255',
         ]);
 
@@ -46,26 +61,35 @@ class UserProfPrivilegesController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['UserProfileID', 'UserPrivilegesID']);
-        $data['UserProfPrivilegesUpdateBy'] = session('user_id') ?? 'admin';
-        $this->userProfPrivilegesRepo->create($data);
+        \DB::table('userprofprivileges')->insert([
+            'UserProfileID'                => $request->input('UserProfileID'),
+            'UserPrivilegesID'             => $request->input('UserPrivilegesID'),
+            'UserProfPrivilegesUpdateBy'   => session('user_id'),
+            'UserProfPrivilegesUpdateDate' => now()->toDateString(),
+        ]);
 
-        return redirect()->route('admin.userprofprivileges.index')->with('success', 'User profile privilege created successfully.');
+        return redirect()->route('admin.userprofprivileges.index')
+            ->with('success', 'User profile privilege created successfully.');
     }
 
-    public function edit($id)
+    public function edit($profile, $privilege)
     {
-        $userprofprivilege = $this->userProfPrivilegesRepo->find($id);
-        if (!$userprofprivilege) {
-            return redirect()->route('admin.userprofprivileges.index')->with('error', 'User profile privilege not found.');
-        }
-        return view('admin.userprofprivileges.edit', compact('userprofprivilege'));
+        $userprofprivilege = \App\Models\UserProfPrivileges::where('UserProfileID', $profile)
+            ->where('UserPrivilegesID', $privilege)
+            ->firstOrFail();
+
+        $userProfiles = UserProfile::orderBy('UserProfileID')->get();
+        $privileges   = Lookup::where('LookupCategory', 'PRIV')
+                            ->orderBy('LookupName')
+                            ->get();
+
+        return view('admin.userprofprivileges.edit', compact('userprofprivilege', 'userProfiles', 'privileges'));
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $profile, $privilege)
     {
         $validator = Validator::make($request->all(), [
-            'UserProfileID' => 'required|string|max:255',
+            'UserProfileID'    => 'required|string|max:255',
             'UserPrivilegesID' => 'required|string|max:255',
         ]);
 
@@ -73,12 +97,22 @@ class UserProfPrivilegesController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['UserProfileID', 'UserPrivilegesID']);
-        $data['UserProfPrivilegesUpdateBy'] = session('user_id') ?? 'admin';
-        $this->userProfPrivilegesRepo->update($id, $data);
+        // Delete old composite key row and re-insert
+        // (since both columns are the PK, updating either means replacing the row)
+        \DB::table('userprofprivileges')
+            ->where('UserProfileID', $profile)
+            ->where('UserPrivilegesID', $privilege)
+            ->update([
+                'UserProfileID'                => $request->input('UserProfileID'),
+                'UserPrivilegesID'             => $request->input('UserPrivilegesID'),
+                'UserProfPrivilegesUpdateBy'   => session('user_id'),
+                'UserProfPrivilegesUpdateDate' => now()->toDateString(),
+            ]);
 
-        return redirect()->route('admin.userprofprivileges.index')->with('success', 'User profile privilege updated successfully.');
+        return redirect()->route('admin.userprofprivileges.index')
+            ->with('success', 'User profile privilege updated successfully.');
     }
+
 
     public function show($id)
     {
@@ -89,9 +123,14 @@ class UserProfPrivilegesController extends Controller
         return view('admin.userprofprivileges.show', compact('userprofprivilege'));
     }
 
-    public function destroy($id)
+    public function destroy($profile, $privilege)
     {
-        $this->userProfPrivilegesRepo->delete($id);
-        return redirect()->route('admin.userprofprivileges.index')->with('success', 'User profile privilege deleted successfully.');
+        \DB::table('userprofprivileges')
+            ->where('UserProfileID', $profile)
+            ->where('UserPrivilegesID', $privilege)
+            ->delete();
+
+        return redirect()->route('admin.userprofprivileges.index')
+            ->with('success', 'Deleted successfully.');
     }
 }

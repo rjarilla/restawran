@@ -19,8 +19,17 @@
             @enderror
         </div>
         <div class="mb-3">
-            <label for="UserProfileID" class="form-label">Profile ID</label>
-            <input type="text" class="form-control @error('UserProfileID') is-invalid @enderror" id="UserProfileID" name="UserProfileID" value="{{ old('UserProfileID') }}">
+            <label for="UserProfileID" class="form-label">Profile</label>
+            <select class="form-control @error('UserProfileID') is-invalid @enderror"
+                    id="UserProfileID" name="UserProfileID">
+                <option value="">-- Select Profile --</option>
+                @foreach($profiles as $profile)
+                    <option value="{{ $profile->UserProfileID }}"
+                        {{ old('UserProfileID') == $profile->UserProfileID ? 'selected' : '' }}>
+                        {{ $profile->UserProfileName }}
+                    </option>
+                @endforeach
+            </select>
             @error('UserProfileID')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

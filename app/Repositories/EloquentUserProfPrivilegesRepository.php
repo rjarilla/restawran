@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\UserProfPrivileges;
 use App\Repositories\Interfaces\UserProfPrivilegesRepositoryInterface;
+use Illuminate\Support\Str;
 
 class EloquentUserProfPrivilegesRepository implements UserProfPrivilegesRepositoryInterface
 {
