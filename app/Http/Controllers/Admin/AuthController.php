@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Cookie;
 
-
 class AuthController extends Controller
 {
     protected $usersRepository;
@@ -18,39 +17,40 @@ class AuthController extends Controller
         $this->usersRepository = $usersRepository;
     }
 
-    public function showLoginForm()
-    {
-        return view('admin/signin');
-    }
-
     public function login(Request $request)
     {
+        // MUST MATCH FORM INPUT NAMES
         $request->validate([
-            'username' => 'required',
-            'password' => 'required',
+            'UserName' => 'required',
+            'Password' => 'required',
         ]);
 
-        $user = $this->usersRepository->login($request->input('username'), $request->input('password'));
+        $user = $this->usersRepository->login(
+            $request->UserName,
+            $request->Password
+        );
 
-        if ($user) {
-            // Set session
-            Session::put('user_id', $user->UserID);
-            Session::put('user_name', $user->UserName);
-            // Remember me
-            if ($request->has('remember')) {
-                Cookie::queue('remembered_username', $user->UserName, 60 * 24 * 30); // 30 days
-            } else {
-                Cookie::queue(Cookie::forget('remembered_username'));
-            }
-            return redirect('admin/index');
-        } else {
-            return redirect()->back()->withInput()->with('login_error', 'Invalid username or password.');
+        if (!$user) {
+            return back()
+                ->withInput()
+                ->with('login_error', 'Invalid username or password.');
         }
+
+        Session::put('user_id', $user->UserID);
+        Session::put('user_name', $user->UserName);
+
+        if ($request->has('remember')) {
+            Cookie::queue('remembered_username', $user->UserName, 60 * 24 * 30);
+        } else {
+            Cookie::queue(Cookie::forget('remembered_username'));
+        }
+
+        return redirect('admin/index');
     }
 
     public function logout()
     {
         Session::flush();
-        return redirect('/admin');
+        return redirect('/admin/signin');
     }
 }

@@ -22,13 +22,16 @@ class Users extends Model
         'UserUpdateBy',
     ];
 
-    // Relationship: Users belongs to UserProfile
+    // FIX: correct relationship imports (IMPORTANT)
+    protected $with = [
+        // optional eager loading later
+    ];
+
     public function userProfile()
     {
         return $this->belongsTo(UserProfile::class, 'UserProfileID', 'UserProfileID');
     }
 
-    // Relationship: Users has many privileges through UserProfPrivileges
     public function userProfilePrivileges()
     {
         return $this->hasMany(UserProfPrivileges::class, 'UserProfileID', 'UserProfileID');

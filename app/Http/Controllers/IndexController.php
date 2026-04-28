@@ -9,10 +9,10 @@ class IndexController extends Controller
 {
     public function index()
     {
-        // Fetch 8 random products from productinventory where quantity > 0 and not expired, joined with products
         $products = DB::table('productinventory')
             ->join('product', 'productinventory.ProductID', '=', 'product.ProductID')
             ->where('productinventory.ProductQuantity', '>', 0)
+            ->whereNotNull('productinventory.ProductBatchExpiry')
             ->where('productinventory.ProductBatchExpiry', '>', now())
             ->select('product.*', 'productinventory.ProductQuantity')
             ->inRandomOrder()
