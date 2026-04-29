@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use Illuminate\Support\Str;
 use App\Models\Users;
 use App\Repositories\Interfaces\UsersRepositoryInterface;
 
@@ -17,29 +16,18 @@ class EloquentUsersRepository implements UsersRepositoryInterface
 
     public function all()
     {
-        return $this->model->all()->load(['userProfile', 'userProfilePrivileges']);
+        return $this->model->all();
     }
 
     public function find($id)
     {
-        $user = $this->model->find($id);
-
-        if ($user) {
-            $user->load(['userprofile', 'userprofileprivileges']);
-        }
-
-        return $user;
+        return $this->model->find($id);
     }
 
     public function create(array $attributes)
     {
-        $attributes['UserID'] = (string) Str::uuid();
-        $attributes['UserUpdateDate'] = now();
-
-        if (isset($attributes['UserPassword'])) {
-            $attributes['Password'] = $attributes['UserPassword'];
-            unset($attributes['UserPassword']);
-        }
+        $attributes['created_at'] = now();
+        $attributes['updated_at'] = now();
 
         return $this->model->create($attributes);
     }
@@ -48,44 +36,58 @@ class EloquentUsersRepository implements UsersRepositoryInterface
     {
         $record = $this->model->find($id);
 
-        if ($record) {
-            if (isset($attributes['UserPassword'])) {
-                $attributes['Password'] = $attributes['UserPassword'];
-                unset($attributes['UserPassword']);
-            }
-
-            $record->update($attributes);
-            return $record;
+        if (!$record) {
+            return null;
         }
 
-        return null;
+        $attributes['updated_at'] = now();
+
+        $record->update($attributes);
+
+        return $record;
     }
 
     public function delete($id)
     {
         $record = $this->model->find($id);
 
-        if ($record) {
-            return $record->delete();
+        if (!$record) {
+            return false;
         }
 
-        return false;
+        return $record->delete();
     }
 
     /**
-     * FINAL LOGIN FIX (NO CRASH VERSION)
+     * LOGIN FUNCTION (FIXED FOR YOUR DB STRUCTURE)
      */
     public function login($userName, $password)
     {
+        // find user by username
         $user = $this->model->where('UserName', $userName)->first();
 
         if (!$user) {
             return null;
         }
 
-        // Plain text password check (matches your DB)
+        /*
+        =====================================================
+        PASSWORD HANDLING (IMPORTANT)
+        =====================================================
+        Your DB password is currently:
+        - either plain text OR MD5 (you showed MD5 hash earlier)
+
+        So we support BOTH safely:
+        */
+
+        // OPTION 1: plain text match
         if ($user->Password === $password) {
-            return $user; // IMPORTANT: no relationships to avoid crash
+            return $user;
+        }
+
+        // OPTION 2: MD5 match (if your DB uses MD5 like admin123)
+        if ($user->Password === md5($password)) {
+            return $user;
         }
 
         return null;

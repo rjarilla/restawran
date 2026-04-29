@@ -122,12 +122,12 @@
       <!-- Dropdown -->
       <li class="ms-3 dropdown">
         <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-          <img src="/public/assets/images/avatar/avatar-fallback.jpg" alt="" class="avatar avatar-sm rounded-circle" />
+          <img src="<?php echo asset('assets/images/avatar/avatar-fallback.jpg'); ?>" alt="" class="avatar avatar-sm rounded-circle" />
         </a>
         <div class="dropdown-menu dropdown-menu-end dropdown-menu-md p-0">
           <div>
             <div class="d-flex gap-3 align-items-center border-dashed border-bottom px-4 py-4">
-              <img src="/public/assets/images/avatar/avatar-fallback.jpg" alt="" class="avatar avatar-md rounded-circle" />
+              <img src="<?php echo asset('assets/images/avatar/avatar-fallback.jpg'); ?>" alt="" class="avatar avatar-md rounded-circle" />
               <div>
                 <h4 class="mb-0 fs-5"><?php echo session('user_name')?></h4>
               </div>
@@ -194,7 +194,7 @@
               </a>-->
             </div>
             <div class="border-dashed border-top mb-4 pt-4 px-6">
-              <a href="/public/admin/logout" class="text-secondary d-flex align-items-center gap-2">
+              <a href="{{ route('admin.logout') }}" class="text-secondary d-flex align-items-center gap-2">
                 <span>
                   <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
                     stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"

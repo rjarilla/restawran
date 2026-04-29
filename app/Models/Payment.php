@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
-    protected $table = 'payment';
+    protected $table = 'payments';
     protected $primaryKey = 'PaymentID';
     public $incrementing = false;
     protected $keyType = 'string';
@@ -18,4 +18,9 @@ class Payment extends Model
         'PaymentTotal',
         'PaymentChange',
     ];
+
+    public function order()
+    {
+        return $this->belongsTo(Orders::class, 'OrderID', 'OrderID');
+    }
 }

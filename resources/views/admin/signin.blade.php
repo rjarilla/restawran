@@ -27,18 +27,12 @@
               <div class="card card-lg mb-6">
                 <div class="card-body p-6">
                   @php
-                    // Redirect if already logged in
-                    if(session('user_id')) {
-                      header('Location: ' . url('admin/index'));
-                      exit;
-                    }
-                    // Get remembered username
-                    $remembered = isset($_COOKIE['remembered_username']) ? $_COOKIE['remembered_username'] : '';
+                    $remembered = request()->cookie('remembered_username', '');
                   @endphp
                   @if(session('login_error'))
                     <div class="alert alert-danger">{{ session('login_error') }}</div>
                   @endif
-                  <form class="needs-validation mb-6" method="POST" action="{{ url('admin/login') }}" novalidate>
+                  <form class="needs-validation mb-6" method="POST" action="{{ route('admin.login') }}" novalidate>
                     @csrf
                     <div class="mb-3">
                       <label for="signinUsernameInput" class="form-label">
@@ -104,6 +98,6 @@
     </main>
 
     <?php include_once resource_path('views/admin/partials/scripts.html'); ?>  
-    <script src="/public/assets/js/vendors/password.js"></script>
+    <script src="{{ asset('assets/js/vendors/password.js') }}"></script>
   </body>
 </html>

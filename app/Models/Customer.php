@@ -6,23 +6,21 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
-    protected $table = 'customer';
+    protected $table = 'customers'; // your correct table
+
     protected $primaryKey = 'CustomerID';
-    public $incrementing = false;
-    protected $keyType = 'string';
+
     public $timestamps = false;
+
     protected $fillable = [
         'CustomerID',
+        'CustomerCode',
         'CustomerName',
-        'CustomerAddressLine1',
-        'CustomerAddressLine2',
-        'CustomerStreet',
-        'CustomerCity',
-        'CustomerProvince',
-        'CustomerPostalCode',
         'CustomerEmail',
         'CustomerContactNumber',
-        'CustomerUpdateBy',
+        'CustomerAddressLine1',
+        'CustomerCity',
+        'CustomerProvince',
         'CustomerUpdateDate',
     ];
 }

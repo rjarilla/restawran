@@ -18,4 +18,19 @@ class Orders extends Model
         'OrderTotalAmount',
         'OrderFulfilledBy',
     ];
+
+    public function customer()
+    {
+        return $this->belongsTo(Customer::class, 'CustomerID', 'CustomerID');
+    }
+
+    public function orderDetails()
+    {
+        return $this->hasMany(OrderDetails::class, 'OrderID', 'OrderID');
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class, 'OrderID', 'OrderID');
+    }
 }

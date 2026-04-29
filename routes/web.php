@@ -1,106 +1,128 @@
-
-
 <?php
-use App\Http\Controllers\Admin\AuthController;
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\DB;
+
+// CONTROLLERS
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\LookupController;
 use App\Http\Controllers\Admin\ProductController;
-use App\Http\Controllers\Admin\ProductInventoryController;
 use App\Http\Controllers\Admin\UsersController;
 use App\Http\Controllers\Admin\UserProfileController;
 use App\Http\Controllers\Admin\UserProfPrivilegesController;
-use App\Http\Controllers\IndexController;
+use App\Http\Controllers\Admin\ProductInventoryController;
+use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
+use App\Http\Controllers\Admin\ReportsController;
 
-// ProductInventory CRUD routes
-Route::get('/admin/productinventory', [ProductInventoryController::class, 'index'])->name('admin.productinventory.index');
+/*
+|--------------------------------------------------------------------------
+| DEBUG ROUTES (REMOVE IN PRODUCTION)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/test-customers', fn () => 'CUSTOMER ROUTE WORKS');
+
+Route::get('/debug-db', fn () => DB::connection()->getDatabaseName());
+
+/*
+|--------------------------------------------------------------------------
+| FRONTEND ROUTES
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/', fn () => view('index'));
+Route::get('/index', fn () => view('index'));
+
+/*
+|--------------------------------------------------------------------------
+| ORDER MODULE
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/order', [OrderController::class, 'create'])->name('order.create');
+Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+
+/*
+|--------------------------------------------------------------------------
+| PAYMENT MODULE
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/payment', [PaymentController::class, 'showPaymentMethod'])->name('payment.method');
+Route::post('/payment', [PaymentController::class, 'processPayment'])->name('payment.process');
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN AUTH (CLEANED)
+|--------------------------------------------------------------------------
+*/
+
+// Always redirect admin root to signin
+Route::get('/admin', fn () => redirect()->route('admin.login.form'));
+
+// ONLY ONE LOGIN PAGE (IMPORTANT)
+Route::get('/admin/signin', [AuthController::class, 'showLoginForm'])->name('admin.login.form');
+
+// LOGIN POST
+Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login');
+
+// LOGOUT
+Route::get('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN DASHBOARD
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/index', [DashboardController::class, 'index'])
+    ->name('admin.index');
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN MODULES
+|--------------------------------------------------------------------------
+*/
+
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('productinventory', ProductInventoryController::class)->except(['index']);
-});
-// Routes for ecommerce website
-Route::get('/', [IndexController::class, 'index']);
-Route::get('/index', [IndexController::class, 'index']);
 
-// Routes for dashboard
-Route::get('/admin/index', function () {
-    if(session('user_id')) {
-        return view('admin/index');
-    } else {
-        return view('admin/signin');
-    }
-});
-Route::get('/admin/login', function () {
-    return view('admin/login');
+    Route::resource('productinventory', ProductInventoryController::class);
+    Route::resource('lookup', LookupController::class);
+    Route::resource('product', ProductController::class);
+    Route::resource('users', UsersController::class);
+    Route::resource('userprofile', UserProfileController::class);
+    Route::resource('userprofprivileges', UserProfPrivilegesController::class);
+
+    Route::resource('customers', CustomerController::class);
 });
 
-Route::get('/admin/signin', function () {
-    return view('admin/signin');
-});
+/*
+|--------------------------------------------------------------------------
+| STATIC ADMIN PAGES
+|--------------------------------------------------------------------------
+*/
 
-Route::get('/admin', function () {
-    if(session('user_id')) {
-        return redirect('admin/index');
-    } else {
-        return redirect('admin/signin');
-    }
-});
+Route::get('/admin/orders', fn () => view('admin.orders.index'))
+    ->name('admin.orders.index');
 
-Route::post('admin/login', [AuthController::class, 'login'])->name('admin.login');
-Route::get('admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
+Route::get('/admin/reports', [ReportsController::class, 'index'])
+    ->name('admin.reports.index');
 
-// Lookup CRUD routes
-Route::get('/admin/lookup', [LookupController::class, 'index'])->name('admin.lookup.index');
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('lookup', LookupController::class)->except(['index']);
-});
+/*
+|--------------------------------------------------------------------------
+| ADMIN PAYMENTS
+|--------------------------------------------------------------------------
+*/
 
-// Product CRUD routes
-Route::get('/admin/product', [ProductController::class, 'index'])->name('admin.product.index');
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('product', ProductController::class)->except(['index']);
-});
+Route::get('/admin/payments', [AdminPaymentController::class, 'index'])
+    ->name('admin.payments.index');
 
-// Users CRUD routes
-Route::get('/admin/users', [UsersController::class, 'index'])->name('admin.users.index');
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('users', UsersController::class)->except(['index']);
-});
+Route::get('/admin/payments/{id}', [AdminPaymentController::class, 'show'])
+    ->name('admin.payments.show');
 
-// UserProfile CRUD routes
-Route::get('/admin/userprofile', [UserProfileController::class, 'index'])->name('admin.userprofile.index');
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('userprofile', UserProfileController::class)->except(['index']);
-});
-
-// UserProfPrivileges CRUD routes
-Route::get('/admin/userprofprivileges', [UserProfPrivilegesController::class, 'index'])->name('admin.userprofprivileges.index');
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('userprofprivileges', UserProfPrivilegesController::class)->except(['index']);
-});
-
-// Orders default pages
-Route::get('/admin/orders', function () {
-    return view('admin.orders.index');
-})->name('admin.orders.index');
-
-// Reports default pages
-Route::get('/admin/reports', function () {
-    return view('admin.reports.index');
-})->name('admin.reports.index');
-
-// Payments default page
-Route::get('/admin/payments', function () {
-    return view('admin.payments.index');
-})->name('admin.payments.index');
-
-Route::get('/clear-config', function() {
-    Artisan::call('config:clear');
-    Artisan::call('cache:clear');
-    Artisan::call('view:clear');
-    return "Configuration cache cleared!";
-});
-
-Route::get('/php-migrate', function() {
-    Artisan::call('migrate');
-    return "Database migrated";
-});
+Route::delete('/admin/payments/{id}', [AdminPaymentController::class, 'destroy'])
+    ->name('admin.payments.destroy');

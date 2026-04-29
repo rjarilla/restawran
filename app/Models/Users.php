@@ -7,25 +7,29 @@ use Illuminate\Database\Eloquent\Model;
 class Users extends Model
 {
     protected $table = 'rt_users';
-    protected $primaryKey = 'UserID';
-    public $incrementing = false;
-    protected $keyType = 'string';
-    public $timestamps = false;
+
+    protected $primaryKey = 'id';
+
+    public $timestamps = true;
 
     protected $fillable = [
-        'UserID',
         'UserName',
-        'UserPassword',
-        'UserProfileID',
-        'UserStatus',
-        'UserUpdateDate',
-        'UserUpdateBy',
+        'Password',
+        'Role',
     ];
 
-    // FIX: correct relationship imports (IMPORTANT)
-    protected $with = [
-        // optional eager loading later
+    /**
+     * OPTIONAL: Hide password when returning model
+     */
+    protected $hidden = [
+        'Password',
     ];
+
+    /*
+    |------------------------------------------------
+    | RELATIONSHIPS (ONLY KEEP IF TABLES EXIST)
+    |------------------------------------------------
+    */
 
     public function userProfile()
     {

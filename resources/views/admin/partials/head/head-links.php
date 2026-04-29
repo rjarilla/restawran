@@ -17,7 +17,7 @@
 <!--meta name="msapplication-TileImage" content="/assets/images/favicon/ms-icon-144x144.png" /-->
 <meta name="theme-color" content="#ffffff" />
 <!-- Color modes -->
-<script src="/public/assets/js/vendors/color-modes.js"></script>
+<script src="<?php echo asset('assets/js/vendors/color-modes.js'); ?>"></script>
 <script>
   if (localStorage.getItem('sidebarExpanded') === 'false') {
     document.documentElement.classList.add('collapsed');
@@ -32,10 +32,10 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" />
-<link rel="stylesheet" href="/public/node_modules/simplebar/dist/simplebar.min.css" />
-<link rel="stylesheet" href="/public/node_modules/@tabler/icons-webfont/tabler-icons.min.css" />
+<link rel="stylesheet" href="<?php echo asset('node_modules/simplebar/dist/simplebar.min.css'); ?>" />
+<link rel="stylesheet" href="<?php echo asset('node_modules/@tabler/icons-webfont/tabler-icons.min.css'); ?>" />
 
 <!-- Theme CSS -->
 <!-- build:css /assets/css/theme.min.css -->
-<link rel="stylesheet" href="/public/assets/css/theme.css" />
+<link rel="stylesheet" href="<?php echo asset('assets/css/theme.css'); ?>" />
 <!-- endbuild -->
