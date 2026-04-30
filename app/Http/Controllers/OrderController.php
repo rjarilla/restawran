@@ -287,3 +287,4 @@ class OrderController extends Controller
         return (float) ($isDiscounted ? $salePrice : $product->ProductPrice);
     }
 }
+

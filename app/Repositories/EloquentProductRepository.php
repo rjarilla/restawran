@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Product;
 use App\Repositories\Interfaces\ProductRepositoryInterface;
+use Illuminate\Support\Str;
 
 class EloquentProductRepository implements ProductRepositoryInterface
 {
@@ -27,7 +28,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
     public function create(array $attributes)
     {
         $attributes['ProductID'] = (string) Str::uuid();
-        $attributes['ProductUpdateDate'] = now();
+        $attributes['ProductUpdatedDate'] = now()->toDateString();
         return $this->model->create($attributes);
     }
 
@@ -50,3 +51,4 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return false;
     }
 }
+

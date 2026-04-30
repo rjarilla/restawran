@@ -4,28 +4,22 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Payment;
-use App\Models\Orders;
-use App\Models\Customer;
 use Illuminate\Http\Request;
 
 class PaymentController extends Controller
 {
     public function index(Request $request)
     {
-        // Get filter parameter, default to 'week' if not specified
         $period = $request->input('period', 'week');
         $dateFrom = $request->input('date_from');
         $dateTo = $request->input('date_to');
 
-        // Build query with relationships
         $query = Payment::with(['order.customer', 'order.orderDetails.product'])
             ->orderBy('PaymentID', 'desc');
 
-        // Apply date filters based on period
         if ($period) {
             $query->whereHas('order', function ($q) use ($period) {
                 $today = now();
-                
                 switch ($period) {
                     case 'today':
                         $q->whereDate('OrderDate', $today->toDateString());
@@ -71,7 +65,6 @@ class PaymentController extends Controller
 
         $payments = $query->get();
 
-        // Calculate statistics
         $totalAmountPaid = $payments->sum('PaymentTotal');
         $totalSoldItems = 0;
         $uniqueCustomers = [];
@@ -82,7 +75,7 @@ class PaymentController extends Controller
                     $totalSoldItems += $orderDetail->OrderQuantity;
                 }
             }
-            
+
             if ($payment->order && $payment->order->customer) {
                 $uniqueCustomers[] = $payment->order->customer->CustomerID;
             }
@@ -91,9 +84,9 @@ class PaymentController extends Controller
         $totalCustomers = count(array_unique($uniqueCustomers));
 
         return view('admin.payments.index', compact(
-            'payments', 
-            'totalAmountPaid', 
-            'totalSoldItems', 
+            'payments',
+            'totalAmountPaid',
+            'totalSoldItems',
             'totalCustomers',
             'period',
             'dateFrom',
@@ -113,12 +106,10 @@ class PaymentController extends Controller
     public function destroy($id)
     {
         $payment = Payment::where('PaymentID', $id)->firstOrFail();
-        
-        // Note: In a real application, you might want to handle this differently
-        // as deleting a payment might affect order fulfillment
         $payment->delete();
 
         return redirect()->route('admin.payments.index')
             ->with('success', 'Payment deleted successfully.');
     }
 }
+

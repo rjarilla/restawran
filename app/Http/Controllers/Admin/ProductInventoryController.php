@@ -6,7 +6,6 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\EloquentProductInventoryRepository;
 use Illuminate\Support\Facades\Validator;
-use Illuminate\Support\Str;
 
 class ProductInventoryController extends Controller
 {
@@ -46,18 +45,19 @@ class ProductInventoryController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'ProductID' => 'required|string|max:255',
-            'ProductQuantity' => 'required|numeric',
+            'ProductID' => 'required|string|max:255|exists:product,ProductID',
+            'ProductQuantity' => 'required|integer|min:0',
             'ProductBatchDeliveryDate' => 'required|date',
-            'ProductBatchExpiry' => 'required|date',
+            'ProductBatchExpiry' => 'required|date|after_or_equal:ProductBatchDeliveryDate',
+            'ProductReceivedBy' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['ProductID', 'ProductQuantity', 'ProductBatchDeliveryDate', 'ProductBatchExpiry']);
-        $data['ProductReceivedBy'] = session('user_id');
+        $data = $request->only(['ProductID', 'ProductQuantity', 'ProductBatchDeliveryDate', 'ProductBatchExpiry', 'ProductReceivedBy']);
+        $data['ProductReceivedBy'] = $data['ProductReceivedBy'] ?? session('user_id') ?? 'admin';
         $this->productInventoryRepo->create($data);
 
         return redirect()->route('admin.productinventory.index')->with('success', 'Product inventory batch created successfully.');
@@ -76,18 +76,19 @@ class ProductInventoryController extends Controller
     public function update(Request $request, $id)
     {
         $validator = Validator::make($request->all(), [
-            'ProductID' => 'required|string|max:255',
-            'ProductQuantity' => 'required|numeric',
+            'ProductID' => 'required|string|max:255|exists:product,ProductID',
+            'ProductQuantity' => 'required|integer|min:0',
             'ProductBatchDeliveryDate' => 'required|date',
-            'ProductBatchExpiry' => 'required|date',
+            'ProductBatchExpiry' => 'required|date|after_or_equal:ProductBatchDeliveryDate',
+            'ProductReceivedBy' => 'nullable|string|max:255',
         ]);
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['ProductID', 'ProductQuantity', 'ProductBatchDeliveryDate', 'ProductBatchExpiry']);
-        $data['ProductReceivedBy'] = session('user_id');
+        $data = $request->only(['ProductID', 'ProductQuantity', 'ProductBatchDeliveryDate', 'ProductBatchExpiry', 'ProductReceivedBy']);
+        $data['ProductReceivedBy'] = $data['ProductReceivedBy'] ?? session('user_id') ?? 'admin';
         $this->productInventoryRepo->update($id, $data);
 
         return redirect()->route('admin.productinventory.index')->with('success', 'Product inventory batch updated successfully.');
@@ -108,3 +109,4 @@ class ProductInventoryController extends Controller
         return redirect()->route('admin.productinventory.index')->with('success', 'Product inventory batch deleted successfully.');
     }
 }
+

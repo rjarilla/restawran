@@ -6,10 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Customer extends Model
 {
-    protected $table = 'customers'; // your correct table
-
+    protected $table = 'customers';
     protected $primaryKey = 'CustomerID';
-
+    public $incrementing = false;
+    protected $keyType = 'string';
     public $timestamps = false;
 
     protected $fillable = [
@@ -19,8 +19,18 @@ class Customer extends Model
         'CustomerEmail',
         'CustomerContactNumber',
         'CustomerAddressLine1',
+        'CustomerAddressLine2',
+        'CustomerStreet',
         'CustomerCity',
         'CustomerProvince',
+        'CustomerPostalCode',
+        'CustomerUpdateBy',
         'CustomerUpdateDate',
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Orders::class, 'CustomerID', 'CustomerID');
+    }
 }
+

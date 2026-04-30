@@ -19,4 +19,10 @@ class ProductInventory extends Model
         'ProductBatchExpiry',
         'ProductReceivedBy',
     ];
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class, 'ProductID', 'ProductID');
+    }
 }
+
