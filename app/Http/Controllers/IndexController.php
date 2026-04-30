@@ -17,6 +17,11 @@ class IndexController extends Controller
             ->limit(8)
             ->get();
 
-        return view('index', compact('products'));
+        $customers = DB::table('customers')
+            ->orderByDesc('CustomerUpdateDate')
+            ->limit(10)
+            ->get();
+
+        return view('index', compact('products', 'customers'));
     }
 }

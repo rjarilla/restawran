@@ -20,13 +20,12 @@ class UsersController extends Controller
     {
         $query = $request->input('search');
         $usersModel = app(\App\Models\Users::class);
-        $users = $usersModel->with(['userProfile'])
-            ->when($query, function($q) use ($query) {
+        $users = $usersModel->when($query, function($q) use ($query) {
                 $q->where('UserName', 'like', "%$query%")
-                  ->orWhere('UserStatus', 'like', "%$query%")
-                  ->orWhere('UserID', 'like', "%$query%") ;
+                  ->orWhere('Role', 'like', "%$query%")
+                  ->orWhere('id', 'like', "%$query%") ;
             })
-            ->orderByDesc('UserUpdateDate')
+            ->orderByDesc('created_at')
             ->paginate(10)
             ->appends(['search' => $query]);
         return view('admin.users.index', compact('users', 'query'));

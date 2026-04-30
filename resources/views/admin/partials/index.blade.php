@@ -11,11 +11,11 @@
 <body>
   <!-- Vertical Sidebar -->
   <div>
-    <?php include_once resource_path('views/admin/partials/sidebar-collapse.php'); ?>
+    @include('admin.partials.sidebar-collapse')
 
     <!-- Main Content -->
     <div id="content" class="position-relative h-100">
-      <?php include_once resource_path("views/admin/partials/topbar-second.php")?>
+      @include('admin.partials.topbar-second')
       <!-- container -->
       <div class="custom-container">
         <!-- row -->

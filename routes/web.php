@@ -13,6 +13,7 @@ use App\Http\Controllers\Admin\ProductInventoryController;
 use App\Http\Controllers\Admin\OrdersController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\CustomerController;
+use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
@@ -20,8 +21,8 @@ use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
 Route::get('/test-customers', fn () => 'CUSTOMER ROUTE WORKS');
 Route::get('/debug-db', fn () => DB::connection()->getDatabaseName());
 
-Route::get('/', fn () => view('index'));
-Route::get('/index', fn () => view('index'));
+Route::get('/', [IndexController::class, 'index']);
+Route::get('/index', [IndexController::class, 'index']);
 
 Route::get('/order', [OrderController::class, 'create'])->name('order.create');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');

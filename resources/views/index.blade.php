@@ -2,6 +2,11 @@
 
 @section('content')
 
+@php
+    $customers = $customers ?? collect();
+    $products = $products ?? collect();
+@endphp
+
 <div class="card shadow-sm border-0">
 
     <div class="card-body">
@@ -42,7 +47,7 @@
                 </thead>
 
                 <tbody>
-                    @forelse($customers as $customer)
+                    @forelse($customers ?? [] as $customer)
                         <tr>
                             <td>{{ $customer->CustomerCode ?? 'N/A' }}</td>
                             <td>{{ $customer->CustomerName }}</td>

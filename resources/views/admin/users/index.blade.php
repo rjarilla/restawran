@@ -18,22 +18,22 @@
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Name</th>
-                <th>Profile</th>
-                <th>Status</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Created At</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @forelse($users as $user)
             <tr>
-                <td>{{ $user->UserID }}</td>
+                <td>{{ $user->id }}</td>
                 <td>{{ $user->UserName }}</td>
-                <td>{{ $user->userProfile->UserProfileName ?? '' }}</td>
-                <td>{{ $user->UserStatus }}</td>
+                <td>{{ $user->Role }}</td>
+                <td>{{ $user->created_at }}</td>
                 <td>
-                    <a href="{{ route('admin.users.edit', $user->UserID) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('admin.users.destroy', $user->UserID) }}" method="POST" style="display:inline-block;">
+                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>

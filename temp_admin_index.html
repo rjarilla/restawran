@@ -1,0 +1,1231 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<meta content="Codescandy" name="author">  <title>Restawran - Admin Dashboard</title>
+   <link rel="stylesheet" href="http://127.0.0.1:8000/node_modules/swiper/swiper-bundle.min.css" />
+  <!-- Favicon icon
+<link rel="apple-touch-icon" sizes="57x57" href="/assets/images/favicon/apple-icon-57x57.png" />
+<link rel="apple-touch-icon" sizes="60x60" href="/assets/images/favicon/apple-icon-60x60.png" />
+<link rel="apple-touch-icon" sizes="72x72" href="/assets/images/favicon/apple-icon-72x72.png" />
+<link rel="apple-touch-icon" sizes="76x76" href="/assets/images/favicon/apple-icon-76x76.png" />
+<link rel="apple-touch-icon" sizes="114x114" href="/assets/images/favicon/apple-icon-114x114.png" />
+<link rel="apple-touch-icon" sizes="120x120" href="/assets/images/favicon/apple-icon-120x120.png" />
+<link rel="apple-touch-icon" sizes="144x144" href="/assets/images/favicon/apple-icon-144x144.png" />
+<link rel="apple-touch-icon" sizes="152x152" href="/assets/images/favicon/apple-icon-152x152.png" />
+<link rel="apple-touch-icon" sizes="180x180" href="/assets/images/favicon/apple-icon-180x180.png" />
+<link rel="icon" type="image/png" sizes="192x192" href="/assets/images/favicon/android-icon-192x192.png" />
+<link rel="icon" type="image/png" sizes="32x32" href="/assets/images/favicon/favicon-32x32.png" />
+<link rel="icon" type="image/png" sizes="96x96" href="/assets/images/favicon/favicon-96x96.png" />
+<link rel="icon" type="image/png" sizes="16x16" href="/assets/images/favicon/favicon-16x16.png" />
+-->
+<meta name="msapplication-TileColor" content="#ffffff" />
+<!--meta name="msapplication-TileImage" content="/assets/images/favicon/ms-icon-144x144.png" /-->
+<meta name="theme-color" content="#ffffff" />
+<!-- Color modes -->
+<script src="http://127.0.0.1:8000/assets/js/vendors/color-modes.js"></script>
+<script>
+  if (localStorage.getItem('sidebarExpanded') === 'false') {
+    document.documentElement.classList.add('collapsed');
+    document.documentElement.classList.remove('expanded');
+  } else {
+    document.documentElement.classList.remove('collapsed');
+    document.documentElement.classList.add('expanded');
+  }
+</script>
+<!-- Libs CSS -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.0/css/all.min.css">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@300;400;500;600;700;800&display=swap" />
+<link rel="stylesheet" href="http://127.0.0.1:8000/node_modules/simplebar/dist/simplebar.min.css" />
+<link rel="stylesheet" href="http://127.0.0.1:8000/node_modules/@tabler/icons-webfont/tabler-icons.min.css" />
+
+<!-- Theme CSS -->
+<!-- build:css /assets/css/theme.min.css -->
+<link rel="stylesheet" href="http://127.0.0.1:8000/assets/css/theme.css" />
+<!-- endbuild -->
+</head>
+
+<body>
+  <!-- Vertical Sidebar -->
+  <div>
+    <div id="miniSidebar">
+  <!-- DEBUG: Sidebar is loading -->
+  <div class="brand-logo">
+    <a class="d-none d-md-flex align-items-center gap-2" href="http://127.0.0.1:8000/admin/index">
+      <i class="fa fa-utensils me-3"></i>
+      <span class="fw-bold fs-4 site-logo-text">Restawran</span>
+    </a>
+  </div>
+
+  <ul class="navbar-nav flex-column">
+
+    <!-- HOME LINK -->
+    <li class="nav-item">
+      <a class="nav-link" href="/" target="_blank">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6.331 8h11.339a2 2 0 0 1 1.977 2.304l-1.255 8.152a3 3 0 0 1-2.966 2.544h-6.852a3 3 0 0 1-2.965-2.544l-1.255-8.152a2 2 0 0 1 1.977-2.304z"/>
+            <path d="M9 11v-5a3 3 0 0 1 6 0v5"/>
+          </svg>
+        </span>
+        <span class="text">Restawran.com</span>
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <div class="nav-heading">MODULES</div>
+      <hr class="mx-5 nav-line mb-1" />
+    </li>
+
+    <!-- DASHBOARD -->
+    <li class="nav-item">
+      <a class="nav-link" href="http://127.0.0.1:8000/admin/index">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 9l9-6 9 6v9a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3z"/>
+            <path d="M9 22V12h6v10"/>
+          </svg>
+        </span>
+        <span class="text">Dashboard</span>
+      </a>
+    </li>
+
+    <!-- LOOKUP -->
+    <li class="nav-item">
+      <a class="nav-link" href="http://127.0.0.1:8000/admin/lookup">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M9 6h11"/>
+            <path d="M9 12h11"/>
+            <path d="M9 18h11"/>
+            <path d="M5 6v.01"/>
+            <path d="M5 12v.01"/>
+            <path d="M5 18v.01"/>
+          </svg>
+        </span>
+        <span class="text">Lookup</span>
+      </a>
+    </li>
+
+    <!-- PRODUCT -->
+    <li class="nav-item dropdown">
+      <div class="d-flex align-items-center">
+        <a class="nav-link flex-grow-1" href="http://127.0.0.1:8000/admin/product">
+          <span class="nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l8 4.5v9l-8 4.5l-8-4.5v-9z"/>
+            </svg>
+          </span>
+          <span class="text">Products</span>
+        </a>
+        <button class="nav-link dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.5rem 0.5rem;">
+          <span class="visually-hidden">Toggle Products submenu</span>
+        </button>
+      </div>
+
+      <ul class="dropdown-menu flex-column">
+        <li><a class="nav-link" href="http://127.0.0.1:8000/admin/product">Products</a></li>
+        <li><a class="nav-link" href="http://127.0.0.1:8000/admin/productinventory">Product Inventory</a></li>
+      </ul>
+    </li>
+
+    <!-- CUSTOMERS -->
+    <li class="nav-item">
+      <a class="nav-link" href="http://127.0.0.1:8000/admin/customers">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="7" r="4"></circle>
+            <path d="M5.5 21h13a2 2 0 0 0 2-2v-1a7 7 0 0 0-14 0v1a2 2 0 0 0 2 2z"></path>
+          </svg>
+        </span>
+        <span class="text">Customers</span>
+      </a>
+    </li>
+
+    <!-- USERS -->
+    <li class="nav-item dropdown">
+      <div class="d-flex align-items-center">
+        <a class="nav-link flex-grow-1" href="http://127.0.0.1:8000/admin/users">
+          <span class="nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="7" r="4"/>
+              <path d="M5.5 21h13a2 2 0 0 0 2-2v-2a7 7 0 0 0-14 0v2a2 2 0 0 0 2 2z"/>
+            </svg>
+          </span>
+          <span class="text">Users</span>
+        </a>
+        <button class="nav-link dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.5rem 0.5rem;">
+          <span class="visually-hidden">Toggle Users submenu</span>
+        </button>
+      </div>
+
+      <ul class="dropdown-menu flex-column">
+        <li><a class="nav-link" href="http://127.0.0.1:8000/admin/users">Users</a></li>
+        <li><a class="nav-link" href="http://127.0.0.1:8000/admin/userprofile">User Profiles</a></li>
+        <li><a class="nav-link" href="http://127.0.0.1:8000/admin/userprofprivileges">Privileges</a></li>
+      </ul>
+    </li>
+
+    <!-- ORDERS -->
+    <li class="nav-item">
+      <a class="nav-link" href="http://127.0.0.1:8000/admin/orders">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M4 4v16a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V4"/>
+            <path d="M4 8h16"/>
+            <path d="M8 12h8"/>
+            <path d="M8 16h8"/>
+          </svg>
+        </span>
+        <span class="text">Orders</span>
+      </a>
+    </li>
+
+    <!-- PAYMENTS -->
+    <li class="nav-item">
+      <a class="nav-link" href="http://127.0.0.1:8000/admin/payments">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="3" y="5" width="18" height="14" rx="3"/>
+            <line x1="3" y1="10" x2="21" y2="10"/>
+            <line x1="7" y1="15" x2="7.01" y2="15"/>
+            <line x1="11" y1="15" x2="13" y2="15"/>
+          </svg>
+        </span>
+        <span class="text">Payments</span>
+      </a>
+    </li>
+
+    <!-- REPORTS -->
+    <li class="nav-item">
+      <a class="nav-link" href="http://127.0.0.1:8000/admin/reports">
+        <span class="nav-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+               viewBox="0 0 24 24" fill="none" stroke="currentColor"
+               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 12h18"/>
+            <path d="M7 6v12"/>
+            <path d="M12 4v16"/>
+            <path d="M17 8v8"/>
+          </svg>
+        </span>
+        <span class="text">Reports</span>
+      </a>
+    </li>
+
+  </ul>
+</div>
+
+    <!-- Main Content -->
+    <div id="content" class="position-relative h-100">
+      <!-- navbar -->
+<div class="navbar-glass navbar navbar-expand-lg px-0 px-lg-4">
+  <div class="container-fluid px-lg-0">
+    <div class="d-flex align-items-center gap-4">
+      <!-- Collapse -->
+      <div class="d-block d-lg-none">
+        <a class="text-inherit" data-bs-toggle="offcanvas" href="#offcanvasExample" role="button"
+          aria-controls="offcanvasExample">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-menu-2">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M4 6l16 0" />
+            <path d="M4 12l16 0" />
+            <path d="M4 18l16 0" />
+          </svg>
+        </a>
+      </div>
+      <div class="d-none d-lg-block">
+        <a class="sidebar-toggle d-flex texttooltip p-3" href="javascript:void(0)" data-template="collapseMessage">
+          <span class="collapse-mini">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-bar-left text-secondary">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M4 12l10 0" />
+              <path d="M4 12l4 4" />
+              <path d="M4 12l4 -4" />
+              <path d="M20 4l0 16" />
+            </svg>
+          </span>
+          <span class="collapse-expanded">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-arrow-bar-right text-secondary">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M20 12l-10 0" />
+              <path d="M20 12l-4 4" />
+              <path d="M20 12l-4 -4" />
+              <path d="M4 4l0 16" />
+            </svg>
+            <div id="collapseMessage" class="d-none">
+              <span class="small">Collapse</span>
+            </div>
+          </span>
+        </a>
+      </div>
+      <!-- Logo -->
+      <!-- <div class="d-block d-md-none">
+        <a href="/index.html">
+          <img src="/assets/images/brand/logo/logo-icon.svg" alt="" />
+        </a>
+      </div> -->
+    </div>
+
+    <!-- Navbar nav -->
+    <ul class="list-unstyled d-flex align-items-center mb-0 gap-2">
+      <!-- Pages link 
+      <li>
+        <button type="button" class="btn btn-white" data-bs-toggle="modal" data-bs-target="#searchModal">
+          <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-search">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <circle cx="10" cy="10" r="7" />
+              <line x1="21" y1="21" x2="15" y2="15" />
+            </svg>
+          </span>
+          <small class="ms-1">⌘K</small>
+        </button>
+        </li> -->
+      <!-- Light dark mode-->
+      <li>
+        <div class="dropdown">
+          <button class="btn btn-ghost btn-icon rounded-circle d-flex align-items-center" type="button"
+            aria-expanded="false" data-bs-toggle="dropdown" aria-label="Toggle theme (auto)">
+            <i class="ti theme-icon-active lh-1 fs-5"><i class="ti theme-icon ti-sun"></i></i>
+            <span class="visually-hidden bs-theme-text">Toggle theme</span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end shadow">
+            <li>
+              <button type="button" class="dropdown-item d-flex align-items-center active" data-bs-theme-value="light"
+                aria-pressed="true">
+                <i class="ti theme-icon ti ti-sun"></i>
+                <span class="ms-2">Light</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="dark"
+                aria-pressed="false">
+                <i class="ti theme-icon ti-moon-stars"></i>
+                <span class="ms-2">Dark</span>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="dropdown-item d-flex align-items-center" data-bs-theme-value="auto"
+                aria-pressed="false">
+                <i class="ti theme-icon ti-circle-half-2"></i>
+                <span class="ms-2">Auto</span>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </li>
+      <!-- Bell icon 
+      <li>
+        <a class="position-relative btn-icon btn-ghost btn rounded-circle" data-bs-toggle="offcanvas"
+          href="#offcanvasNotification" role="button" aria-controls="offcanvasNotification">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+            class="icon icon-tabler icons-tabler-outline icon-tabler-bell">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M10 5a2 2 0 1 1 4 0a7 7 0 0 1 4 6v3a4 4 0 0 0 2 3h-16a4 4 0 0 0 2 -3v-3a7 7 0 0 1 4 -6" />
+            <path d="M9 17v1a3 3 0 0 0 6 0v-1" />
+          </svg>
+          <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger mt-2 ms-n2">
+            2
+            <span class="visually-hidden">unread messages</span>
+          </span>
+        </a>
+      </li>-->
+      <!-- Dropdown -->
+      <li class="ms-3 dropdown">
+        <a href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+          <img src="http://127.0.0.1:8000/assets/images/avatar/avatar-fallback.jpg" alt="" class="avatar avatar-sm rounded-circle" />
+        </a>
+        <div class="dropdown-menu dropdown-menu-end dropdown-menu-md p-0">
+          <div>
+            <div class="d-flex gap-3 align-items-center border-dashed border-bottom px-4 py-4">
+              <img src="http://127.0.0.1:8000/assets/images/avatar/avatar-fallback.jpg" alt="" class="avatar avatar-md rounded-circle" />
+              <div>
+                <h4 class="mb-0 fs-5"></h4>
+              </div>
+            </div>
+            <div class="p-3 d-flex flex-column gap-1">
+              <a href="." class="dropdown-item d-flex align-items-center gap-2">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-home-2">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M5 12l-2 0l9 -9l9 9l-2 0" />
+                    <path d="M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-7" />
+                    <path d="M10 12h4v4h-4z" />
+                  </svg>
+                </span>
+                <span>Home</span>
+              </a>
+              <!--
+              <a href="#!" class="dropdown-item d-flex align-items-center gap-2">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-inbox">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 4m0 2a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2z" />
+                    <path d="M4 13h3l3 3h4l3 -3h3" />
+                  </svg>
+                </span>
+                <span> Inbox</span>
+              </a>
+              <a href="#!" class="dropdown-item d-flex align-items-center gap-2">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-message">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M8 9h8" />
+                    <path d="M8 13h6" />
+                    <path
+                      d="M18 4a3 3 0 0 1 3 3v8a3 3 0 0 1 -3 3h-5l-5 3v-3h-2a3 3 0 0 1 -3 -3v-8a3 3 0 0 1 3 -3h12z" />
+                  </svg>
+                </span>
+                <span> Chat</span>
+              </a>
+              <a href="#!" class="dropdown-item d-flex align-items-center gap-2">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-activity">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M3 12h4l3 8l4 -16l3 8h4" />
+                  </svg>
+                </span>
+                <span> Activity</span>
+              </a>
+              <a href="#!" class="dropdown-item d-flex align-items-center gap-2">
+                <span><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path
+                      d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                  </svg>
+                </span>
+                <span> Account Settings</span>
+              </a>-->
+            </div>
+            <div class="border-dashed border-top mb-4 pt-4 px-6">
+              <a href="http://127.0.0.1:8000/admin/logout" class="text-secondary d-flex align-items-center gap-2">
+                <span>
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-login-2">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M9 8v-2a2 2 0 0 1 2 -2h7a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-7a2 2 0 0 1 -2 -2v-2" />
+                    <path d="M3 12h13l-3 -3" />
+                    <path d="M13 15l3 -3" />
+                  </svg>
+                </span>
+                <span>Logout</span></a>
+            </div>
+          </div>
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+<!--Offcanvas notification-->
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasNotification"
+  aria-labelledby="offcanvasNotificationLabel">
+  <div class="sticky-top bg-white">
+    <div class="offcanvas-header gap-4">
+      <div class="d-flex justify-content-between w-100">
+        <h5 class="mb-0" id="offcanvasNotificationLabel">Notifications</h5>
+        <div class="d-flex gap-3 align-items-center">
+          <a href="#" class="link-primary" data-bs-toggle="tooltip" data-bs-placement="bottom"
+            data-bs-title="Mark all as read">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-checks">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path d="M7 12l5 5l10 -10" />
+              <path d="M2 12l5 5m5 -5l5 -5" />
+            </svg>
+          </a>
+          <a href="#" class="text-inherit">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+              class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+              <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+              <path
+                d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+              <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+            </svg>
+          </a>
+        </div>
+      </div>
+      <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="mt-2">
+      <ul class="nav nav-line-bottom" id="pills-tab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active px-4 py-2" id="pills-all-tab" data-bs-toggle="pill" data-bs-target="#pills-all"
+            type="button" role="tab" aria-controls="pills-all" aria-selected="true">
+            All
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link px-4 py-2" id="pills-following-tab" data-bs-toggle="pill"
+            data-bs-target="#pills-following" type="button" role="tab" aria-controls="pills-following"
+            aria-selected="false">
+            Following
+          </button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link px-4 py-2" id="pills-archive-tab" data-bs-toggle="pill"
+            data-bs-target="#pills-archive" type="button" role="tab" aria-controls="pills-archive"
+            aria-selected="false">
+            Archive
+          </button>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="tab-content" id="pills-tabContent">
+    <div class="tab-pane fade show active" id="pills-all" role="tabpanel" aria-labelledby="pills-all-tab" tabindex="0">
+      <div data-simplebar="" style="height: 800px">
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex flex-column gap-1">
+                <div>New message from John Doe</div>
+                <small class="text-secondary"> 2 minutes ago</small>
+              </div>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex flex-column gap-1">
+                <div>Your password will expire soon.</div>
+                <small class="text-secondary"> 2 minutes ago</small>
+              </div>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <img src="/assets/images/avatar/avatar-1.jpg" alt="" class="avatar avatar-md rounded-circle" />
+                <div class="d-flex flex-column gap-1">
+                  <div>Alice uploaded a new profile picture.</div>
+                  <small class="text-secondary"> 1 hour ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <img src="/assets/images/avatar/avatar-2.jpg" alt="" class="avatar avatar-md rounded-circle" />
+                <div class="d-flex flex-column gap-1">
+                  <div>Mike sent you a friend request.</div>
+                  <small class="text-secondary"> 5 minutes ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+            <div class="d-flex gap-2 align-items-center mt-4">
+              <button type="button" class="btn btn-primary btn-sm">Accept</button>
+              <button type="button" class="btn btn-white btn-sm">Decline</button>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <img src="/assets/images/avatar/avatar-3.jpg" alt="" class="avatar avatar-md rounded-circle" />
+                <div class="d-flex flex-column gap-1">
+                  <div>Sophia commented on your post.</div>
+                  <small class="text-secondary"> 20 minutes ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-primary-subtle text-primary-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path
+                      d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>A system update has been installed.</div>
+                  <small class="text-secondary"> 30 minutes ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-info-subtle text-info-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                    <path d="M16 3v4" />
+                    <path d="M8 3v4" />
+                    <path d="M4 11h16" />
+                    <path d="M7 14h.013" />
+                    <path d="M10.01 14h.005" />
+                    <path d="M13.01 14h.005" />
+                    <path d="M16.015 14h.005" />
+                    <path d="M13.015 17h.005" />
+                    <path d="M7.01 17h.005" />
+                    <path d="M10.01 17h.005" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>Reminder: Team meeting at 3:00 PM.</div>
+                  <small class="text-secondary"> 1 hour ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-danger-subtle text-danger-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 17h-11v-14h-2" />
+                    <path d="M6 5l14 1l-1 7h-13" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>Your order has been shipped!</div>
+                  <small class="text-secondary"> 2 hours ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <img src="/assets/images/avatar/avatar-3.jpg" alt="" class="avatar avatar-md rounded-circle" />
+                <div class="d-flex flex-column gap-1">
+                  <div>Sophia commented on your post.</div>
+                  <small class="text-secondary"> 20 minutes ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-primary-subtle text-primary-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path
+                      d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>A system update has been installed.</div>
+                  <small class="text-secondary"> 30 minutes ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-info-subtle text-info-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                    <path d="M16 3v4" />
+                    <path d="M8 3v4" />
+                    <path d="M4 11h16" />
+                    <path d="M7 14h.013" />
+                    <path d="M10.01 14h.005" />
+                    <path d="M13.01 14h.005" />
+                    <path d="M16.015 14h.005" />
+                    <path d="M13.015 17h.005" />
+                    <path d="M7.01 17h.005" />
+                    <path d="M10.01 17h.005" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>Reminder: Team meeting at 3:00 PM.</div>
+                  <small class="text-secondary"> 1 hour ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-danger-subtle text-danger-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 17h-11v-14h-2" />
+                    <path d="M6 5l14 1l-1 7h-13" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>Your order has been shipped!</div>
+                  <small class="text-secondary"> 2 hours ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="pills-following" role="tabpanel" aria-labelledby="pills-following-tab" tabindex="0">
+      <div data-simplebar="" style="height: 800px">
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-info-subtle text-info-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                    <path d="M16 3v4" />
+                    <path d="M8 3v4" />
+                    <path d="M4 11h16" />
+                    <path d="M7 14h.013" />
+                    <path d="M10.01 14h.005" />
+                    <path d="M13.01 14h.005" />
+                    <path d="M16.015 14h.005" />
+                    <path d="M13.015 17h.005" />
+                    <path d="M7.01 17h.005" />
+                    <path d="M10.01 17h.005" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>Reminder: Team meeting at 3:00 PM.</div>
+                  <small class="text-secondary"> 1 hour ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-danger-subtle text-danger-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 17h-11v-14h-2" />
+                    <path d="M6 5l14 1l-1 7h-13" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>Your order has been shipped!</div>
+                  <small class="text-secondary"> 2 hours ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <img src="/assets/images/avatar/avatar-3.jpg" alt="" class="avatar avatar-md rounded-circle" />
+                <div class="d-flex flex-column gap-1">
+                  <div>Sophia commented on your post.</div>
+                  <small class="text-secondary"> 20 minutes ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-primary-subtle text-primary-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-settings">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path
+                      d="M10.325 4.317c.426 -1.756 2.924 -1.756 3.35 0a1.724 1.724 0 0 0 2.573 1.066c1.543 -.94 3.31 .826 2.37 2.37a1.724 1.724 0 0 0 1.065 2.572c1.756 .426 1.756 2.924 0 3.35a1.724 1.724 0 0 0 -1.066 2.573c.94 1.543 -.826 3.31 -2.37 2.37a1.724 1.724 0 0 0 -2.572 1.065c-.426 1.756 -2.924 1.756 -3.35 0a1.724 1.724 0 0 0 -2.573 -1.066c-1.543 .94 -3.31 -.826 -2.37 -2.37a1.724 1.724 0 0 0 -1.065 -2.572c-1.756 -.426 -1.756 -2.924 0 -3.35a1.724 1.724 0 0 0 1.066 -2.573c-.94 -1.543 .826 -3.31 2.37 -2.37c1 .608 2.296 .07 2.572 -1.065z" />
+                    <path d="M9 12a3 3 0 1 0 6 0a3 3 0 0 0 -6 0" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>A system update has been installed.</div>
+                  <small class="text-secondary"> 30 minutes ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-info-subtle text-info-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-calendar-week">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M4 7a2 2 0 0 1 2 -2h12a2 2 0 0 1 2 2v12a2 2 0 0 1 -2 2h-12a2 2 0 0 1 -2 -2v-12z" />
+                    <path d="M16 3v4" />
+                    <path d="M8 3v4" />
+                    <path d="M4 11h16" />
+                    <path d="M7 14h.013" />
+                    <path d="M10.01 14h.005" />
+                    <path d="M13.01 14h.005" />
+                    <path d="M16.015 14h.005" />
+                    <path d="M13.015 17h.005" />
+                    <path d="M7.01 17h.005" />
+                    <path d="M10.01 17h.005" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>Reminder: Team meeting at 3:00 PM.</div>
+                  <small class="text-secondary"> 1 hour ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <div class="icon-shape icon-md bg-danger-subtle text-danger-emphasis rounded-circle">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+                    stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"
+                    class="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart">
+                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                    <path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
+                    <path d="M17 17h-11v-14h-2" />
+                    <path d="M6 5l14 1l-1 7h-13" />
+                  </svg>
+                </div>
+                <div class="d-flex flex-column gap-1">
+                  <div>Your order has been shipped!</div>
+                  <small class="text-secondary"> 2 hours ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="tab-pane fade" id="pills-archive" role="tabpanel" aria-labelledby="pills-archive-tab" tabindex="0">
+      <div data-simplebar="" style="height: 800px">
+        <div class="list-group list-group-flush">
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex flex-column gap-1">
+                <div>New message from John Doe</div>
+                <small class="text-secondary"> 2 minutes ago</small>
+              </div>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex flex-column gap-1">
+                <div>Your password will expire soon.</div>
+                <small class="text-secondary"> 2 minutes ago</small>
+              </div>
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <img src="/assets/images/avatar/avatar-1.jpg" alt="" class="avatar avatar-md rounded-circle" />
+                <div class="d-flex flex-column gap-1">
+                  <div>Alice uploaded a new profile picture.</div>
+                  <small class="text-secondary"> 1 hour ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+          </a>
+          <a href="#" class="list-group-item list-group-item-action p-5 border-dashed border-bottom">
+            <div class="d-flex justify-content-between">
+              <div class="d-flex gap-4 align-items-center">
+                <img src="/assets/images/avatar/avatar-2.jpg" alt="" class="avatar avatar-md rounded-circle" />
+                <div class="d-flex flex-column gap-1">
+                  <div>Mike sent you a friend request.</div>
+                  <small class="text-secondary"> 5 minutes ago</small>
+                </div>
+              </div>
+
+              <div>
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor"
+                  class="icon icon-tabler icons-tabler-filled icon-tabler-circle text-info">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M7 3.34a10 10 0 1 1 -4.995 8.984l-.005 -.324l.005 -.324a10 10 0 0 1 4.995 -8.336z" />
+                </svg>
+              </div>
+            </div>
+            <div class="d-flex gap-2 align-items-center mt-4">
+              <button type="button" class="btn btn-primary btn-sm">Accept</button>
+              <button type="button" class="btn btn-white btn-sm">Decline</button>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="px-5 py-3 text-center bg-white position-absolute bottom-0 border-top border-dashed w-100 text-center">
+    <a href="#!" class="text-inherit">View all</a>
+  </div>
+</div>
+<!-- Modal of pages -->
+<div class="modal fade" id="searchModal" tabindex="-1" aria-labelledby="searchModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header border-0">
+        <input type="search" class="form-control border-0 rounded-0 ps-0 form-focus-none" id="globalSearchInput"
+          placeholder="Search any word..." aria-label="Search" aria-describedby="search-addon" />
+        <button type="button" class="btn btn-white btn-sm" data-bs-dismiss="modal" aria-label="Close">Esc</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+      <!-- container -->
+      <div class="custom-container">
+        <!-- row -->
+        <div class="row mb-6 g-6">
+          <div class="col-xl-8 col-lg-6">
+            <div class="bg-gradient-mixed p-8 py-10 rounded-3 p-lg-7">
+              <!--heading-->
+              <h1 class="fs-3">👋 Hello ,</h1>
+              <p class="mb-0">Welcome to your E-commerce Dashboard! Monitor your sales,</p>
+              <p>track your progress, and gain valuable insights.</p>
+            </div>
+          </div>
+          <div class="col-xl-4 col-lg-6">
+            <!-- card -->
+          </div>
+        </div>
+
+                    <div class="row g-6 mb-6">
+              <div class="col-md-6 col-xl-4">
+                <div class="card shadow-sm rounded-3 p-4 h-100">
+                  <h6 class="mb-2">Total Customers</h6>
+                  <p class="fs-3 mb-0">8</p>
+                  <div class="mt-3">
+                    <a href="http://127.0.0.1:8000/admin/customers/create" class="btn btn-sm btn-primary me-2">
+                      Add customer
+                    </a>
+                    <a href="http://127.0.0.1:8000/admin/customers" class="text-primary d-inline-flex align-items-center">
+                      View customers
+                    </a>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6 col-xl-8">
+                <div class="card shadow-sm rounded-3 p-4 h-100">
+                  <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h6 class="mb-0">Recent Customers</h6>
+                    <a href="http://127.0.0.1:8000/admin/customers" class="small text-muted">See all</a>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-borderless mb-0">
+                      <thead>
+                        <tr>
+                          <th>Name</th>
+                          <th>Code</th>
+                          <th>City</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                                                  <tr>
+                            <td>John Doe</td>
+                            <td>CUST-0001</td>
+                            <td>Sample City</td>
+                            <td>
+                              <a href="http://127.0.0.1:8000/admin/customers/8/edit" class="btn btn-sm btn-outline-secondary">
+                                Edit
+                              </a>
+                            </td>
+                          </tr>
+                                                  <tr>
+                            <td>Jane Smith</td>
+                            <td>CUST-0002</td>
+                            <td>Another City</td>
+                            <td>
+                              <a href="http://127.0.0.1:8000/admin/customers/9/edit" class="btn btn-sm btn-outline-secondary">
+                                Edit
+                              </a>
+                            </td>
+                          </tr>
+                                                  <tr>
+                            <td>John Doe</td>
+                            <td>CUST-0001</td>
+                            <td>Sample City</td>
+                            <td>
+                              <a href="http://127.0.0.1:8000/admin/customers/6/edit" class="btn btn-sm btn-outline-secondary">
+                                Edit
+                              </a>
+                            </td>
+                          </tr>
+                                                  <tr>
+                            <td>Jane Smith</td>
+                            <td>CUST-0002</td>
+                            <td>Another City</td>
+                            <td>
+                              <a href="http://127.0.0.1:8000/admin/customers/7/edit" class="btn btn-sm btn-outline-secondary">
+                                Edit
+                              </a>
+                            </td>
+                          </tr>
+                                                  <tr>
+                            <td>John Doe</td>
+                            <td>CUST-0001</td>
+                            <td>Sample City</td>
+                            <td>
+                              <a href="http://127.0.0.1:8000/admin/customers/4/edit" class="btn btn-sm btn-outline-secondary">
+                                Edit
+                              </a>
+                            </td>
+                          </tr>
+                                              </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+        
+        <!-- row -->
+        
+      </div>
+    </div>
+  </div>
+
+  <!-- Libs JS -->
+<script src="http://127.0.0.1:8000/node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+<script src="http://127.0.0.1:8000/node_modules/simplebar/dist/simplebar.min.js"></script>
+
+<!-- Theme JS -->
+<!-- build:js /assets/js/theme.min.js -->
+<script src="http://127.0.0.1:8000/assets/js/main.js"></script>
+<!-- endbuild -->
+  <!-- jsvectormap -->
+  <script src="http://127.0.0.1:8000/assets/js/vendors/sidebarnav.js"></script>
+  <script src="http://127.0.0.1:8000/node_modules/jsvectormap/dist/js/jsvectormap.min.js"></script>
+  <script src="http://127.0.0.1:8000/node_modules/jsvectormap/dist/maps/world.js"></script>
+  <script src="http://127.0.0.1:8000/node_modules/jsvectormap/dist/maps/world-merc.js"></script>
+  <script src="http://127.0.0.1:8000/node_modules/apexcharts/dist/apexcharts.min.js"></script>
+  <script src="http://127.0.0.1:8000/assets/js/vendors/chart.js"></script>
+  <script src="http://127.0.0.1:8000/node_modules/choices.js/public/assets/scripts/choices.min.js"></script>
+  <script src="http://127.0.0.1:8000/assets/js/vendors/choice.js"></script>
+  <script src="http://127.0.0.1:8000/node_modules/swiper/swiper-bundle.min.js"></script>
+  <script src="http://127.0.0.1:8000/assets/js/vendors/swiper.js"></script>
+</body>
+
+</html>
+

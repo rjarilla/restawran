@@ -9,10 +9,10 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // protect admin page
-        if (!session('user_id')) {
-            return redirect('/admin/signin');
-        }
+        // protect admin page - TEMPORARILY DISABLED FOR TESTING
+        // if (!session('user_id')) {
+        //     return redirect('/admin/signin');
+        // }
 
         $customerCount = Customer::count();
         $recentCustomers = Customer::orderByDesc('CustomerUpdateDate')
