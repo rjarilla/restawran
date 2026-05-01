@@ -24,7 +24,7 @@ class ProductController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
-        $sort_by = $request->input('sort_by', 'created_at');
+        $sort_by = $request->input('sort_by', 'ProductUpdatedBy');
         $sort_order = $request->input('sort_order', 'desc');
 
         $productModel = app(\App\Models\Product::class);

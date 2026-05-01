@@ -10,7 +10,7 @@
                 <dt class="col-sm-3">Product ID</dt>
                 <dd class="col-sm-9">{{ $productinventory->ProductID }}</dd>
                 <dt class="col-sm-3">Quantity</dt>
-                <dd class="col-sm-9">{{ $productinventory->ProductQuantity }}</dd>
+                <dd class="col-sm-9">{{ $productinventory->ProductQuantityRemaining }} / {{ $productinventory->ProductQuantity }}</dd>
                 <dt class="col-sm-3">Delivery Date</dt>
                 <dd class="col-sm-9">{{ $productinventory->ProductBatchDeliveryDate }}</dd>
                 <dt class="col-sm-3">Expiry</dt>

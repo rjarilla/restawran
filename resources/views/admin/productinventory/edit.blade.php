@@ -25,15 +25,22 @@
             @enderror
         </div>
         <div class="mb-3">
+            <label for="ProductQuantityRemaining" class="form-label">Quantity Remaining</label>
+            <input type="number" class="form-control @error('ProductQuantityRemaining') is-invalid @enderror" id="ProductQuantityRemaining" name="ProductQuantityRemaining" value="{{ old('ProductQuantityRemaining', $productinventory->ProductQuantityRemaining) }}">
+            @error('ProductQuantityRemaining')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
             <label for="ProductBatchDeliveryDate" class="form-label">Delivery Date</label>
-            <input type="date" class="form-control @error('ProductBatchDeliveryDate') is-invalid @enderror" id="ProductBatchDeliveryDate" name="ProductBatchDeliveryDate" value="{{ old('ProductBatchDeliveryDate', $productinventory->ProductBatchDeliveryDate) }}">
+                <input type="date" class="form-control @error('ProductBatchDeliveryDate') is-invalid @enderror" id="ProductBatchDeliveryDate" name="ProductBatchDeliveryDate" value="{{ old('ProductBatchDeliveryDate', $productinventory->ProductBatchDeliveryDate ? \Carbon\Carbon::parse($productinventory->ProductBatchDeliveryDate)->format('Y-m-d') : '') }}">
             @error('ProductBatchDeliveryDate')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
         </div>
         <div class="mb-3">
             <label for="ProductBatchExpiry" class="form-label">Expiry</label>
-            <input type="date" class="form-control @error('ProductBatchExpiry') is-invalid @enderror" id="ProductBatchExpiry" name="ProductBatchExpiry" value="{{ old('ProductBatchExpiry', $productinventory->ProductBatchExpiry) }}">
+                <input type="date" class="form-control @error('ProductBatchExpiry') is-invalid @enderror" id="ProductBatchExpiry" name="ProductBatchExpiry" value="{{ old('ProductBatchExpiry', $productinventory->ProductBatchExpiry ? \Carbon\Carbon::parse($productinventory->ProductBatchExpiry)->format('Y-m-d') : '') }}">
             @error('ProductBatchExpiry')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror

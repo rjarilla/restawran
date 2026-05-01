@@ -5,6 +5,8 @@ namespace App\Repositories;
 use App\Models\Users;
 use App\Repositories\Interfaces\UsersRepositoryInterface;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+
 
 class EloquentUsersRepository implements UsersRepositoryInterface
 {
@@ -60,42 +62,16 @@ class EloquentUsersRepository implements UsersRepositoryInterface
     }
 
     /**
-     * LOGIN FUNCTION (FIXED FOR YOUR DB STRUCTURE)
+     * LOGIN FUNCTION 
      */
     public function login($userName, $password)
     {
         // find user by username
         $user = $this->model->where('UserName', $userName)->first();
-
-        if (!$user) {
-            return null;
-        }
-
-        /*
-        =====================================================
-        PASSWORD HANDLING (IMPORTANT)
-        =====================================================
-        Your DB password is currently:
-        - either plain text OR MD5 (you showed MD5 hash earlier)
-
-        So we support BOTH safely:
-        */
-
-        // OPTION 1: Laravel hash match
-        if (Hash::check($password, $user->Password)) {
+        if ($user && $user->UserPassword === md5($password)) {
+            $user->load(['userprofile', 'userprofileprivileges']);
             return $user;
         }
-
-        // OPTION 2: plain text match
-        if ($user->Password === $password) {
-            return $user;
-        }
-
-        // OPTION 3: MD5 match (if your DB uses MD5 like admin123)
-        if ($user->Password === md5($password)) {
-            return $user;
-        }
-
         return null;
     }
 }

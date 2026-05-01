@@ -24,6 +24,13 @@
             @enderror
         </div>
         <div class="mb-3">
+            <label for="ProductQuantityRemaining" class="form-label">Quantity Remaining</label>
+            <input type="number" class="form-control @error('ProductQuantityRemaining') is-invalid @enderror" id="ProductQuantityRemaining" name="ProductQuantityRemaining" value="{{ old('ProductQuantityRemaining') }}">
+            @error('ProductQuantityRemaining')
+                <div class="invalid-feedback">{{ $message }}</div>
+            @enderror
+        </div>
+        <div class="mb-3">
             <label for="ProductBatchDeliveryDate" class="form-label">Delivery Date</label>
             <input type="date" class="form-control @error('ProductBatchDeliveryDate') is-invalid @enderror" id="ProductBatchDeliveryDate" name="ProductBatchDeliveryDate" value="{{ old('ProductBatchDeliveryDate') }}">
             @error('ProductBatchDeliveryDate')

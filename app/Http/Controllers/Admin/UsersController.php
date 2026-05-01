@@ -25,7 +25,7 @@ class UsersController extends Controller
                   ->orWhere('Role', 'like', "%$query%")
                   ->orWhere('id', 'like', "%$query%") ;
             })
-            ->orderByDesc('created_at')
+            ->orderByDesc('UserUpdateDate')
             ->paginate(10)
             ->appends(['search' => $query]);
         return view('admin.users.index', compact('users', 'query'));

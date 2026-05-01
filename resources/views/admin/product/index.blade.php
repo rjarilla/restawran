@@ -51,11 +51,6 @@
                 <td>{{ $product->ProductPrice }}</td>
                 <td>
                     <a href="{{ route('admin.product.edit', $product->ProductID) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('admin.product.destroy', $product->ProductID) }}" method="POST" style="display:inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                    </form>
                 </td>
             </tr>
             @empty

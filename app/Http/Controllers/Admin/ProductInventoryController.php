@@ -19,6 +19,17 @@ class ProductInventoryController extends Controller
     public function index(Request $request)
     {
         $query = $request->input('search');
+        $sort = $request->input('sort', 'ProductBatchDeliveryDate');
+        $direction = $request->input('direction', 'desc');
+        $sortable = [
+            'ProductBatchID' => 'productinventory.ProductBatchID',
+            'ProductName' => 'product.ProductName',
+            'ProductQuantity' => 'productinventory.ProductQuantity',
+            'ProductBatchDeliveryDate' => 'productinventory.ProductBatchDeliveryDate',
+            'ProductBatchExpiry' => 'productinventory.ProductBatchExpiry',
+            'ProductReceivedBy' => 'productinventory.ProductReceivedBy',
+        ];
+        $sortColumn = $sortable[$sort] ?? 'productinventory.ProductBatchDeliveryDate';
         $inventoryModel = app(\App\Models\ProductInventory::class);
         $productinventories = $inventoryModel->leftJoin('product', 'productinventory.ProductID', '=', 'product.ProductID')
             ->select('productinventory.*', 'product.ProductName')
@@ -30,9 +41,9 @@ class ProductInventoryController extends Controller
                   ->orWhere('productinventory.ProductBatchExpiry', 'like', "%$query%")
                   ->orWhere('productinventory.ProductReceivedBy', 'like', "%$query%") ;
             })
-            ->orderByDesc('productinventory.ProductBatchDeliveryDate')
+            ->orderBy($sortColumn, $direction)
             ->paginate(10)
-            ->appends(['search' => $query]);
+            ->appends(['search' => $query, 'sort' => $sort, 'direction' => $direction]);
         return view('admin.productinventory.index', compact('productinventories', 'query'));
     }
 
@@ -47,6 +58,7 @@ class ProductInventoryController extends Controller
         $validator = Validator::make($request->all(), [
             'ProductID' => 'required|string|max:255|exists:product,ProductID',
             'ProductQuantity' => 'required|integer|min:0',
+            'ProductQuantityRemaining' => 'required|integer|min:0',
             'ProductBatchDeliveryDate' => 'required|date',
             'ProductBatchExpiry' => 'required|date|after_or_equal:ProductBatchDeliveryDate',
             'ProductReceivedBy' => 'nullable|string|max:255',
@@ -56,8 +68,11 @@ class ProductInventoryController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['ProductID', 'ProductQuantity', 'ProductBatchDeliveryDate', 'ProductBatchExpiry', 'ProductReceivedBy']);
+        $data = $request->only(['ProductID', 'ProductQuantity', 'ProductQuantityRemaining', 'ProductBatchDeliveryDate', 'ProductBatchExpiry', 'ProductReceivedBy']);
         $data['ProductReceivedBy'] = $data['ProductReceivedBy'] ?? session('user_id') ?? 'admin';
+        // Ensure dates are filled/formatted properly
+        $data['ProductBatchDeliveryDate'] = $request->input('ProductBatchDeliveryDate') ? date('Y-m-d', strtotime($request->input('ProductBatchDeliveryDate'))) : null;
+        $data['ProductBatchExpiry'] = $request->input('ProductBatchExpiry') ? date('Y-m-d', strtotime($request->input('ProductBatchExpiry'))) : null;
         $this->productInventoryRepo->create($data);
 
         return redirect()->route('admin.productinventory.index')->with('success', 'Product inventory batch created successfully.');
@@ -78,6 +93,7 @@ class ProductInventoryController extends Controller
         $validator = Validator::make($request->all(), [
             'ProductID' => 'required|string|max:255|exists:product,ProductID',
             'ProductQuantity' => 'required|integer|min:0',
+            'ProductQuantityRemaining' => 'required|integer|min:0',
             'ProductBatchDeliveryDate' => 'required|date',
             'ProductBatchExpiry' => 'required|date|after_or_equal:ProductBatchDeliveryDate',
             'ProductReceivedBy' => 'nullable|string|max:255',
@@ -87,8 +103,11 @@ class ProductInventoryController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['ProductID', 'ProductQuantity', 'ProductBatchDeliveryDate', 'ProductBatchExpiry', 'ProductReceivedBy']);
+        $data = $request->only(['ProductID', 'ProductQuantity', 'ProductQuantityRemaining', 'ProductBatchDeliveryDate', 'ProductBatchExpiry', 'ProductReceivedBy']);
         $data['ProductReceivedBy'] = $data['ProductReceivedBy'] ?? session('user_id') ?? 'admin';
+        // Ensure dates are filled/formatted properly
+        $data['ProductBatchDeliveryDate'] = $request->input('ProductBatchDeliveryDate') ? date('Y-m-d', strtotime($request->input('ProductBatchDeliveryDate'))) : null;
+        $data['ProductBatchExpiry'] = $request->input('ProductBatchExpiry') ? date('Y-m-d', strtotime($request->input('ProductBatchExpiry'))) : null;
         $this->productInventoryRepo->update($id, $data);
 
         return redirect()->route('admin.productinventory.index')->with('success', 'Product inventory batch updated successfully.');

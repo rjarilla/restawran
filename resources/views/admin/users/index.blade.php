@@ -20,20 +20,20 @@
                 <th>ID</th>
                 <th>Username</th>
                 <th>Role</th>
-                <th>Created At</th>
+                <th>Updated At</th>
                 <th>Actions</th>
             </tr>
         </thead>
         <tbody>
             @forelse($users as $user)
             <tr>
-                <td>{{ $user->id }}</td>
+                <td>{{ $user->UserID }}</td>
                 <td>{{ $user->UserName }}</td>
                 <td>{{ $user->Role }}</td>
-                <td>{{ $user->created_at }}</td>
+                <td>{{ $user->UserUpdateDate }}</td>
                 <td>
-                    <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('admin.users.destroy', $user->id) }}" method="POST" style="display:inline-block;">
+                    <a href="{{ route('admin.users.edit', $user->UserID) }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ route('admin.users.destroy', $user->UserID) }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>

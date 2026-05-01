@@ -17,12 +17,12 @@
     <table class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Batch ID</th>
-                <th>Product Name</th>
-                <th>Quantity</th>
-                <th>Delivery Date</th>
-                <th>Expiry</th>
-                <th>Received By</th>
+                <th><a href="{{ route('admin.productinventory.index', array_merge(request()->all(), ['sort' => 'ProductBatchID', 'direction' => request('direction') === 'asc' && request('sort') === 'ProductBatchID' ? 'desc' : 'asc'])) }}">Batch ID @if(request('sort') === 'ProductBatchID')<span class="small">({{ request('direction', 'asc') == 'asc' ? '▲' : '▼' }})</span>@endif</a></th>
+                <th><a href="{{ route('admin.productinventory.index', array_merge(request()->all(), ['sort' => 'ProductName', 'direction' => request('direction') === 'asc' && request('sort') === 'ProductName' ? 'desc' : 'asc'])) }}">Product Name @if(request('sort') === 'ProductName')<span class="small">({{ request('direction', 'asc') == 'asc' ? '▲' : '▼' }})</span>@endif</a></th>
+                <th><a href="{{ route('admin.productinventory.index', array_merge(request()->all(), ['sort' => 'ProductQuantity', 'direction' => request('direction') === 'asc' && request('sort') === 'ProductQuantity' ? 'desc' : 'asc'])) }}">Quantity @if(request('sort') === 'ProductQuantity')<span class="small">({{ request('direction', 'asc') == 'asc' ? '▲' : '▼' }})</span>@endif</a></th>
+                <th><a href="{{ route('admin.productinventory.index', array_merge(request()->all(), ['sort' => 'ProductBatchDeliveryDate', 'direction' => request('direction') === 'asc' && request('sort') === 'ProductBatchDeliveryDate' ? 'desc' : 'asc'])) }}">Delivery Date @if(request('sort') === 'ProductBatchDeliveryDate')<span class="small">({{ request('direction', 'asc') == 'asc' ? '▲' : '▼' }})</span>@endif</a></th>
+                <th><a href="{{ route('admin.productinventory.index', array_merge(request()->all(), ['sort' => 'ProductBatchExpiry', 'direction' => request('direction') === 'asc' && request('sort') === 'ProductBatchExpiry' ? 'desc' : 'asc'])) }}">Expiry @if(request('sort') === 'ProductBatchExpiry')<span class="small">({{ request('direction', 'asc') == 'asc' ? '▲' : '▼' }})</span>@endif</a></th>
+                <th><a href="{{ route('admin.productinventory.index', array_merge(request()->all(), ['sort' => 'ProductReceivedBy', 'direction' => request('direction') === 'asc' && request('sort') === 'ProductReceivedBy' ? 'desc' : 'asc'])) }}">Received By @if(request('sort') === 'ProductReceivedBy')<span class="small">({{ request('direction', 'asc') == 'asc' ? '▲' : '▼' }})</span>@endif</a></th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,7 +31,7 @@
             <tr>
                 <td>{{ $inventory->ProductBatchID }}</td>
                 <td>{{ $inventory->ProductName }}</td>
-                <td>{{ $inventory->ProductQuantity }}</td>
+                <td>{{ $inventory->ProductQuantityRemaining }} / {{ $inventory->ProductQuantity }}</td>
                 <td>{{ $inventory->ProductBatchDeliveryDate }}</td>
                 <td>{{ $inventory->ProductBatchExpiry }}</td>
                 <td>{{ $inventory->ProductReceivedBy }}</td>

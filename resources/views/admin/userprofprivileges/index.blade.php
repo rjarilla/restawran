@@ -28,8 +28,8 @@
                 <td>{{ $priv->UserProfileID }}</td>
                 <td>{{ $priv->UserPrivilegesID }}</td>
                 <td>
-                    <a href="{{ route('admin.userprofprivileges.edit', $priv->UserProfPrivilegesID ?? $priv->id ?? '') }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('admin.userprofprivileges.destroy', $priv->UserProfPrivilegesID ?? $priv->id ?? '') }}" method="POST" style="display:inline-block;">
+                    <a href="{{ route('admin.userprofprivileges.edit', $priv->UserProfPrivilegesID ?? $priv->UserProfileID ?? '') }}" class="btn btn-sm btn-warning">Edit</a>
+                    <form action="{{ route('admin.userprofprivileges.destroy', $priv->UserProfPrivilegesID ?? $priv->UserProfileID ?? '') }}" method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
