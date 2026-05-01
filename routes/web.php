@@ -17,27 +17,72 @@ use App\Http\Controllers\IndexController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\Admin\PaymentController as AdminPaymentController;
+use App\Http\Controllers\InventoryMovementReportController;
 
-Route::get('/test-customers', fn () => 'CUSTOMER ROUTE WORKS');
-Route::get('/debug-db', fn () => DB::connection()->getDatabaseName());
+/*
+|--------------------------------------------------------------------------
+| DEBUG ROUTES (REMOVE LATER IN PRODUCTION)
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/test-customers', function () {
+    return 'CUSTOMER ROUTE WORKS';
+});
+
+Route::get('/debug-db', function () {
+    return DB::connection()->getDatabaseName();
+});
+
+/*
+|--------------------------------------------------------------------------
+| FRONTEND ROUTES
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/', [IndexController::class, 'index']);
 Route::get('/index', [IndexController::class, 'index']);
 
+/*
+|--------------------------------------------------------------------------
+| ORDER MODULE
+|--------------------------------------------------------------------------
+*/
+
 Route::get('/order', [OrderController::class, 'create'])->name('order.create');
 Route::post('/order', [OrderController::class, 'store'])->name('order.store');
+
+/*
+|--------------------------------------------------------------------------
+| PAYMENT MODULE (FRONTEND)
+|--------------------------------------------------------------------------
+*/
 
 Route::get('/payment', [PaymentController::class, 'showPaymentMethod'])->name('payment.method');
 Route::post('/payment', [PaymentController::class, 'processPayment'])->name('payment.process');
 
-Route::get('/admin', fn () => redirect()->route('admin.login.form'));
-Route::get('/admin/signin', [AuthController::class, 'showLoginForm'])->name('admin.login.form');
-Route::get('/admin/login', fn () => redirect()->route('admin.login.form'));
+/*
+|--------------------------------------------------------------------------
+| ADMIN AUTH
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin', function () {
+    return session('user_id') ? redirect('admin/index') : redirect('admin/signin');
+});
+
+Route::get('/admin/index', [DashboardController::class, 'index'])->name('admin.index');
+
+Route::get('/admin/login', fn () => view('admin/login'));
+Route::get('/admin/signin', fn () => view('admin/signin'));
+
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login');
 Route::get('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
 
-Route::get('/admin/index', [DashboardController::class, 'index'])
-    ->name('admin.index');
+/*
+|--------------------------------------------------------------------------
+| ADMIN MODULES (CRUD)
+|--------------------------------------------------------------------------
+*/
 
 Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('productinventory', ProductInventoryController::class);
@@ -46,8 +91,11 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::resource('users', UsersController::class);
     Route::resource('userprofile', UserProfileController::class);
     Route::resource('userprofprivileges', UserProfPrivilegesController::class);
+
+    // CUSTOMER CRUD
     Route::resource('customers', CustomerController::class);
 
+    // Additional admin routes
     Route::get('orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
 
@@ -56,3 +104,22 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::delete('payments/{id}', [AdminPaymentController::class, 'destroy'])->name('payments.destroy');
 });
 
+/*
+|--------------------------------------------------------------------------
+| STATIC ADMIN PAGES
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/orders', fn () => view('admin.orders.index'))->name('admin.orders.index');
+Route::get('/admin/reports', fn () => view('admin.reports.index'))->name('admin.reports.index');
+Route::get('/admin/reports/inventory-movement', [InventoryMovementReportController::class, 'index'])->name('admin.reports.inventory_movement');
+
+/*
+|--------------------------------------------------------------------------
+| ADMIN PAYMENTS
+|--------------------------------------------------------------------------
+*/
+
+Route::get('/admin/payments', [AdminPaymentController::class, 'index'])->name('admin.payments.index');
+Route::get('/admin/payments/{id}', [AdminPaymentController::class, 'show'])->name('admin.payments.show');
+Route::delete('/admin/payments/{id}', [AdminPaymentController::class, 'destroy'])->name('admin.payments.destroy');

@@ -1,8 +1,30 @@
 @extends('admin.index')
 
 @section('content')
+@extends('admin.index')
+
+@section('content')
 <div class="card shadow-sm">
     <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h3>Reports</h3>
+                <p class="text-muted mb-0">Access various reports and analytics.</p>
+            </div>
+        </div>
+
+        <!-- Report Links -->
+        <div class="mb-4">
+            <h5>Available Reports</h5>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <a href="{{ route('admin.reports.inventory_movement') }}">Inventory Movement Report</a>
+                </li>
+            </ul>
+        </div>
+
+        <hr>
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <div>
                 <h3>Customer Purchase Report</h3>
