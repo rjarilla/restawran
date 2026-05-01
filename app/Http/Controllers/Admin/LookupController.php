@@ -24,7 +24,7 @@ class LookupController extends Controller
         $sortBy = $request->input('sort_by', 'date_desc');
         
         $lookupModel = app(\App\Models\Lookup::class);
-        $lookups = $lookupModel->leftJoin('rt_users', 'lookup.LookupUpdateBy', '=', 'rt_users.UserID')
+        $lookups = $lookupModel->leftJoin('rt_users', 'lookup.LookupUpdateBy', '=', 'rt_users.id')
             ->select('lookup.*', 'rt_users.UserName as UpdatedByName')
             ->when($query, function($q) use ($query) {
                 $q->where('lookup.LookupCategory', 'like', "%$query%")

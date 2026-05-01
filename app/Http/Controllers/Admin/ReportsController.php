@@ -10,6 +10,7 @@ class ReportsController extends Controller
 {
     public function index(Request $request)
     {
+        // Customer Purchase Report Data
         $filterType = $request->input('filter_type', 'month');
         $month = $request->input('month', now()->month);
         $year = $request->input('year', now()->year);
@@ -58,6 +59,35 @@ class ReportsController extends Controller
             'uniqueCustomers' => $customerStats->count(),
         ];
 
+        // Inventory Movement Report Data
+        $startDate = $request->input('start_date');
+        $endDate = $request->input('end_date');
+
+        $inventoryQuery = \App\Models\Product::query()
+            ->select([
+                'product.ProductID',
+                'product.ProductName',
+                'product.ProductDescription',
+                \DB::raw('COALESCE(SUM(pi.ProductQuantity),0) as total_in'),
+                \DB::raw('COALESCE(SUM(od.OrderQuantity),0) as total_out'),
+                \DB::raw('COALESCE(SUM(pi.ProductQuantity),0) - COALESCE(SUM(od.OrderQuantity),0) as current_stock')
+            ])
+            ->leftJoin('productinventory as pi', function($join) use ($startDate, $endDate) {
+                $join->on('product.ProductID', '=', 'pi.ProductID');
+                if ($startDate) $join->where('pi.created_at', '>=', $startDate);
+                if ($endDate) $join->where('pi.created_at', '<=', $endDate);
+            })
+            ->leftJoin('orderdetails as od', function($join) use ($startDate, $endDate) {
+                $join->on('product.ProductID', '=', 'od.ProductID');
+                // For order details, we'll filter by order date through orders table
+                $join->join('orders', 'od.OrderID', '=', 'orders.OrderID');
+                if ($startDate) $join->where('orders.OrderDate', '>=', $startDate);
+                if ($endDate) $join->where('orders.OrderDate', '<=', $endDate);
+            })
+            ->groupBy('product.ProductID', 'product.ProductName', 'product.ProductDescription');
+
+        $products = $inventoryQuery->get();
+
         return view('admin.reports.index', compact(
             'filterType',
             'month',
@@ -67,7 +97,10 @@ class ReportsController extends Controller
             'orders',
             'customerStats',
             'topCustomers',
-            'summary'
+            'summary',
+            'products',
+            'startDate',
+            'endDate'
         ));
     }
 }

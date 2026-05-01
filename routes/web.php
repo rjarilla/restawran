@@ -41,6 +41,9 @@ Route::get('/debug-db', function () {
 
 Route::get('/', [IndexController::class, 'index']);
 Route::get('/index', [IndexController::class, 'index']);
+Route::redirect('/public', '/');
+Route::redirect('/public/', '/');
+Route::redirect('/public/{any}', '/', 301)->where('any', '.*');
 
 /*
 |--------------------------------------------------------------------------
@@ -110,8 +113,8 @@ Route::prefix('admin')->name('admin.')->group(function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/admin/orders', fn () => view('admin.orders.index'))->name('admin.orders.index');
-Route::get('/admin/reports', fn () => view('admin.reports.index'))->name('admin.reports.index');
+Route::get('/admin/orders', [OrdersController::class, 'index'])->name('admin.orders.index');
+Route::get('/admin/reports', [ReportsController::class, 'index'])->name('admin.reports.index');
 Route::get('/admin/reports/inventory-movement', [InventoryMovementReportController::class, 'index'])->name('admin.reports.inventory_movement');
 
 /*

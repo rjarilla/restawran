@@ -5,6 +5,17 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+// Redirect any /public URL to the app root so the public website is shown.
+$requestUri = $_SERVER['REQUEST_URI'] ?? '';
+if (preg_match('#^/public(/|$)#', $requestUri)) {
+    $redirectTo = preg_replace('#^/public#', '', $requestUri);
+    if ($redirectTo === '') {
+        $redirectTo = '/';
+    }
+    header('Location: ' . $redirectTo, true, 301);
+    exit;
+}
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;

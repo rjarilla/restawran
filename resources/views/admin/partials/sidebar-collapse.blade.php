@@ -48,9 +48,9 @@
     </li>
 
     <!-- PRODUCT -->
-    <li class="nav-item dropdown">
-      <div class="d-flex align-items-center">
-        <a class="nav-link flex-grow-1" href="{{ route('admin.product.index') }}">
+    <li class="nav-item">
+      <button class="nav-link collapsed w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#productSubmenu" aria-expanded="false" aria-controls="productSubmenu">
+        <span class="d-flex align-items-center gap-2">
           <span class="nav-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -58,17 +58,46 @@
               <path d="M12 3l8 4.5v9l-8 4.5l-8-4.5v-9z"/>
             </svg>
           </span>
-          <span class="text">Products</span>
-        </a>
-        <button class="nav-link dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.5rem 0.5rem;">
-          <span class="visually-hidden">Toggle Products submenu</span>
-        </button>
+          <span class="text">Product</span>
+        </span>
+        <span class="nav-caret">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <div class="collapse" id="productSubmenu">
+        <ul class="list-unstyled ms-4">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.product.index') }}">
+              <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M3 7.5l9 5l9-5" />
+                  <path d="M3 17.5l9 5l9-5" />
+                  <path d="M3 7.5v10l9 5v-10" />
+                  <path d="M21 7.5v10l-9 5v-10" />
+                  <path d="M3 7.5l9-5l9 5" />
+                </svg>
+              </span>
+              <span class="text">Products</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.productinventory.index') }}">
+              <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <ellipse cx="12" cy="6" rx="8" ry="3" />
+                  <path d="M4 6v6a8 3 0 0 0 16 0V6" />
+                  <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+                </svg>
+              </span>
+              <span class="text">Product Inventory</span>
+            </a>
+          </li>
+        </ul>
       </div>
-
-      <ul class="dropdown-menu flex-column">
-        <li><a class="nav-link" href="{{ route('admin.product.index') }}">Products</a></li>
-        <li><a class="nav-link" href="{{ route('admin.productinventory.index') }}">Product Inventory</a></li>
-      </ul>
     </li>
 
     <!-- CUSTOMERS -->
@@ -87,9 +116,9 @@
     </li>
 
     <!-- USERS -->
-    <li class="nav-item dropdown">
-      <div class="d-flex align-items-center">
-        <a class="nav-link flex-grow-1" href="{{ route('admin.users.index') }}">
+    <li class="nav-item">
+      <button class="nav-link collapsed w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#userSubmenu" aria-expanded="false" aria-controls="userSubmenu">
+        <span class="d-flex align-items-center gap-2">
           <span class="nav-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -99,17 +128,57 @@
             </svg>
           </span>
           <span class="text">Users</span>
-        </a>
-        <button class="nav-link dropdown-toggle dropdown-toggle-split" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="padding: 0.5rem 0.5rem;">
-          <span class="visually-hidden">Toggle Users submenu</span>
-        </button>
+        </span>
+        <span class="nav-caret">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
+          </svg>
+        </span>
+      </button>
+      <div class="collapse" id="userSubmenu">
+        <ul class="list-unstyled ms-4">
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.users.index') }}">
+              <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <circle cx="12" cy="7" r="4" />
+                  <path d="M5.5 21h13a2 2 0 0 0 2-2v-2a7 7 0 0 0-14 0v2a2 2 0 0 0 2 2z" />
+                </svg>
+              </span>
+              <span class="text">Users</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.userprofile.index') }}">
+              <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <rect x="3" y="4" width="18" height="16" rx="3" />
+                  <circle cx="9" cy="10" r="2" />
+                  <line x1="15" y1="8" x2="17" y2="8" />
+                  <line x1="15" y1="12" x2="17" y2="12" />
+                  <line x1="7" y1="16" x2="17" y2="16" />
+                </svg>
+              </span>
+              <span class="text">User Profiles</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ route('admin.userprofprivileges.index') }}">
+              <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <circle cx="8" cy="15" r="4" />
+                  <path d="M10.85 12.15l6.65-6.65a2.121 2.121 0 1 1 3 3l-6.65 6.65" />
+                  <path d="M15 6l3 3" />
+                </svg>
+              </span>
+              <span class="text">Privileges</span>
+            </a>
+          </li>
+        </ul>
       </div>
-
-      <ul class="dropdown-menu flex-column">
-        <li><a class="nav-link" href="{{ route('admin.users.index') }}">Users</a></li>
-        <li><a class="nav-link" href="{{ route('admin.userprofile.index') }}">User Profiles</a></li>
-        <li><a class="nav-link" href="{{ route('admin.userprofprivileges.index') }}">Privileges</a></li>
-      </ul>
     </li>
 
     <!-- ORDERS -->
