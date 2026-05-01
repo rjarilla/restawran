@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\Users;
 use App\Repositories\Interfaces\UsersRepositoryInterface;
+use Illuminate\Support\Facades\Hash;
 
 class EloquentUsersRepository implements UsersRepositoryInterface
 {
@@ -80,12 +81,17 @@ class EloquentUsersRepository implements UsersRepositoryInterface
         So we support BOTH safely:
         */
 
-        // OPTION 1: plain text match
+        // OPTION 1: Laravel hash match
+        if (Hash::check($password, $user->Password)) {
+            return $user;
+        }
+
+        // OPTION 2: plain text match
         if ($user->Password === $password) {
             return $user;
         }
 
-        // OPTION 2: MD5 match (if your DB uses MD5 like admin123)
+        // OPTION 3: MD5 match (if your DB uses MD5 like admin123)
         if ($user->Password === md5($password)) {
             return $user;
         }

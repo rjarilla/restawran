@@ -92,6 +92,13 @@
                 </div>
 
                 <div class="mb-4">
+                    <h5>Daily Sales Report</h5>
+                    <div class="card border-0 shadow-sm p-3">
+                        <div id="dailySalesChart" style="min-height: 350px;"></div>
+                    </div>
+                </div>
+
+                <div class="mb-4">
                     <h5>Top Customers</h5>
                     <div class="table-responsive">
                         <table class="table table-bordered table-striped mb-0">
@@ -213,4 +220,69 @@
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const chartData = @json($dailySales);
+    
+    if (chartData && chartData.length > 0 && typeof ApexCharts !== 'undefined') {
+        const dates = chartData.map(item => item.date);
+        const totals = chartData.map(item => item.total);
+        const averages = chartData.map(item => item.average);
+
+        const options = {
+            series: [{
+                name: 'Total Revenue',
+                type: 'column',
+                data: totals
+            }, {
+                name: 'Average Revenue',
+                type: 'line',
+                data: averages
+            }],
+            chart: {
+                height: 350,
+                type: 'line',
+                toolbar: {
+                    show: false
+                }
+            },
+            stroke: {
+                width: [0, 4]
+            },
+            colors: ['#0d6efd', '#20c997'],
+            dataLabels: {
+                enabled: true,
+                enabledOnSeries: [1]
+            },
+            labels: dates,
+            xaxis: {
+                type: 'category'
+            },
+            yaxis: [{
+                title: {
+                    text: 'Total Revenue (₱)',
+                },
+            }, {
+                opposite: true,
+                title: {
+                    text: 'Average Revenue (₱)'
+                }
+            }],
+            tooltip: {
+                y: {
+                    formatter: function (val) {
+                        return "₱" + val.toFixed(2);
+                    }
+                }
+            }
+        };
+
+        const chart = new ApexCharts(document.querySelector("#dailySalesChart"), options);
+        chart.render();
+    } else if (document.querySelector("#dailySalesChart")) {
+        document.querySelector("#dailySalesChart").innerHTML = '<div class="text-center text-muted p-4">No daily sales data available for the selected period.</div>';
+    }
+});
+</script>
 @endsection

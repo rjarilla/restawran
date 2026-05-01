@@ -8,9 +8,11 @@ use App\Models\Orders;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\ProductInventory;
+use Illuminate\Database\QueryException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use RuntimeException;
@@ -71,7 +73,7 @@ class PaymentController extends Controller
             $order = DB::transaction(function () use ($pendingOrder, $lineItems, $request) {
                 // Create customer
                 $customer = Customer::create([
-                    'CustomerID' => (string) Str::uuid(),
+                    'CustomerCode' => $this->nextCustomerCode(),
                     'CustomerName' => $pendingOrder['customer_details']['CustomerName'],
                     'CustomerAddressLine1' => $pendingOrder['customer_details']['CustomerAddressLine1'],
                     'CustomerAddressLine2' => $pendingOrder['customer_details']['CustomerAddressLine2'],
@@ -119,7 +121,15 @@ class PaymentController extends Controller
 
                 return $order->load(['customer', 'orderDetails.product']);
             });
+        } catch (QueryException $exception) {
+            report($exception);
+
+            return redirect()->route('order.create')
+                ->withErrors(['items' => 'We could not save the order. Please try again.'])
+                ->withInput();
         } catch (RuntimeException $exception) {
+            session()->forget('pending_order');
+
             return redirect()->route('order.create')
                 ->withErrors(['items' => 'Stock changed while you were processing payment. Please review the available items and try again.'])
                 ->withInput();
@@ -144,12 +154,37 @@ class PaymentController extends Controller
 
     private function consumeInventory(string $productId, int $quantity): void
     {
+        if (Schema::hasColumn('product', 'ProductQuantityRemaining')) {
+            $product = Product::query()
+                ->where('ProductID', $productId)
+                ->lockForUpdate()
+                ->first();
+
+            if (!$product) {
+                throw new RuntimeException('Product is no longer available.');
+            }
+
+            $available = max(0, (int) $product->ProductQuantityRemaining);
+
+            if ($available < $quantity) {
+                throw new RuntimeException('Not enough inventory remains to complete the order.');
+            }
+
+            $product->ProductQuantityRemaining = $available - $quantity;
+            $product->save();
+
+            return;
+        }
+
         $remaining = $quantity;
         $today = now()->toDateString();
 
         $batches = ProductInventory::query()
             ->where('ProductID', $productId)
-            ->whereDate('ProductBatchDeliveryDate', '<=', $today)
+            ->where(function ($query) use ($today) {
+                $query->whereNull('ProductBatchDeliveryDate')
+                    ->orWhereDate('ProductBatchDeliveryDate', '<=', $today);
+            })
             ->whereDate('ProductBatchExpiry', '>=', $today)
             ->where('ProductQuantity', '>', 0)
             ->orderBy('ProductBatchExpiry')
@@ -169,8 +204,7 @@ class PaymentController extends Controller
                 continue;
             }
 
-            $batch->ProductQuantity = $availableInBatch - $deducted;
-            $batch->save();
+            $this->updateInventoryBatchQuantity($batch, $availableInBatch - $deducted);
 
             $remaining -= $deducted;
         }
@@ -179,5 +213,37 @@ class PaymentController extends Controller
             throw new RuntimeException('Not enough inventory remains to complete the order.');
         }
     }
-}
 
+    private function nextCustomerCode(): string
+    {
+        $lastCustomer = Customer::query()
+            ->whereNotNull('CustomerCode')
+            ->orderByDesc('CustomerID')
+            ->first();
+
+        $nextNumber = $lastCustomer && preg_match('/(\d+)$/', (string) $lastCustomer->CustomerCode, $matches)
+            ? ((int) $matches[1]) + 1
+            : 1;
+
+        return 'CUST-' . str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
+    }
+
+    private function updateInventoryBatchQuantity(ProductInventory $batch, int $quantity): void
+    {
+        $query = DB::table('productinventory');
+
+        if (Schema::hasColumn('productinventory', 'ProductInventoryID') && $batch->ProductInventoryID) {
+            $query->where('ProductInventoryID', $batch->ProductInventoryID);
+        } elseif ($batch->ProductBatchID) {
+            $query->where('ProductBatchID', $batch->ProductBatchID);
+        } else {
+            throw new RuntimeException('Inventory batch cannot be updated.');
+        }
+
+        $updated = $query->update(['ProductQuantity' => $quantity]);
+
+        if ($updated === 0) {
+            throw new RuntimeException('Inventory batch changed while processing.');
+        }
+    }
+}

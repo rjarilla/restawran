@@ -39,8 +39,8 @@ Route::get('/debug-db', function () {
 |--------------------------------------------------------------------------
 */
 
-Route::get('/', [IndexController::class, 'index']);
-Route::get('/index', [IndexController::class, 'index']);
+Route::get('/', [IndexController::class, 'index'])->name('home');
+Route::get('/index', [IndexController::class, 'index'])->name('index');
 Route::redirect('/public', '/');
 Route::redirect('/public/', '/');
 Route::redirect('/public/{any}', '/', 301)->where('any', '.*');
