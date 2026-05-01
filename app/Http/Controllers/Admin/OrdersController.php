@@ -11,6 +11,7 @@ class OrdersController extends Controller
     {
         $orders = Orders::with(['customer', 'orderDetails', 'payment'])
             ->whereHas('payment')
+            ->has('orderDetails')
             ->orderByDesc('OrderDate')
             ->get();
 

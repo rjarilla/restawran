@@ -15,7 +15,7 @@ class Product extends Model
     protected $fillable = [
         'ProductID', 'ProductName', 'ProductDescription', 'ProductCategoryID',
         'ProductQuantityTypeID', 'ProductImagePath', 'ProductPrice', 
-        'ProductOnDiscount', 'ProductPriceSale', 'ProductStatus', 
+        'ProductQuantityRemaining', 'ProductOnDiscount', 'ProductPriceSale', 'ProductStatus',
         'ProductDiscountStartDate', 'ProductDiscountEndDate', 'ProductUpdatedBy', 'ProductUpdatedDate'
     ];
 
@@ -30,4 +30,3 @@ class Product extends Model
     }
 }
 ?>
-

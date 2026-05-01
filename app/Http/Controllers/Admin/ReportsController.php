@@ -18,7 +18,8 @@ class ReportsController extends Controller
         $dateTo = $request->input('date_to');
 
         $query = Orders::with(['customer', 'payment'])
-            ->whereHas('payment');
+            ->whereHas('payment')
+            ->has('orderDetails');
 
         if ($filterType === 'month') {
             $query->whereMonth('OrderDate', $month)
@@ -59,6 +60,18 @@ class ReportsController extends Controller
             'uniqueCustomers' => $customerStats->count(),
         ];
 
+        // Daily Sales Report Data
+        $dailySales = $orders->groupBy('OrderDate')->map(function ($dayOrders, $date) {
+            $totalRevenue = $dayOrders->sum(function ($order) {
+                return $order->payment ? $order->payment->PaymentTotal : $order->OrderTotalAmount;
+            });
+            return [
+                'date' => $date,
+                'total' => $totalRevenue,
+                'average' => $dayOrders->count() > 0 ? $totalRevenue / $dayOrders->count() : 0,
+            ];
+        })->sortBy('date')->values();
+
         // Inventory Movement Report Data
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
@@ -98,6 +111,7 @@ class ReportsController extends Controller
             'customerStats',
             'topCustomers',
             'summary',
+            'dailySales',
             'products',
             'startDate',
             'endDate'

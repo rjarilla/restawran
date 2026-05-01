@@ -8,9 +8,9 @@ class Customer extends Model
 {
     protected $table = 'customers';
     protected $primaryKey = 'CustomerID';
-    public $incrementing = false;
-    protected $keyType = 'string';
-    public $timestamps = false;
+    public $incrementing = true;
+    protected $keyType = 'int';
+    public $timestamps = true;
 
     protected $fillable = [
         'CustomerID',
@@ -33,4 +33,3 @@ class Customer extends Model
         return $this->hasMany(Orders::class, 'CustomerID', 'CustomerID');
     }
 }
-

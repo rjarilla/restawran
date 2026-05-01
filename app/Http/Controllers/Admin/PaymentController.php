@@ -15,6 +15,7 @@ class PaymentController extends Controller
         $dateTo = $request->input('date_to');
 
         $query = Payment::with(['order.customer', 'order.orderDetails.product'])
+            ->whereHas('order.orderDetails')
             ->orderBy('PaymentID', 'desc');
 
         if ($period) {
