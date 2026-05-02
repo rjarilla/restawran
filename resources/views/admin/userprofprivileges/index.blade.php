@@ -47,7 +47,7 @@
             <tr>
                 <th>User Profile</th>
                 <th>Privilege</th>
-                <th>Updated Date</th>
+                <th>Updated Date and Time</th>
                 <th>Updated By</th>
                 <th>Actions</th>
             </tr>
@@ -55,11 +55,22 @@
         <tbody>
             @forelse($userprofprivileges as $priv)
             <tr>
-                <td>{{ $priv->UserProfileID }}</td>
-                <td>{{ $priv->UserPrivilegesID }}</td>
+                <td>{{ $userProfiles->firstWhere('UserProfileID', $priv->UserProfileID)->UserProfileName ?? $priv->UserProfileID }}</td>
+                <td>{{ $privileges->firstWhere('LookupID', $priv->UserPrivilegesID)->LookupValue ?? $priv->UserPrivilegesID }}</td>
+                <td>{{ $priv->UserProfPrivilegesUpdateDate }}</td>
+                <td>{{ $priv->updatedByUser->UserName ?? 'N/A'}}</td>
                 <td>
-                    <a href="{{ route('admin.userprofprivileges.edit', $priv->UserProfPrivilegesID ?? $priv->UserProfileID ?? '') }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('admin.userprofprivileges.destroy', $priv->UserProfPrivilegesID ?? $priv->UserProfileID ?? '') }}" method="POST" style="display:inline-block;">
+                    <a href="{{ route('admin.userprofprivileges.edit', [
+                            'profile'   => $priv->UserProfileID,
+                            'privilege' => $priv->UserPrivilegesID
+                        ]) }}"
+                        class="btn btn-sm btn-warning">Edit</a>
+
+                    <form action="{{ route('admin.userprofprivileges.destroy', [
+                            'profile'   => $priv->UserProfileID,
+                            'privilege' => $priv->UserPrivilegesID
+                        ]) }}"
+                        method="POST" style="display:inline-block;">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="btn btn-sm btn-danger"

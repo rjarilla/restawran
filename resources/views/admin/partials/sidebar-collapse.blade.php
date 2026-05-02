@@ -1,6 +1,6 @@
 <div id="miniSidebar">
   <div class="brand-logo">
-    <a class="d-none d-md-flex align-items-center gap-2" href="/admin/index">
+    <a class="d-none d-md-flex align-items-center gap-2" href="{{ route('admin.index') }}">
       <i class="fa fa-utensils me-3"></i>
       <span class="fw-bold fs-4 site-logo-text">Restawran</span>
     </a>
@@ -10,7 +10,7 @@
 
     <!-- HOME LINK -->
     <li class="nav-item">
-      <a class="nav-link" href="/public/" target="_blank">
+      <a class="nav-link" href="/" target="_blank">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -29,8 +29,9 @@
     </li>
 
     <!-- LOOKUP -->
+    @if(in_array('LOOKUP', $privs))
     <li class="nav-item">
-      <a class="nav-link" href="/admin/lookup">
+      <a class="nav-link" href="{{ route('admin.lookup.index') }}">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -46,28 +47,35 @@
         <span class="text">Lookup</span>
       </a>
     </li>
+    @endif
 
     <!-- PRODUCT -->
+    @if(in_array('PROD', $privs) || in_array('PROD_INV', $privs))
     <li class="nav-item">
-      <button class="nav-link collapsed w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#productSubmenu" aria-expanded="false" aria-controls="productSubmenu">
-        <span class="nav-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-package">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M12 3l8 4.5v9l-8 4.5l-8-4.5v-9z" />
-            <path d="M12 12l8-4.5" />
-            <path d="M12 12v9" />
-            <path d="M12 12l-8-4.5" />
-            <path d="M16 5.25l-8 4.5" />
+      <button class="nav-link collapsed w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#productSubmenu" aria-expanded="false" aria-controls="productSubmenu">
+        <span class="d-flex align-items-center gap-2">
+          <span class="nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 3l8 4.5v9l-8 4.5l-8-4.5v-9z"/>
+            </svg>
+          </span>
+          <span class="text">Product</span>
+        </span>
+        <span class="nav-caret">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
-        <span class="text">Product</span>
       </button>
       <div class="collapse" id="productSubmenu">
         <ul class="list-unstyled ms-4">
           <li class="nav-item">
-            <a class="nav-link" href="/admin/product">
+
+            <a class="nav-link" href="{{ route('admin.product.index') }}">
               <span class="nav-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-box">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <path d="M3 7.5l9 5l9-5" />
                   <path d="M3 17.5l9 5l9-5" />
@@ -79,10 +87,11 @@
               <span class="text">Products</span>
             </a>
           </li>
+          @if(in_array('PROD', $privs) || in_array('PROD_INV', $privs))
           <li class="nav-item">
-            <a class="nav-link" href="/admin/productinventory">
+            <a class="nav-link" href="{{ route('admin.productinventory.index') }}">
               <span class="nav-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-database">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <ellipse cx="12" cy="6" rx="8" ry="3" />
                   <path d="M4 6v6a8 3 0 0 0 16 0V6" />
@@ -92,13 +101,16 @@
               <span class="text">Product Inventory</span>
             </a>
           </li>
+          @endif
         </ul>
       </div>
     </li>
+    @endif
 
     <!-- CUSTOMERS -->
+    @if(in_array('CUSTOMER', $privs))
     <li class="nav-item">
-      <a class="nav-link" href="/admin/customers">
+      <a class="nav-link" href="{{ route('admin.customers.index') }}">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -110,28 +122,35 @@
         <span class="text">Customers</span>
       </a>
     </li>
+    @endif
 
     <!-- USERS -->
+    @if(in_array('USER', $privs))
     <li class="nav-item">
-      <button class="nav-link collapsed w-100 text-start" type="button" data-bs-toggle="collapse" data-bs-target="#userSubmenu" aria-expanded="false" aria-controls="userSubmenu">
-        <span class="nav-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-users">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M5 7m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-            <path d="M17 7m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" />
-            <path d="M7 21v-2a4 4 0 0 1 4-4h2a4 4 0 0 1 4 4v2" />
-            <path d="M12 11v.01" />
-            <path d="M12 3v.01" />
+      <button class="nav-link collapsed w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#userSubmenu" aria-expanded="false" aria-controls="userSubmenu">
+        <span class="d-flex align-items-center gap-2">
+          <span class="nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                 viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="7" r="4"/>
+              <path d="M5.5 21h13a2 2 0 0 0 2-2v-2a7 7 0 0 0-14 0v2a2 2 0 0 0 2 2z"/>
+            </svg>
+          </span>
+          <span class="text">Users</span>
+        </span>
+        <span class="nav-caret">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
-        <span class="text">Users</span>
       </button>
       <div class="collapse" id="userSubmenu">
         <ul class="list-unstyled ms-4">
           <li class="nav-item">
-            <a class="nav-link" href="/admin/users">
+            <a class="nav-link" href="{{ route('admin.users.index') }}">
               <span class="nav-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-user">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <circle cx="12" cy="7" r="4" />
                   <path d="M5.5 21h13a2 2 0 0 0 2-2v-2a7 7 0 0 0-14 0v2a2 2 0 0 0 2 2z" />
@@ -141,9 +160,9 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/admin/userprofile">
+            <a class="nav-link" href="{{ route('admin.userprofile.index') }}">
               <span class="nav-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-id">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <rect x="3" y="4" width="18" height="16" rx="3" />
                   <circle cx="9" cy="10" r="2" />
@@ -156,25 +175,27 @@
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="/admin/userprofprivileges">
+            <a class="nav-link" href="{{ route('admin.userprofprivileges.index') }}">
               <span class="nav-icon">
-                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-key">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <circle cx="8" cy="15" r="4" />
                   <path d="M10.85 12.15l6.65-6.65a2.121 2.121 0 1 1 3 3l-6.65 6.65" />
                   <path d="M15 6l3 3" />
                 </svg>
               </span>
-              <span class="text">User Profile Privileges</span>
+              <span class="text">Privileges</span>
             </a>
           </li>
         </ul>
       </div>
     </li>
+    @endif
 
     <!-- ORDERS -->
+    @if(in_array('ORDER', $privs))
     <li class="nav-item">
-      <a class="nav-link" href="/admin/orders">
+      <a class="nav-link" href="{{ route('admin.orders.index') }}">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -188,10 +209,12 @@
         <span class="text">Orders</span>
       </a>
     </li>
+    @endif
 
     <!-- PAYMENTS -->
+    @if(in_array('PAYMENT', $privs))
     <li class="nav-item">
-      <a class="nav-link" href="/admin/payments">
+      <a class="nav-link" href="{{ route('admin.payments.index') }}">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -205,8 +228,10 @@
         <span class="text">Payments</span>
       </a>
     </li>
+    @endif
 
     <!-- REPORTS -->
+    @if(in_array('REPORTS', $privs))
     <li class="nav-item dropdown">
       <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <span class="nav-icon">
@@ -235,6 +260,7 @@
         </li>
       </ul>
     </li>
+    @endif
 
   </ul>
 </div>

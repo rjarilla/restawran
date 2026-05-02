@@ -26,11 +26,9 @@ class AppServiceProvider extends ServiceProvider
         $loader->alias('Image', \Intervention\Image\ImageManager::class);
         View::composer('*', function ($view) {
             $userId = session('user_id');
-
             if ($userId) {
                 // Always fetch fresh from DB so changes reflect immediately
                 $user = \App\Models\Users::find($userId);
-
                 if ($user) {
                     $lookups = \App\Models\UserProfPrivileges::where('UserProfileID', $user->UserProfileID)
                         ->join('lookup', 'userprofprivileges.UserPrivilegesID', '=', 'lookup.LookupID')

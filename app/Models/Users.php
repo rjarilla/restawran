@@ -12,7 +12,7 @@ class Users extends Model
     public $incrementing = false;
     protected $keyType = 'string';
 
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'UserID',
@@ -20,6 +20,8 @@ class Users extends Model
         'UserPassword',
         'UserProfileID',
         'UserStatus',
+        'UserUpdateDate',
+        'UserUpdateBy'
     ];
 
     /**

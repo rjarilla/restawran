@@ -6,6 +6,9 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Repositories\EloquentUsersRepository;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+
 
 class UsersController extends Controller
 {
@@ -22,8 +25,8 @@ class UsersController extends Controller
         $usersModel = app(\App\Models\Users::class);
         $users = $usersModel->when($query, function($q) use ($query) {
                 $q->where('UserName', 'like', "%$query%")
-                  ->orWhere('Role', 'like', "%$query%")
-                  ->orWhere('id', 'like', "%$query%") ;
+                  ->orWhere('UserStatus', 'like', "%$query%")
+                  ->orWhere('UserID', 'like', "%$query%") ;
             })
             ->orderByDesc('UserUpdateDate')
             ->paginate(10)
@@ -50,8 +53,10 @@ class UsersController extends Controller
             return redirect()->back()->withErrors($validator)->withInput();
         }
 
-        $data = $request->only(['UserName', 'UserPassword', 'UserProfileID', 'UserStatus']);
-        $data['UserUpdateBy'] = session('user_id') ?? 'admin';
+        $data = $request->only(['UserName', 'UserProfileID', 'UserStatus']);
+        $data['UserPassword'] = md5($request->UserPassword);
+        $data['UserUpdateBy'] = session('user_id');
+        $data['UserID'] = (string) Str::uuid();
         $this->usersRepo->create($data);
 
         return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
@@ -82,9 +87,9 @@ class UsersController extends Controller
 
         $data = $request->only(['UserName', 'UserProfileID', 'UserStatus']);
         if ($request->filled('UserPassword')) {
-            $data['UserPassword'] = $request->input('UserPassword');
+            $data['UserPassword'] = Hash::make($request->input('UserPassword'));
         }
-        $data['UserUpdateBy'] = session('user_id') ?? 'admin';
+        $data['UserUpdateBy'] = session('user_id');
         $this->usersRepo->update($id, $data);
 
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');

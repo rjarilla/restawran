@@ -9,9 +9,11 @@
           <h6 class="mb-2">Total Customers</h6>
           <p class="fs-3 mb-0">{{ $customerCount ?? 0 }}</p>
           <div class="mt-3">
-            <a href="{{ route('admin.customers.create') }}" class="btn btn-sm btn-primary me-2">
-              Add customer
-            </a>
+            @if (in_array('ADD_CUSTOMER', $actions))
+                <a href="{{ route('admin.customers.create') }}" class="btn btn-sm btn-primary me-2">
+                Add customer
+                </a>
+            @endif
             <a href="{{ route('admin.customers.index') }}" class="text-primary d-inline-flex align-items-center">
               View customers
             </a>
@@ -40,11 +42,13 @@
                     <td>{{ $customer->CustomerName }}</td>
                     <td>{{ $customer->CustomerCode }}</td>
                     <td>{{ $customer->CustomerCity ?? 'N/A' }}</td>
-                    <td>
-                      <a href="{{ route('admin.customers.edit', $customer->CustomerID) }}" class="btn btn-sm btn-outline-secondary">
-                        Edit
-                      </a>
-                    </td>
+                    @if (in_array('EDT_CUSTOMER', $actions))
+                        <td>
+                        <a href="{{ route('admin.customers.edit', $customer->CustomerID) }}" class="btn btn-sm btn-outline-secondary">
+                            Edit
+                        </a>
+                        </td>
+                    @endif
                   </tr>
                 @empty
                   <tr>
@@ -64,9 +68,11 @@
 
         <h3>Customer List</h3>
 
-        <a href="{{ route('admin.customers.create') }}" class="btn btn-primary mb-3">
-            Add Customer
-        </a>
+        @if (in_array('ADD_CUSTOMER', $actions))
+            <a href="{{ route('admin.customers.create') }}" class="btn btn-primary mb-3">
+                Add Customer
+            </a>
+        @endif
 
         <table class="table table-bordered">
             <thead>
@@ -97,11 +103,13 @@
                         <td>{{ $customer->CustomerCity ?: 'N/A' }}</td>
 
                         <td>
+                            @if (in_array('EDT_CUSTOMER', $actions))
                             <a href="{{ route('admin.customers.edit', $customer->CustomerID) }}"
                                class="btn btn-sm btn-warning">
                                 Edit
                             </a>
-
+                            @endif
+                            @if (in_array('DEL_CUSTOMER', $actions))
                             <form action="{{ route('admin.customers.destroy', $customer->CustomerID) }}"
                                   method="POST"
                                   style="display:inline;">
@@ -113,8 +121,8 @@
                                     Delete
                                 </button>
                             </form>
+                            @endif
                         </td>
-
                     </tr>
                 @empty
                     <tr>

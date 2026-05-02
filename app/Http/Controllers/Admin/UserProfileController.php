@@ -46,7 +46,7 @@ class UserProfileController extends Controller
         }
 
         $data = $request->only(['UserProfileName']);
-        $data['UserProfileUpdateBy'] = session('user_id') ?? 'admin';
+        $data['UserProfileUpdateBy'] = session('user_id');
         $this->userProfileRepo->create($data);
 
         return redirect()->route('admin.userprofile.index')->with('success', 'User profile created successfully.');
@@ -72,7 +72,7 @@ class UserProfileController extends Controller
         }
 
         $data = $request->only(['UserProfileName']);
-        $data['UserProfileUpdateBy'] = session('user_id') ?? 'admin';
+        $data['UserProfileUpdateBy'] = session('user_id');
         $this->userProfileRepo->update($id, $data);
 
         return redirect()->route('admin.userprofile.index')->with('success', 'User profile updated successfully.');

@@ -22,7 +22,7 @@ class LookupController extends Controller
         $categoryFilter = $request->input('category_filter');
         $nameFilter = $request->input('name_filter');
         $sortBy = $request->input('sort_by', 'date_desc');
-        
+
         $lookupModel = app(\App\Models\Lookup::class);
          $lookupModel = app(\App\Models\Lookup::class);
         $lookups = $lookupModel->when($query, function($q) use ($query) {

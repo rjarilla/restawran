@@ -10,7 +10,6 @@ class CheckPrivilege
     public function handle(Request $request, Closure $next, string $module)
     {
         $userId = session('user_id');
-
         if (!$userId) {
             return redirect('admin/signin');
         }

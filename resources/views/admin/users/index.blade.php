@@ -21,7 +21,6 @@
             <tr>
                 <th>ID</th>
                 <th>Username</th>
-                <th>Role</th>
                 <th>Updated At</th>
                 <th>Actions</th>
             </tr>
@@ -31,7 +30,6 @@
             <tr>
                 <td>{{ $user->UserID }}</td>
                 <td>{{ $user->UserName }}</td>
-                <td>{{ $user->Role }}</td>
                 <td>{{ $user->UserUpdateDate }}</td>
                 <td>
                     @if (in_array('EDT_USER', $actions))
