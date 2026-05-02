@@ -48,8 +48,11 @@ class AuthController extends Controller
                 ->with('login_error', 'Invalid username or password.');
         }
 
-        // ✅ FIX: your DB primary key is "id"
-        Session::put('user_id', $user->id);
+        // Regenerate session on successful login
+        $request->session()->regenerate();
+
+        // Store the actual user identifier used by the Users model
+        Session::put('user_id', $user->UserID );
         Session::put('user_name', $user->UserName);
         Session::put('user_role', $user->Role ?? null);
 

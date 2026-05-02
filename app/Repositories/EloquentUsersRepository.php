@@ -29,8 +29,8 @@ class EloquentUsersRepository implements UsersRepositoryInterface
 
     public function create(array $attributes)
     {
-        $attributes['created_at'] = now();
-        $attributes['updated_at'] = now();
+        $attributes['UserUpdateDate'] = now();
+        $attributes['UserUpdateBy'] = now();
 
         return $this->model->create($attributes);
     }
@@ -43,7 +43,7 @@ class EloquentUsersRepository implements UsersRepositoryInterface
             return null;
         }
 
-        $attributes['updated_at'] = now();
+        $attributes['UserUpdateDate'] = now();
 
         $record->update($attributes);
 

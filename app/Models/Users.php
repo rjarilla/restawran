@@ -8,21 +8,22 @@ class Users extends Model
 {
     protected $table = 'rt_users';
 
-    protected $primaryKey = 'id';
+    protected $primaryKey = 'userid';
 
     public $timestamps = true;
 
     protected $fillable = [
         'UserName',
-        'Password',
-        'Role',
+        'UserPassword',
+        'UserProfileID',
+        'UserStatus',
     ];
 
     /**
      * OPTIONAL: Hide password when returning model
      */
     protected $hidden = [
-        'Password',
+        'UserPassword',
     ];
 
     /*

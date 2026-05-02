@@ -74,9 +74,10 @@ Route::get('/admin', function () {
 });
 
 Route::get('/admin/index', [DashboardController::class, 'index'])->name('admin.index');
-
+/*
 Route::get('/admin/login', fn () => view('admin/login'));
 Route::get('/admin/signin', fn () => view('admin/signin'))->name('admin.signin');
+*/
 
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login');
 Route::get('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
