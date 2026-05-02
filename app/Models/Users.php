@@ -8,11 +8,14 @@ class Users extends Model
 {
     protected $table = 'rt_users';
 
-    protected $primaryKey = 'userid';
+    protected $primaryKey = 'UserID';
+    public $incrementing = false;
+    protected $keyType = 'string';
 
     public $timestamps = true;
 
     protected $fillable = [
+        'UserID',
         'UserName',
         'UserPassword',
         'UserProfileID',
