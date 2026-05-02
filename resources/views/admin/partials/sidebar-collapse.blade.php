@@ -29,6 +29,7 @@
     </li>
 
     <!-- LOOKUP -->
+    @if(in_array('LOOKUP', $privs))
     <li class="nav-item">
       <a class="nav-link" href="{{ route('admin.lookup.index') }}">
         <span class="nav-icon">
@@ -46,8 +47,10 @@
         <span class="text">Lookup</span>
       </a>
     </li>
+    @endif
 
     <!-- PRODUCT -->
+    @if(in_array('PROD', $privs) || in_array('PROD_INV', $privs))
     <li class="nav-item">
       <button class="nav-link collapsed w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#productSubmenu" aria-expanded="false" aria-controls="productSubmenu">
         <span class="d-flex align-items-center gap-2">
@@ -69,6 +72,7 @@
       <div class="collapse" id="productSubmenu">
         <ul class="list-unstyled ms-4">
           <li class="nav-item">
+
             <a class="nav-link" href="{{ route('admin.product.index') }}">
               <span class="nav-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -83,6 +87,7 @@
               <span class="text">Products</span>
             </a>
           </li>
+          @if(in_array('PROD', $privs) || in_array('PROD_INV', $privs))
           <li class="nav-item">
             <a class="nav-link" href="{{ route('admin.productinventory.index') }}">
               <span class="nav-icon">
@@ -96,11 +101,14 @@
               <span class="text">Product Inventory</span>
             </a>
           </li>
+          @endif
         </ul>
       </div>
     </li>
+    @endif
 
     <!-- CUSTOMERS -->
+    @if(in_array('CUSTOMER', $privs))
     <li class="nav-item">
       <a class="nav-link" href="{{ route('admin.customers.index') }}">
         <span class="nav-icon">
@@ -114,8 +122,10 @@
         <span class="text">Customers</span>
       </a>
     </li>
+    @endif
 
     <!-- USERS -->
+    @if(in_array('USER', $privs))
     <li class="nav-item">
       <button class="nav-link collapsed w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#userSubmenu" aria-expanded="false" aria-controls="userSubmenu">
         <span class="d-flex align-items-center gap-2">
@@ -180,8 +190,10 @@
         </ul>
       </div>
     </li>
+    @endif
 
     <!-- ORDERS -->
+    @if(in_array('ORDER', $privs))
     <li class="nav-item">
       <a class="nav-link" href="{{ route('admin.orders.index') }}">
         <span class="nav-icon">
@@ -197,8 +209,10 @@
         <span class="text">Orders</span>
       </a>
     </li>
+    @endif
 
     <!-- PAYMENTS -->
+    @if(in_array('PAYMENT', $privs))
     <li class="nav-item">
       <a class="nav-link" href="{{ route('admin.payments.index') }}">
         <span class="nav-icon">
@@ -214,23 +228,39 @@
         <span class="text">Payments</span>
       </a>
     </li>
+    @endif
 
     <!-- REPORTS -->
-    <li class="nav-item">
-      <a class="nav-link" href="{{ route('admin.reports.index') }}">
+    @if(in_array('REPORTS', $privs))
+    <li class="nav-item dropdown">
+      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
         <span class="nav-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
-               viewBox="0 0 24 24" fill="none" stroke="currentColor"
-               stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12h18"/>
-            <path d="M7 6v12"/>
-            <path d="M12 4v16"/>
-            <path d="M17 8v8"/>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-bar">
+            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+            <path d="M3 12m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" />
+            <path d="M15 10m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z" />
+            <path d="M9 6m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z" />
+            <path d="M3 20h18" />
           </svg>
         </span>
         <span class="text">Reports</span>
       </a>
+      <ul class="dropdown-menu flex-column">
+        <li class="nav-item">
+          <a class="nav-link" href="/admin/reports">
+            <span class="nav-icon">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-line">
+                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                <path d="M3 3v18h18" />
+                <path d="M20 18l-6 -6l-4 4l-6 -6" />
+              </svg>
+            </span>
+            <span class="text">All Reports</span>
+          </a>
+        </li>
+      </ul>
     </li>
+    @endif
 
   </ul>
 </div>

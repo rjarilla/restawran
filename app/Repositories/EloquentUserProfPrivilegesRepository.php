@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\UserProfPrivileges;
 use App\Repositories\Interfaces\UserProfPrivilegesRepositoryInterface;
+use Illuminate\Support\Str;
 
 class EloquentUserProfPrivilegesRepository implements UserProfPrivilegesRepositoryInterface
 {
@@ -27,7 +28,6 @@ class EloquentUserProfPrivilegesRepository implements UserProfPrivilegesReposito
     public function create(array $attributes)
     {
         $attributes['UserProfPrivilegesID'] = (string) Str::uuid();
-        $attributes['UserProfPrivilegesUpdateDate'] = now();
         return $this->model->create($attributes);
     }
 
@@ -48,5 +48,28 @@ class EloquentUserProfPrivilegesRepository implements UserProfPrivilegesReposito
             return $record->delete();
         }
         return false;
+    }
+    public function findByCompositeKey(string $profile, string $privilege): ?UserProfPrivileges
+    {
+        return $this->model
+            ->where('UserProfileID', $profile)
+            ->where('UserPrivilegesID', $privilege)
+            ->first();
+    }
+
+    public function updateByCompositeKey(string $profile, string $privilege, array $attributes): bool
+    {
+        return (bool) $this->model
+            ->where('UserProfileID', $profile)
+            ->where('UserPrivilegesID', $privilege)
+            ->update($attributes);
+    }
+
+    public function deleteByCompositeKey(string $profile, string $privilege): bool
+    {
+        return (bool) $this->model
+            ->where('UserProfileID', $profile)
+            ->where('UserPrivilegesID', $privilege)
+            ->delete();
     }
 }

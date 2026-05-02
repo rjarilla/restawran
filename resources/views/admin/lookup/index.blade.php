@@ -3,7 +3,9 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>Lookup List</h2>
-        <a href="{{ route('admin.lookup.create') }}" class="btn btn-primary">Add Lookup</a>
+        @if (in_array('ADD_LOOKUP', $actions))
+            <a href="{{ route('admin.lookup.create') }}" class="btn btn-primary">Add Lookup</a>
+        @endif
     </div>
     <form method="GET" action="{{ route('admin.lookup.index') }}" class="mb-3">
         <div class="row g-2">
@@ -56,10 +58,14 @@
                 <td>{{ $lookup->UpdatedByName ?? $lookup->LookupUpdateBy }}</td>
                 <td>{{ $lookup->LookupUpdateDate }}</td>
                 <td>
-                    <a href="{{ route('admin.lookup.edit', $lookup->LookupID) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('admin.lookup.destroy', $lookup->LookupID) }}" method="POST" style="display:inline-block;">
-                        @csrf
-                    </form>
+                    @if (in_array('EDT_LOOKUP', $actions))
+                        <a href="{{ route('admin.lookup.edit', $lookup->LookupID) }}" class="btn btn-sm btn-warning">Edit</a>
+                    @endif
+                    @if (in_array('DEL_LOOKUP', $actions))
+                        <form action="{{ route('admin.lookup.destroy', $lookup->LookupID) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                        </form>
+                    @endif
                 </td>
             </tr>
             @empty

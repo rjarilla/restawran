@@ -3,7 +3,9 @@
 <div class="container mt-4">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h2>User List</h2>
-        <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Add User</a>
+        @if(in_array('ADD_USER', $actions))
+            <a href="{{ route('admin.users.create') }}" class="btn btn-primary">Add User</a>
+        @endif
     </div>
     <form method="GET" action="{{ route('admin.users.index') }}" class="mb-3">
         <div class="input-group">
@@ -19,7 +21,6 @@
             <tr>
                 <th>ID</th>
                 <th>Username</th>
-                <th>Role</th>
                 <th>Updated At</th>
                 <th>Actions</th>
             </tr>
@@ -29,15 +30,18 @@
             <tr>
                 <td>{{ $user->UserID }}</td>
                 <td>{{ $user->UserName }}</td>
-                <td>{{ $user->Role }}</td>
                 <td>{{ $user->UserUpdateDate }}</td>
                 <td>
-                    <a href="{{ route('admin.users.edit', $user->UserID) }}" class="btn btn-sm btn-warning">Edit</a>
-                    <form action="{{ route('admin.users.destroy', $user->UserID) }}" method="POST" style="display:inline-block;">
-                        @csrf
-                        @method('DELETE')
-                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
-                    </form>
+                    @if (in_array('EDT_USER', $actions))
+                        <a href="{{ route('admin.users.edit', $user->UserID) }}" class="btn btn-sm btn-warning">Edit</a>
+                    @endif
+                    @if (in_array('DEL_USER', $actions))
+                        <form action="{{ route('admin.users.destroy', $user->UserID) }}" method="POST" style="display:inline-block;">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Are you sure?')">Delete</button>
+                        </form>
+                    @endif
                 </td>
             </tr>
             @empty

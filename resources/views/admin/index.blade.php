@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-  <?php include_once resource_path('views/admin/partials/head/head-meta.php'); ?>
+  @include('admin.partials.head.head-meta')
   <title>Restawran - Admin Dashboard</title>
    <link rel="stylesheet" href="{{ asset('node_modules/swiper/swiper-bundle.min.css') }}" />
   <?php include_once resource_path('views/admin/partials/head/head-links.php'); ?>
@@ -53,5 +53,4 @@
   <script src="{{ asset('node_modules/swiper/swiper-bundle.min.js') }}"></script>
   <script src="{{ asset('assets/js/vendors/swiper.js') }}"></script>
 </body>
-
 </html>

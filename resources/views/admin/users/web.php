@@ -88,24 +88,18 @@ Route::get('/admin/logout', [AuthController::class, 'logout'])->name('admin.logo
 */
 
 Route::prefix('admin')->name('admin.')->middleware(['check.admin.session'])->group(function () {
-
+    
     Route::resource('lookup', LookupController::class);
     Route::resource('product', ProductController::class);
     Route::resource('productinventory', ProductInventoryController::class);
     Route::resource('customers', CustomerController::class);
     Route::resource('users', UsersController::class);
     Route::resource('userprofile', UserProfileController::class);
-    Route::get('userprofprivileges', [UserProfPrivilegesController::class, 'index'])->name('userprofprivileges.index');
-    Route::get('userprofprivileges/create', [UserProfPrivilegesController::class, 'create'])->name('userprofprivileges.create');
-    Route::post('userprofprivileges', [UserProfPrivilegesController::class, 'store'])->name('userprofprivileges.store');
-    Route::get('userprofprivileges/{profile}/{privilege}', [UserProfPrivilegesController::class, 'show'])->name('userprofprivileges.show');
-    Route::get('userprofprivileges/{profile}/{privilege}/edit', [UserProfPrivilegesController::class, 'edit'])->name('userprofprivileges.edit');
-    Route::put('userprofprivileges/{profile}/{privilege}', [UserProfPrivilegesController::class, 'update'])->name('userprofprivileges.update');
-    Route::delete('userprofprivileges/{profile}/{privilege}', [UserProfPrivilegesController::class, 'destroy'])->name('userprofprivileges.destroy');
+    Route::resource('userprofprivileges', UserProfPrivilegesController::class);
     Route::resource('orders', OrdersController::class);
     Route::resource('payments', AdminPaymentController::class);
     Route::resource('reports', ReportsController::class);
-
+    
     Route::get('orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');

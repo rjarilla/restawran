@@ -4,6 +4,7 @@ namespace App\Repositories;
 
 use App\Models\UserProfile;
 use App\Repositories\Interfaces\UserProfileRepositoryInterface;
+use Illuminate\Support\Str;
 
 class EloquentUserProfileRepository implements UserProfileRepositoryInterface
 {
