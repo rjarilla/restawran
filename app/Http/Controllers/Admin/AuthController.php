@@ -64,10 +64,18 @@ class AuthController extends Controller
         return redirect()->route('admin.index');
     }
 
-    public function logout()
+    public function logout(Request $request)
     {
-        Session::flush();
+        //Session::flush();
+        // 1. Clear all data from the session
+        $request->session()->forget('user_id');
 
-        return redirect('/admin/signin');
+        // 2. Completely destroy the session and regenerate the ID (Best practice)
+        $request->session()->invalidate();
+
+        // 3. Regenerate the CSRF token to prevent token reuse
+        $request->session()->regenerateToken();
+    
+        return redirect('/admin/signin')->with('status', 'You have been logged out.');;
     }
 }

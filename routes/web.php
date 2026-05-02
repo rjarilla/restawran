@@ -76,7 +76,7 @@ Route::get('/admin', function () {
 Route::get('/admin/index', [DashboardController::class, 'index'])->name('admin.index');
 
 Route::get('/admin/login', fn () => view('admin/login'));
-Route::get('/admin/signin', fn () => view('admin/signin'));
+Route::get('/admin/signin', fn () => view('admin/signin'))->name('admin.signin');
 
 Route::post('/admin/login', [AuthController::class, 'login'])->name('admin.login');
 Route::get('/admin/logout', [AuthController::class, 'logout'])->name('admin.logout');
@@ -87,21 +87,21 @@ Route::get('/admin/logout', [AuthController::class, 'logout'])->name('admin.logo
 |--------------------------------------------------------------------------
 */
 
-Route::prefix('admin')->name('admin.')->group(function () {
-    Route::resource('productinventory', ProductInventoryController::class);
+Route::prefix('admin')->name('admin.')->middleware(['check.admin.session'])->group(function () {
+    
     Route::resource('lookup', LookupController::class);
     Route::resource('product', ProductController::class);
+    Route::resource('productinventory', ProductInventoryController::class);
+    Route::resource('customers', CustomerController::class);
     Route::resource('users', UsersController::class);
     Route::resource('userprofile', UserProfileController::class);
     Route::resource('userprofprivileges', UserProfPrivilegesController::class);
-
-    // CUSTOMER CRUD
-    Route::resource('customers', CustomerController::class);
-
-    // Additional admin routes
+    Route::resource('orders', OrdersController::class);
+    Route::resource('payments', AdminPaymentController::class);
+    Route::resource('reports', ReportsController::class);
+    
     Route::get('orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
-
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
     Route::get('payments/{id}', [AdminPaymentController::class, 'show'])->name('payments.show');
     Route::delete('payments/{id}', [AdminPaymentController::class, 'destroy'])->name('payments.destroy');
