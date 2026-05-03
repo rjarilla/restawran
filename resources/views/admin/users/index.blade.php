@@ -22,6 +22,7 @@
                 <th>ID</th>
                 <th>Username</th>
                 <th>Updated At</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -31,6 +32,7 @@
                 <td>{{ $user->UserID }}</td>
                 <td>{{ $user->UserName }}</td>
                 <td>{{ $user->UserUpdateDate }}</td>
+                <td>{{ $user->UserStatus }}</td>
                 <td>
                     @if (in_array('EDT_USER', $actions))
                         <a href="{{ route('admin.users.edit', $user->UserID) }}" class="btn btn-sm btn-warning">Edit</a>
