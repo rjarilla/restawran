@@ -36,7 +36,11 @@
         </div>
         <div class="mb-3">
             <label for="UserStatus" class="form-label">Status</label>
-            <input type="text" class="form-control @error('UserStatus') is-invalid @enderror" id="UserStatus" name="UserStatus" value="{{ old('UserStatus') }}">
+            <select class="form-select @error('UserStatus') is-invalid @enderror" id="UserStatus" name="UserStatus">
+                <option value="">-- Select Status --</option>
+                <option value="Active" {{ old('UserStatus') == 'Active' ? 'selected' : '' }}>Active</option>
+                <option value="Inactive" {{ old('UserStatus') == 'Inactive' ? 'selected' : '' }}>Inactive</option>
+            </select>
             @error('UserStatus')
                 <div class="invalid-feedback">{{ $message }}</div>
             @enderror
