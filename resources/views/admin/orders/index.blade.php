@@ -65,7 +65,9 @@
                     <p class="text-body-secondary mb-0 small">Use edit to update quantities or remove items.</p>
                 </div>
                 <div>
-                    <a href="{{ route('admin.orders.create') }}" class="btn btn-primary">Add Order</a>
+                    @if (in_array('ADD_OR   DER', $actions))
+                        <a href="{{ route('admin.orders.create') }}" class="btn btn-primary">Add Order</a>
+                    @endif
                 </div>
             </div>
         </div>
@@ -115,12 +117,16 @@
                                     @endif
                                 </td>
                                 <td class="text-end">
-                                    <a href="{{ route('admin.orders.edit', $order->OrderID) }}" class="btn btn-sm btn-warning">Edit</a>
-                                    <form action="{{ route('admin.orders.destroy', $order->OrderID) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove this order and return its items to inventory?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                                    </form>
+                                    @if (in_array('EDT_ORDER', $actions))
+                                        <a href="{{ route('admin.orders.edit', $order->OrderID) }}" class="btn btn-sm btn-warning">Edit</a>
+                                    @endif
+                                    @if (in_array('DEL_ORDER', $actions))
+                                        <form action="{{ route('admin.orders.destroy', $order->OrderID) }}" method="POST" class="d-inline" onsubmit="return confirm('Remove this order and return its items to inventory?')">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                                        </form>
+                                    @endif
                                 </td>
                             </tr>
                         @empty
