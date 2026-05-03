@@ -104,10 +104,10 @@ Route::prefix('admin')->name('admin.')->middleware(['check.admin.session'])->gro
     Route::delete('userprofprivileges/{profile}/{privilege}', [UserProfPrivilegesController::class, 'destroy'])->name('userprofprivileges.destroy');
     Route::resource('orders', OrdersController::class);
     Route::resource('payments', AdminPaymentController::class);
-    Route::resource('reports', ReportsController::class);
 
     Route::get('orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
+    Route::get('/reports/product-sales', [ReportsController::class, 'productSales'])->name('reports.productSales');
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
     Route::get('payments/{id}', [AdminPaymentController::class, 'show'])->name('payments.show');
     Route::delete('payments/{id}', [AdminPaymentController::class, 'destroy'])->name('payments.destroy');

@@ -117,4 +117,58 @@ class ReportsController extends Controller
             'endDate'
         ));
     }
+
+    public function productSales(Request $request)
+    {
+        $salesMonth = $request->input('sales_month', now()->month);
+        $salesYear  = $request->input('sales_year',  now()->year);
+
+        $salesProducts = \DB::table('orderdetails as od')
+            ->join('orders as o',        'od.OrderID',          '=', 'o.OrderID')
+            ->join('product as p',       'od.ProductID',        '=', 'p.ProductID')
+            ->leftJoin('lookup as cat',  'p.ProductCategoryID', '=', 'cat.LookupID')
+            ->whereMonth('o.OrderDate', $salesMonth)
+            ->whereYear('o.OrderDate',  $salesYear)
+            ->select(
+                'p.ProductID',
+                'p.ProductName',
+                'p.ProductDescription',
+                'p.ProductPrice',
+                \DB::raw('COALESCE(cat.LookupValue, cat.LookupName, p.ProductCategoryID) as ProductCategory'),
+                \DB::raw('SUM(od.OrderQuantity)                   as total_qty'),
+                \DB::raw('SUM(od.OrderQuantity * p.ProductPrice)  as total_revenue')
+            )
+            ->groupBy(
+                'p.ProductID',
+                'p.ProductName',
+                'p.ProductDescription',
+                'p.ProductPrice',
+                'p.ProductCategoryID',
+                'cat.LookupValue',
+                'cat.LookupName'
+            )
+            ->orderByDesc('total_revenue')
+            ->get();
+
+        $salesSummary = [
+            'totalRevenue' => $salesProducts->sum('total_revenue'),
+            'totalUnits'   => $salesProducts->sum('total_qty'),
+            'productCount' => $salesProducts->count(),
+            'bestSeller'   => $salesProducts->first()?->ProductName ?? '—',
+        ];
+
+        $salesByCategory = $salesProducts
+            ->groupBy('ProductCategory')
+            ->map(fn($items) => $items->sum('total_revenue'))
+            ->sortByDesc(fn($v) => $v);
+
+        return view('admin.reports.product_sales', compact(
+            'salesProducts',
+            'salesSummary',
+            'salesByCategory',
+            'salesMonth',
+            'salesYear'
+        ));
+    }
+
 }

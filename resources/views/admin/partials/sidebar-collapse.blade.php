@@ -1,3 +1,9 @@
+@php
+    $productOpen = request()->routeIs('admin.product*') || request()->routeIs('admin.productinventory*');
+    $userOpen    = request()->routeIs('admin.users*') || request()->routeIs('admin.userprofile*') || request()->routeIs('admin.userprofprivileges*');
+    $reportOpen  = request()->routeIs('admin.reports*');
+@endphp
+
 <div id="miniSidebar">
   <div class="brand-logo">
     <a class="d-none d-md-flex align-items-center gap-2" href="{{ route('admin.index') }}">
@@ -31,7 +37,8 @@
     <!-- LOOKUP -->
     @if(in_array('LOOKUP', $privs))
     <li class="nav-item">
-      <a class="nav-link" href="{{ route('admin.lookup.index') }}">
+      <a class="nav-link {{ request()->routeIs('admin.lookup*') ? 'active' : '' }}"
+         href="{{ route('admin.lookup.index') }}">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -49,16 +56,25 @@
     </li>
     @endif
 
-    <!-- PRODUCT -->
+    <!-- PRODUCT (collapsible) -->
     @if(in_array('PROD', $privs) || in_array('PROD_INV', $privs))
     <li class="nav-item">
-      <button class="nav-link collapsed w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#productSubmenu" aria-expanded="false" aria-controls="productSubmenu">
+      <button class="nav-link w-100 text-start d-flex align-items-center justify-content-between {{ $productOpen ? '' : 'collapsed' }}"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#productSubmenu"
+              aria-expanded="{{ $productOpen ? 'true' : 'false' }}"
+              aria-controls="productSubmenu">
         <span class="d-flex align-items-center gap-2">
           <span class="nav-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                  viewBox="0 0 24 24" fill="none" stroke="currentColor"
                  stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
               <path d="M12 3l8 4.5v9l-8 4.5l-8-4.5v-9z"/>
+              <path d="M12 12l8-4.5"/>
+              <path d="M12 12v9"/>
+              <path d="M12 12l-8-4.5"/>
+              <path d="M16 5.25l-8 4.5"/>
             </svg>
           </span>
           <span class="text">Product</span>
@@ -69,33 +85,34 @@
           </svg>
         </span>
       </button>
-      <div class="collapse" id="productSubmenu">
+      <div class="collapse {{ $productOpen ? 'show' : '' }}" id="productSubmenu">
         <ul class="list-unstyled ms-4">
+          @if(in_array('PROD', $privs))
           <li class="nav-item">
-
-            <a class="nav-link" href="{{ route('admin.product.index') }}">
+            <a class="nav-link {{ request()->routeIs('admin.product.*') ? 'active' : '' }}"
+               href="{{ route('admin.product.index') }}">
               <span class="nav-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <path d="M3 7.5l9 5l9-5" />
-                  <path d="M3 17.5l9 5l9-5" />
-                  <path d="M3 7.5v10l9 5v-10" />
-                  <path d="M21 7.5v10l-9 5v-10" />
-                  <path d="M3 7.5l9-5l9 5" />
+                  <path d="M3 7.5l9 5l9-5"/>
+                  <path d="M3 17.5l9 5l9-5"/>
+                  <path d="M3 7.5v10l9 5v-10"/>
+                  <path d="M21 7.5v10l-9 5v-10"/>
+                  <path d="M3 7.5l9-5l9 5"/>
                 </svg>
               </span>
               <span class="text">Products</span>
             </a>
           </li>
-          @if(in_array('PROD', $privs) || in_array('PROD_INV', $privs))
+          @endif
+          @if(in_array('PROD_INV', $privs))
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.productinventory.index') }}">
+            <a class="nav-link {{ request()->routeIs('admin.productinventory*') ? 'active' : '' }}"
+               href="{{ route('admin.productinventory.index') }}">
               <span class="nav-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <ellipse cx="12" cy="6" rx="8" ry="3" />
-                  <path d="M4 6v6a8 3 0 0 0 16 0V6" />
-                  <path d="M4 12v6a8 3 0 0 0 16 0v-6" />
+                  <ellipse cx="12" cy="6" rx="8" ry="3"/>
+                  <path d="M4 6v6a8 3 0 0 0 16 0V6"/>
+                  <path d="M4 12v6a8 3 0 0 0 16 0v-6"/>
                 </svg>
               </span>
               <span class="text">Product Inventory</span>
@@ -110,13 +127,14 @@
     <!-- CUSTOMERS -->
     @if(in_array('CUSTOMER', $privs))
     <li class="nav-item">
-      <a class="nav-link" href="{{ route('admin.customers.index') }}">
+      <a class="nav-link {{ request()->routeIs('admin.customers*') ? 'active' : '' }}"
+         href="{{ route('admin.customers.index') }}">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="7" r="4"></circle>
-            <path d="M5.5 21h13a2 2 0 0 0 2-2v-1a7 7 0 0 0-14 0v1a2 2 0 0 0 2 2z"></path>
+            <circle cx="12" cy="7" r="4"/>
+            <path d="M5.5 21h13a2 2 0 0 0 2-2v-1a7 7 0 0 0-14 0v1a2 2 0 0 0 2 2z"/>
           </svg>
         </span>
         <span class="text">Customers</span>
@@ -124,10 +142,15 @@
     </li>
     @endif
 
-    <!-- USERS -->
+    <!-- USERS (collapsible) -->
     @if(in_array('USER', $privs))
     <li class="nav-item">
-      <button class="nav-link collapsed w-100 text-start d-flex align-items-center justify-content-between" type="button" data-bs-toggle="collapse" data-bs-target="#userSubmenu" aria-expanded="false" aria-controls="userSubmenu">
+      <button class="nav-link w-100 text-start d-flex align-items-center justify-content-between {{ $userOpen ? '' : 'collapsed' }}"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#userSubmenu"
+              aria-expanded="{{ $userOpen ? 'true' : 'false' }}"
+              aria-controls="userSubmenu">
         <span class="d-flex align-items-center gap-2">
           <span class="nav-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
@@ -145,43 +168,43 @@
           </svg>
         </span>
       </button>
-      <div class="collapse" id="userSubmenu">
+      <div class="collapse {{ $userOpen ? 'show' : '' }}" id="userSubmenu">
         <ul class="list-unstyled ms-4">
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.users.index') }}">
+            <a class="nav-link {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
+               href="{{ route('admin.users.index') }}">
               <span class="nav-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <circle cx="12" cy="7" r="4" />
-                  <path d="M5.5 21h13a2 2 0 0 0 2-2v-2a7 7 0 0 0-14 0v2a2 2 0 0 0 2 2z" />
+                  <circle cx="12" cy="7" r="4"/>
+                  <path d="M5.5 21h13a2 2 0 0 0 2-2v-2a7 7 0 0 0-14 0v2a2 2 0 0 0 2 2z"/>
                 </svg>
               </span>
               <span class="text">Users</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.userprofile.index') }}">
+            <a class="nav-link {{ request()->routeIs('admin.userprofile.*') ? 'active' : '' }}"
+               href="{{ route('admin.userprofile.index') }}">
               <span class="nav-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <rect x="3" y="4" width="18" height="16" rx="3" />
-                  <circle cx="9" cy="10" r="2" />
-                  <line x1="15" y1="8" x2="17" y2="8" />
-                  <line x1="15" y1="12" x2="17" y2="12" />
-                  <line x1="7" y1="16" x2="17" y2="16" />
+                  <rect x="3" y="4" width="18" height="16" rx="3"/>
+                  <circle cx="9" cy="10" r="2"/>
+                  <line x1="15" y1="8" x2="17" y2="8"/>
+                  <line x1="15" y1="12" x2="17" y2="12"/>
+                  <line x1="7" y1="16" x2="17" y2="16"/>
                 </svg>
               </span>
               <span class="text">User Profiles</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="{{ route('admin.userprofprivileges.index') }}">
+            <a class="nav-link {{ request()->routeIs('admin.userprofprivileges.*') ? 'active' : '' }}"
+               href="{{ route('admin.userprofprivileges.index') }}">
               <span class="nav-icon">
                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                  <circle cx="8" cy="15" r="4" />
-                  <path d="M10.85 12.15l6.65-6.65a2.121 2.121 0 1 1 3 3l-6.65 6.65" />
-                  <path d="M15 6l3 3" />
+                  <circle cx="8" cy="15" r="4"/>
+                  <path d="M10.85 12.15l6.65-6.65a2.121 2.121 0 1 1 3 3l-6.65 6.65"/>
+                  <path d="M15 6l3 3"/>
                 </svg>
               </span>
               <span class="text">Privileges</span>
@@ -195,7 +218,8 @@
     <!-- ORDERS -->
     @if(in_array('ORDER', $privs))
     <li class="nav-item">
-      <a class="nav-link" href="{{ route('admin.orders.index') }}">
+      <a class="nav-link {{ request()->routeIs('admin.orders*') ? 'active' : '' }}"
+         href="{{ route('admin.orders.index') }}">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -214,7 +238,8 @@
     <!-- PAYMENTS -->
     @if(in_array('PAYMENT', $privs))
     <li class="nav-item">
-      <a class="nav-link" href="{{ route('admin.payments.index') }}">
+      <a class="nav-link {{ request()->routeIs('admin.payments*') ? 'active' : '' }}"
+         href="{{ route('admin.payments.index') }}">
         <span class="nav-icon">
           <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                viewBox="0 0 24 24" fill="none" stroke="currentColor"
@@ -230,35 +255,60 @@
     </li>
     @endif
 
-    <!-- REPORTS -->
+    <!-- REPORTS (collapsible) -->
     @if(in_array('REPORTS', $privs))
-    <li class="nav-item dropdown">
-      <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-        <span class="nav-icon">
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-bar">
-            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-            <path d="M3 12m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z" />
-            <path d="M15 10m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z" />
-            <path d="M9 6m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z" />
-            <path d="M3 20h18" />
+    <li class="nav-item">
+      <button class="nav-link w-100 text-start d-flex align-items-center justify-content-between {{ $reportOpen ? '' : 'collapsed' }}"
+              type="button"
+              data-bs-toggle="collapse"
+              data-bs-target="#reportSubmenu"
+              aria-expanded="{{ $reportOpen ? 'true' : 'false' }}"
+              aria-controls="reportSubmenu">
+        <span class="d-flex align-items-center gap-2">
+          <span class="nav-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"/>
+              <path d="M15 10m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2v-2a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/>
+              <path d="M9 6m0 2a2 2 0 0 0 2 2h2a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2z"/>
+              <path d="M3 20h18"/>
+            </svg>
+          </span>
+          <span class="text">Reports</span>
+        </span>
+        <span class="nav-caret">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="6 9 12 15 18 9" />
           </svg>
         </span>
-        <span class="text">Reports</span>
-      </a>
-      <ul class="dropdown-menu flex-column">
-        <li class="nav-item">
-          <a class="nav-link" href="/admin/reports">
-            <span class="nav-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" class="icon icon-tabler icons-tabler-outline icon-tabler-chart-line">
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <path d="M3 3v18h18" />
-                <path d="M20 18l-6 -6l-4 4l-6 -6" />
-              </svg>
-            </span>
-            <span class="text">All Reports</span>
-          </a>
-        </li>
-      </ul>
+      </button>
+      <div class="collapse {{ $reportOpen ? 'show' : '' }}" id="reportSubmenu">
+        <ul class="list-unstyled ms-4">
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}"
+               href="{{ route('admin.reports.index') }}">
+              <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"/>
+                  <path d="M20 18l-6 -6l-4 4l-6 -6"/>
+                </svg>
+              </span>
+              <span class="text">All Reports</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {{ request()->routeIs('admin.reports.productSales') ? 'active' : '' }}"
+               href="{{ route('admin.reports.productSales') }}">
+              <span class="nav-icon">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 3v18h18"/>
+                  <path d="M20 18l-6 -6l-4 4l-6 -6"/>
+                </svg>
+              </span>
+              <span class="text">Sales Performance</span>
+            </a>
+          </li>
+        </ul>
+      </div>
     </li>
     @endif
 
