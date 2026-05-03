@@ -61,7 +61,7 @@
                                 $availableQuantity = (int) data_get($product, 'available_quantity', 0);
                             @endphp
                             <div class="col-lg-6">
-                                <a href="{{ route('order.create') }}" class="d-block text-decoration-none" style="color: inherit;">
+                                <a href="{{ route('order.create', ['product' => $product->ProductID]) }}" class="d-block text-decoration-none" style="color: inherit;">
                                     <div class="d-flex align-items-center p-2 rounded" style="transition: all 0.3s ease; cursor: pointer;" onmouseover="this.style.backgroundColor='#f8f9fa'; this.style.transform='translateX(5px)';" onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateX(0)';">
                                         <img class="flex-shrink-0 img-fluid rounded" src="{{ asset($imagePath) }}" alt="{{ $product->ProductName }}" style="width: 88px; height: 88px; object-fit: cover;">
                                         <div class="w-100 d-flex flex-column text-start ps-4">

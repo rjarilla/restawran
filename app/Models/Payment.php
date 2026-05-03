@@ -18,6 +18,7 @@ class Payment extends Model
         'PaymentMode',
         'PaymentTotal',
         'PaymentChange',
+        'PaymentStatus',
     ];
 
     public function order()

@@ -39,7 +39,11 @@
               <tbody>
                 @forelse($recentCustomers ?? collect() as $customer)
                   <tr>
-                    <td>{{ $customer->CustomerName }}</td>
+                    <td>
+                      <a href="{{ route('admin.customers.show', $customer->CustomerID) }}" class="fw-semibold text-decoration-none">
+                        {{ $customer->CustomerName }}
+                      </a>
+                    </td>
                     <td>{{ $customer->CustomerCode }}</td>
                     <td>{{ $customer->CustomerCity ?? 'N/A' }}</td>
                     @if (in_array('EDT_CUSTOMER', $actions))
@@ -97,7 +101,11 @@
                             </span>
                         </td>
 
-                        <td>{{ $customer->CustomerName }}</td>
+                        <td>
+                            <a href="{{ route('admin.customers.show', $customer->CustomerID) }}" class="fw-semibold text-decoration-none">
+                                {{ $customer->CustomerName }}
+                            </a>
+                        </td>
                         <td>{{ $customer->CustomerEmail ?: 'N/A' }}</td>
                         <td>{{ $customer->CustomerContactNumber ?: 'N/A' }}</td>
                         <td>{{ $customer->CustomerCity ?: 'N/A' }}</td>

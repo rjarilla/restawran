@@ -66,7 +66,9 @@ class PaymentController extends Controller
 
         $payments = $query->get();
 
-        $totalAmountPaid = $payments->sum('PaymentTotal');
+        $totalAmountPaid = $payments
+            ->filter(fn ($payment) => ($payment->PaymentStatus ?? 'resolved') === 'resolved')
+            ->sum('PaymentTotal');
         $totalSoldItems = 0;
         $uniqueCustomers = [];
 
@@ -113,4 +115,3 @@ class PaymentController extends Controller
             ->with('success', 'Payment deleted successfully.');
     }
 }
-

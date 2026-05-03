@@ -85,5 +85,38 @@ class SampleDataSeeder extends Seeder
                 'PaymentChange' => 0
             ]);
         }
+
+        // Create sample products using raw DB inserts to match actual schema
+        $product1Id = \Illuminate\Support\Facades\DB::table('product')->insertGetId([
+            'ProductName' => 'Single Item Product',
+            'ProductDescription' => 'A product with only 1 item in stock.',
+            'ProductPrice' => 10.00,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+        
+        \Illuminate\Support\Facades\DB::table('productinventory')->insert([
+            'ProductID' => $product1Id,
+            'ProductQuantity' => 1,
+            'ProductBatchExpiry' => now()->addMonths(6),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $product2Id = \Illuminate\Support\Facades\DB::table('product')->insertGetId([
+            'ProductName' => 'Bulk Product',
+            'ProductDescription' => 'A product with 20 items in stock.',
+            'ProductPrice' => 50.00,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        \Illuminate\Support\Facades\DB::table('productinventory')->insert([
+            'ProductID' => $product2Id,
+            'ProductQuantity' => 20,
+            'ProductBatchExpiry' => now()->addMonths(6),
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
 }

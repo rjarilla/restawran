@@ -118,7 +118,7 @@
                                                                 max="{{ $product->available_quantity }}"
                                                                 class="form-control item-quantity"
                                                                 name="items[{{ $product->ProductID }}]"
-                                                                value="{{ $product->is_available ? old('items.' . $product->ProductID, 0) : 0 }}"
+                                                                value="{{ $product->is_available ? old('items.' . $product->ProductID, (string) $selectedProductId === (string) $product->ProductID ? 1 : 0) : 0 }}"
                                                                 data-name="{{ $product->ProductName }}"
                                                                 data-price="{{ $product->display_price }}"
                                                                 data-max="{{ $product->available_quantity }}"

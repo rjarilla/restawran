@@ -17,13 +17,15 @@ use RuntimeException;
 
 class OrderController extends Controller
 {
-    public function create()
+    public function create(Request $request)
     {
         $products = $this->getOrderableProducts();
+        $selectedProductId = $request->query('product');
 
         return view('order', [
             'products' => $products,
             'confirmation' => session('order_confirmation'),
+            'selectedProductId' => $selectedProductId,
         ]);
     }
 

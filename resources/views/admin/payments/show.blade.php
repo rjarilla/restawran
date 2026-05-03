@@ -51,6 +51,17 @@
                             </p>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p><strong>Status:</strong></p>
+                            @php $paymentStatus = $payment->PaymentStatus ?? 'resolved'; @endphp
+                            <p>
+                                <span class="badge bg-{{ $paymentStatus === 'resolved' ? 'success' : 'warning' }}">
+                                    {{ ucfirst($paymentStatus) }}
+                                </span>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -131,6 +142,7 @@
 function getPaymentMethodBadgeClass($method) {
     $classes = [
         'gcash' => 'success',
+        'cash' => 'success',
         'credit_card' => 'primary',
         'bank_transfer' => 'info',
         'cash_on_delivery' => 'warning'

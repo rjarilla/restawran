@@ -173,6 +173,7 @@
                                 <th>Customer</th>
                                 <th>Payment Method</th>
                                 <th>Amount</th>
+                                <th>Status</th>
                                 <th>Order Date</th>
                                 <th>Actions</th>
                             </tr>
@@ -206,6 +207,12 @@
                                             <br>
                                             <small class="text-success">Change: PHP {{ number_format($payment->PaymentChange, 2) }}</small>
                                         @endif
+                                    </td>
+                                    <td>
+                                        @php $paymentStatus = $payment->PaymentStatus ?? 'resolved'; @endphp
+                                        <span class="badge bg-{{ $paymentStatus === 'resolved' ? 'success' : 'warning' }}">
+                                            {{ ucfirst($paymentStatus) }}
+                                        </span>
                                     </td>
                                     <td>
                                         @if($payment->order)
@@ -245,6 +252,7 @@
 function getPaymentMethodBadgeClass($method) {
     $classes = [
         'gcash' => 'success',
+        'cash' => 'success',
         'credit_card' => 'primary',
         'bank_transfer' => 'info',
         'cash_on_delivery' => 'warning'

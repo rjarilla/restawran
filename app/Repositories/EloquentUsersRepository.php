@@ -67,8 +67,8 @@ class EloquentUsersRepository implements UsersRepositoryInterface
     {
         // find user by username
         $user = $this->model->where('UserName', $userName)->first();
-        if ($user && $user->UserPassword === md5($password)) {
-            $user->load(['userprofile', 'userprofileprivileges']);
+        if ($user && Hash::check($password, $user->Password)) {
+            // $user->load(['userprofile', 'userprofileprivileges']);
             return $user;
         }
         return null;
