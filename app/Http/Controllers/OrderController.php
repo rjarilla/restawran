@@ -14,16 +14,38 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 use RuntimeException;
+use App\Repositories\Interfaces\LookupRepositoryInterface;
 
 class OrderController extends Controller
 {
+    protected $lookupRepo;
+
+    public function __construct(LookupRepositoryInterface $lookupRepo)
+    {
+        $this->lookupRepo = $lookupRepo;
+    }
+
     public function create(Request $request)
     {
         $products = $this->getOrderableProducts();
         $selectedProductId = $request->query('product');
 
+        $allLookups = $this->lookupRepo->all();
+        $categories = $allLookups->filter(function($item) {
+            return $item->LookupCategory === 'PROD' && $item->LookupName === 'CATEGORY';
+        })->values();
+
+        // Create a map of LookupID to LookupValue for easier access
+        $categoryNames = $categories->pluck('LookupValue', 'LookupID');
+
+        // Group products by category ID
+        $groupedProducts = $products->groupBy('ProductCategoryID');
+
         return view('order', [
             'products' => $products,
+            'groupedProducts' => $groupedProducts,
+            'categories' => $categories,
+            'categoryNames' => $categoryNames,
             'confirmation' => session('order_confirmation'),
             'selectedProductId' => $selectedProductId,
         ]);
