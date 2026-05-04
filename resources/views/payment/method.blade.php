@@ -280,15 +280,65 @@
 
                 <div class="row g-4">
                     <div class="col-lg-7">
-                        <div class="section-title text-start fade-in-up mb-3">
-                            <h5 class="ff-secondary text-primary fw-normal">Payment Options</h5>
-                            <h3 class="mb-3">Select Your Payment Method</h3>
+                        <div class="section-title text-start fade-in-up mb-4">
+                            <h5 class="ff-secondary text-primary fw-normal">Complete Your Order</h5>
+                            <h3 class="mb-3">Customer Information & Payment</h3>
                         </div>
 
                         <form method="POST" action="{{ route('payment.process') }}" id="paymentForm">
                             @csrf
                             
+                            <!-- Customer Information Section -->
+                            <div class="payment-methods-container fade-in-up mb-4">
+                                
+                                <div class="row g-3">
+                                    <div class="col-md-12">
+                                        <label for="CustomerName" class="form-label">Full Name *</label>
+                                        <input type="text" class="form-control" id="CustomerName" name="CustomerName" required 
+                                               value="{{ old('CustomerName', $pendingOrder['customer_details']['CustomerName'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="CustomerEmail" class="form-label">Email Address *</label>
+                                        <input type="email" class="form-control" id="CustomerEmail" name="CustomerEmail" required
+                                               value="{{ old('CustomerEmail', $pendingOrder['customer_details']['CustomerEmail'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-6">
+                                        <label for="CustomerContactNumber" class="form-label">Contact Number *</label>
+                                        <input type="tel" class="form-control" id="CustomerContactNumber" name="CustomerContactNumber" required
+                                               value="{{ old('CustomerContactNumber', $pendingOrder['customer_details']['CustomerContactNumber'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="CustomerAddressLine1" class="form-label">Address Line 1 *</label>
+                                        <input type="text" class="form-control" id="CustomerAddressLine1" name="CustomerAddressLine1" required
+                                               value="{{ old('CustomerAddressLine1', $pendingOrder['customer_details']['CustomerAddressLine1'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-12">
+                                        <label for="CustomerAddressLine2" class="form-label">Address Line 2</label>
+                                        <input type="text" class="form-control" id="CustomerAddressLine2" name="CustomerAddressLine2"
+                                               value="{{ old('CustomerAddressLine2', $pendingOrder['customer_details']['CustomerAddressLine2'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="CustomerCity" class="form-label">City *</label>
+                                        <input type="text" class="form-control" id="CustomerCity" name="CustomerCity" required
+                                               value="{{ old('CustomerCity', $pendingOrder['customer_details']['CustomerCity'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="CustomerProvince" class="form-label">Province *</label>
+                                        <input type="text" class="form-control" id="CustomerProvince" name="CustomerProvince" required
+                                               value="{{ old('CustomerProvince', $pendingOrder['customer_details']['CustomerProvince'] ?? '') }}">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label for="CustomerPostalCode" class="form-label">Postal Code</label>
+                                        <input type="text" class="form-control" id="CustomerPostalCode" name="CustomerPostalCode"
+                                               value="{{ old('CustomerPostalCode', $pendingOrder['customer_details']['CustomerPostalCode'] ?? '') }}">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Payment Method Section -->
                             <div class="payment-methods-container fade-in-up">
+                                <h6 class="text-muted mb-3 fw-semibold">Choose Payment Method</h6>
+                                
                                 <div class="payment-card" onclick="selectPaymentMethod('gcash')">
                                     <div class="d-flex align-items-center">
                                         <div class="payment-icon me-3">
@@ -353,7 +403,7 @@
                             <div class="mt-4 fade-in-up" style="animation-delay: 0.3s;">
                                 <div class="d-flex gap-2">
                                     <button type="submit" class="btn proceed-btn text-white" id="proceedBtn" disabled>
-                                        <i class="fas fa-lock me-2"></i>Proceed to Payment
+                                        <i class="fas fa-lock me-2"></i>Complete Order
                                     </button>
                                     <a href="{{ route('order.create') }}" class="btn back-btn">
                                         <i class="fas fa-arrow-left me-2"></i>Back
@@ -372,47 +422,7 @@
                                 </div>
 
                                 <div class="customer-info">
-                                    <h6 class="mb-2 fw-bold">Customer Details</h6>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fas fa-user"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <div class="info-label">Name</div>
-                                            <div class="info-value">{{ $pendingOrder['customer_details']['CustomerName'] }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fas fa-envelope"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <div class="info-label">Email</div>
-                                            <div class="info-value">{{ $pendingOrder['customer_details']['CustomerEmail'] }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fas fa-phone"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <div class="info-label">Phone</div>
-                                            <div class="info-value">{{ $pendingOrder['customer_details']['CustomerContactNumber'] }}</div>
-                                        </div>
-                                    </div>
-                                    <div class="info-item">
-                                        <div class="info-icon">
-                                            <i class="fas fa-map-marker-alt"></i>
-                                        </div>
-                                        <div class="info-text">
-                                            <div class="info-label">Address</div>
-                                            <div class="info-value">{{ $pendingOrder['customer_details']['CustomerAddressLine1'] }}, {{ $pendingOrder['customer_details']['CustomerCity'] }}</div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="mt-3">
-                                    <h6 class="mb-2 fw-bold">Order Items</h6>
+                                    <h6 class="mb-2 fw-bold">Order Summary</h6>
                                     @foreach ($pendingOrder['items'] as $item)
                                         <div class="order-item">
                                             <div class="d-flex justify-content-between align-items-center">
@@ -460,8 +470,8 @@
             // Check the corresponding radio button
             document.getElementById(method).checked = true;
             
-            // Enable the proceed button
-            document.getElementById('proceedBtn').disabled = false;
+            // Check if form is ready to submit
+            checkFormReadiness();
         }
         
         // Handle radio button changes
@@ -475,10 +485,39 @@
                 // Add selected class to parent card
                 this.closest('.payment-card').classList.add('selected');
                 
-                // Enable the proceed button
-                document.getElementById('proceedBtn').disabled = false;
+                // Check if form is ready to submit
+                checkFormReadiness();
             });
         });
+        
+        // Check customer form fields
+        document.querySelectorAll('#paymentForm input[required]').forEach(input => {
+            input.addEventListener('input', checkFormReadiness);
+            input.addEventListener('change', checkFormReadiness);
+        });
+        
+        function checkFormReadiness() {
+            const requiredFields = document.querySelectorAll('#paymentForm input[required]');
+            const paymentMethod = document.querySelector('input[name="payment_method"]:checked');
+            
+            let allFieldsValid = true;
+            
+            // Check all required fields
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    allFieldsValid = false;
+                }
+            });
+            
+            // Check if payment method is selected
+            const paymentSelected = paymentMethod !== null;
+            
+            // Enable submit button only if everything is valid
+            document.getElementById('proceedBtn').disabled = !(allFieldsValid && paymentSelected);
+        }
+        
+        // Initial check
+        checkFormReadiness();
     </script>
 </body>
 </html>

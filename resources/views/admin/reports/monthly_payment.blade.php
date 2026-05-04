@@ -342,50 +342,71 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('PDF URL:', pdfUrl); // Debug log
         window.open(pdfUrl, '_blank');
     });
-    // Prepare data arrays
+    // Prepare data arrays for daily chart
     @php
         $dailyLabels = [];
         $dailyRevenueArray = [];
         $dailyTransactionsArray = [];
         
-        if($dailySales->isNotEmpty()):
-            foreach($dailySales as $day):
-                $dailyLabels[] = \Carbon\Carbon::parse($day['date'])->format('M d');
-                $dailyRevenueArray[] = $day['revenue'];
-                $dailyTransactionsArray[] = $day['orders'];
+        // Always generate hourly labels for a full day
+        for($i = 0; $i < 24; $i++):
+            $dailyLabels[] = sprintf('%02d:00', $i);
+            $dailyRevenueArray[] = 0;
+            $dailyTransactionsArray[] = 0;
+        endfor;
+        
+        // Add actual data if available
+        if(isset($dailyPaymentTrend) && $dailyPaymentTrend->isNotEmpty()):
+            foreach($dailyPaymentTrend as $hour):
+                $hourIndex = (int)str_replace(':00', '', $hour['hour']);
+                if($hourIndex >= 0 && $hourIndex < 24):
+                    $dailyRevenueArray[$hourIndex] = $hour['revenue'];
+                    $dailyTransactionsArray[$hourIndex] = $hour['transactions'];
+                endif;
             endforeach;
-        else:
-            $daysInMonth = \Carbon\Carbon::createFromDate($year, $month, 1)->daysInMonth;
-            for($i = 1; $i <= $daysInMonth; $i++):
-                $dailyLabels[] = \Carbon\Carbon::createFromDate($year, $month, $i)->format('M d');
-                $dailyRevenueArray[] = 0;
-                $dailyTransactionsArray[] = 0;
-            endfor;
         endif;
+    @endphp
+    
+    // Prepare data arrays for weekly chart
+    @php
+        $weeklyLabels = [];
+        $weeklyRevenueArray = [];
+        $weeklyTransactionsArray = [];
         
-        $paymentMethodLabelsArray = [];
-        $paymentMethodDataArray = [];
+        // Always generate date labels for the week
+        $currentDate = clone $weeklyStartDate;
+        $dayCount = 0;
+        while($currentDate <= $weeklyEndDate && $dayCount < 7):
+            $weeklyLabels[] = $currentDate->format('M d');
+            $weeklyRevenueArray[] = 0;
+            $weeklyTransactionsArray[] = 0;
+            $currentDate->addDay();
+            $dayCount++;
+        endwhile;
         
-        if($paymentModes->isNotEmpty()):
-            foreach($paymentModes as $mode):
-                $paymentMethodLabelsArray[] = str_replace('_', ' ', ucfirst($mode['mode']));
-                $paymentMethodDataArray[] = $mode['revenue'];
+        // Add actual data if available
+        if(isset($weeklyPaymentTrend) && $weeklyPaymentTrend->isNotEmpty()):
+            foreach($weeklyPaymentTrend as $day):
+                $dateFormatted = \Carbon\Carbon::parse($day['date'])->format('M d');
+                $index = array_search($dateFormatted, $weeklyLabels);
+                if($index !== false):
+                    $weeklyRevenueArray[$index] = $day['revenue'];
+                    $weeklyTransactionsArray[$index] = $day['transactions'];
+                endif;
             endforeach;
-        else:
-            $paymentMethodLabelsArray[] = 'No Payments';
-            $paymentMethodDataArray[] = 1;
         endif;
     @endphp
     
     const dailyLabels = @json($dailyLabels);
     const dailyRevenue = @json($dailyRevenueArray);
     const dailyTransactions = @json($dailyTransactionsArray);
-    const paymentMethodLabels = @json($paymentMethodLabelsArray);
-    const paymentMethodData = @json($paymentMethodDataArray);
+    const weeklyLabels = @json($weeklyLabels);
+    const weeklyRevenue = @json($weeklyRevenueArray);
+    const weeklyTransactions = @json($weeklyTransactionsArray);
 
     @php
         $weeklyData = [0, 0, 0, 0, 0, 0, 0];
-        if($dailySales->isNotEmpty()):
+        if(isset($dailySales) && $dailySales->isNotEmpty()):
             foreach($dailySales as $day):
                 $dayOfWeek = \Carbon\Carbon::parse($day['date'])->dayOfWeek;
                 $weeklyData[$dayOfWeek] = $day['revenue'];
@@ -393,7 +414,7 @@ document.addEventListener('DOMContentLoaded', function() {
         endif;
         
         $valueRanges = [0, 0, 0, 0, 0];
-        if($dailySales->isNotEmpty()):
+        if(isset($dailySales) && $dailySales->isNotEmpty()):
             foreach($dailySales as $day):
                 $avgValue = $day['average_order_value'];
                 if($avgValue <= 100) $valueRanges[0] += $day['orders'];
@@ -408,7 +429,7 @@ document.addEventListener('DOMContentLoaded', function() {
         $weeklyTrendData = [0, 0, 0, 0, 0];
         $weeklyTrendTransactions = [0, 0, 0, 0, 0];
         
-        if($dailySales->isNotEmpty()):
+        if(isset($dailySales) && $dailySales->isNotEmpty()):
             foreach($dailySales as $day):
                 $date = \Carbon\Carbon::parse($day['date']);
                 $weekOfMonth = ceil($date->day / 7);
@@ -421,27 +442,25 @@ document.addEventListener('DOMContentLoaded', function() {
         endif;
     @endphp
     
-    const weeklyData = @json($weeklyData);
-    const valueRangeData = @json($valueRanges);
-    const weeklyTrendData = @json($weeklyTrendData);
-    const weeklyTrendTransactions = @json($weeklyTrendTransactions);
-
     // Daily Payment Trend Chart
+    console.log('Daily chart data:', { dailyLabels, dailyRevenue, dailyTransactions });
     const dailySalesCtx = document.getElementById('dailySalesChart');
+    console.log('Daily chart canvas found:', !!dailySalesCtx);
     if (dailySalesCtx) {
-        new Chart(dailySalesCtx, {
+        try {
+            new Chart(dailySalesCtx, {
             type: 'line',
             data: {
                 labels: dailyLabels,
                 datasets: [{
-                    label: 'Daily Payment Revenue',
+                    label: 'Hourly Payment Revenue',
                     data: dailyRevenue,
                     borderColor: 'rgb(75, 192, 192)',
                     backgroundColor: 'rgba(75, 192, 192, 0.1)',
                     tension: 0.1,
                     fill: true
                 }, {
-                    label: 'Transactions',
+                    label: 'Hourly Transactions',
                     data: dailyTransactions,
                     borderColor: 'rgb(255, 99, 132)',
                     backgroundColor: 'rgba(255, 99, 132, 0.1)',
@@ -457,61 +476,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     mode: 'index',
                     intersect: false,
                 },
-                scales: {
-                    y: {
-                        type: 'linear',
+                plugins: {
+                    title: {
                         display: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Payment Revenue (₱)'
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Transactions'
-                        },
-                        grid: {
-                            drawOnChartArea: false,
-                        },
-                    },
-                }
-            }
-        });
-    }
-
-    // Weekly Payment Trend Chart
-    const weeklySalesCtx = document.getElementById('weeklySalesChart');
-    if (weeklySalesCtx) {
-        new Chart(weeklySalesCtx, {
-            type: 'bar',
-            data: {
-                labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4', 'Week 5'],
-                datasets: [{
-                    label: 'Weekly Payment Revenue',
-                    data: weeklyTrendData,
-                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }, {
-                    label: 'Weekly Transactions',
-                    data: weeklyTrendTransactions,
-                    backgroundColor: 'rgba(255, 99, 132, 0.8)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                    yAxisID: 'y1'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
+                        text: 'Daily Payment Trend - {{ $dailyDate->format('M d, Y') }}'
+                    }
                 },
                 scales: {
                     y: {
@@ -538,10 +507,80 @@ document.addEventListener('DOMContentLoaded', function() {
                 }
             }
         });
+        } catch (error) {
+            console.error('Daily chart initialization error:', error);
+        }
     }
 
+    // Weekly Payment Trend Chart
+    console.log('Weekly chart data:', { weeklyLabels, weeklyRevenue, weeklyTransactions });
+    const weeklySalesCtx = document.getElementById('weeklySalesChart');
+    console.log('Weekly chart canvas found:', !!weeklySalesCtx);
+    if (weeklySalesCtx) {
+        try {
+            new Chart(weeklySalesCtx, {
+            type: 'bar',
+            data: {
+                labels: weeklyLabels,
+                datasets: [{
+                    label: 'Daily Payment Revenue',
+                    data: weeklyRevenue,
+                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }, {
+                    label: 'Daily Transactions',
+                    data: weeklyTransactions,
+                    backgroundColor: 'rgba(255, 99, 132, 0.8)',
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    borderWidth: 1,
+                    yAxisID: 'y1'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Weekly Payment Trend - {{ $weeklyStartDate->format('M d') }} to {{ $weeklyEndDate->format('M d, Y') }}'
+                    }
+                },
+                scales: {
+                    y: {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        title: {
+                            display: true,
+                            text: 'Payment Revenue (₱)'
+                        }
+                    },
+                    y1: {
+                        type: 'linear',
+                        display: true,
+                        position: 'right',
+                        title: {
+                            display: true,
+                            text: 'Transactions'
+                        },
+                        grid: {
+                            drawOnChartArea: false,
+                        },
+                    },
+                }
+            }
+        });
+        } catch (error) {
+            console.error('Weekly chart initialization error:', error);
+        }
+    }
     
-    });
+});
 </script>
 @endpush
 @endsection

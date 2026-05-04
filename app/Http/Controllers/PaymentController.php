@@ -45,10 +45,35 @@ class PaymentController extends Controller
                 ->withErrors(['order' => 'No pending order found. Please place an order first.']);
         }
 
-        // Validate payment method selection
+        // Validate customer details and payment method selection
         $request->validate([
+            'CustomerName' => 'required|string|max:255',
+            'CustomerEmail' => 'required|email|max:255',
+            'CustomerContactNumber' => 'required|string|max:20',
+            'CustomerAddressLine1' => 'required|string|max:255',
+            'CustomerAddressLine2' => 'nullable|string|max:255',
+            'CustomerStreet' => 'nullable|string|max:255',
+            'CustomerCity' => 'required|string|max:100',
+            'CustomerProvince' => 'required|string|max:100',
+            'CustomerPostalCode' => 'nullable|string|max:20',
             'payment_method' => 'required|in:gcash,credit_card,bank_transfer,cash_on_delivery',
         ]);
+
+        // Update pending order with customer details
+        $pendingOrder['customer_details'] = [
+            'CustomerName' => $request->CustomerName,
+            'CustomerAddressLine1' => $request->CustomerAddressLine1,
+            'CustomerAddressLine2' => $request->CustomerAddressLine2 ?? '',
+            'CustomerStreet' => $request->CustomerStreet ?? '',
+            'CustomerCity' => $request->CustomerCity,
+            'CustomerProvince' => $request->CustomerProvince,
+            'CustomerPostalCode' => $request->CustomerPostalCode ?? '',
+            'CustomerEmail' => $request->CustomerEmail,
+            'CustomerContactNumber' => $request->CustomerContactNumber,
+        ];
+        
+        // Update session with new customer details
+        session(['pending_order' => $pendingOrder]);
 
         // Convert session items back to lineItems format for database processing
         $lineItems = collect();
