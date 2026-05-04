@@ -25,7 +25,7 @@
             <div class="container-xxl py-5 bg-dark hero-header mb-5">
                 <div class="container text-center my-5 pt-5 pb-4">
                     <h1 class="display-3 text-white mb-3 animated slideInDown">Build Your Order</h1>
-                    <p class="text-white mb-0">Pick your items, add delivery details, and save the order directly into Restawran.</p>
+                    <p class="text-white mb-0">Pick your items and place your order directly into Restawran.</p>
                 </div>
             </div>
         </div>
@@ -79,58 +79,100 @@
                                     No products are available yet. Add products in the admin panel before placing an order.
                                 </div>
                             @else
-                                <div class="row g-4">
-                                    @foreach ($products as $product)
-                                        <div class="col-md-6">
-                                            <div class="card h-100 border-0 shadow-sm {{ $product->is_available ? '' : 'bg-light-subtle' }}">
-                                                <img
-                                                    src="{{ asset($product->ProductImagePath ?: 'assets/images/products/default.png') }}"
-                                                    class="card-img-top {{ $product->is_available ? '' : 'opacity-50' }}"
-                                                    alt="{{ $product->ProductName }}"
-                                                    style="height: 220px; object-fit: cover;"
-                                                >
-                                                <div class="card-body d-flex flex-column">
-                                                    <div class="d-flex justify-content-between align-items-start mb-2">
-                                                        <h5 class="card-title mb-0">{{ $product->ProductName }}</h5>
-                                                        @if ($product->is_available)
-                                                            <span class="badge bg-primary rounded-pill">PHP {{ number_format($product->display_price, 2) }}</span>
-                                                        @else
-                                                            <span class="badge bg-danger rounded-pill">NOT AVAILABLE</span>
-                                                        @endif
-                                                    </div>
-                                                    <p class="card-text text-muted flex-grow-1">
-                                                        {{ $product->ProductDescription ?: 'Freshly prepared and ready for your order.' }}
-                                                    </p>
-                                                    <div class="d-flex justify-content-between align-items-center mb-3">
-                                                        <small class="text-muted">Available stock</small>
-                                                        <strong class="{{ $product->is_available ? 'text-success' : 'text-danger' }}">
-                                                            {{ $product->available_quantity }}
-                                                        </strong>
-                                                    </div>
-                                                    <div class="row g-2 align-items-end">
-                                                        <div class="col-12">
-                                                            <label class="form-label mb-1" for="item-{{ $product->ProductID }}">Quantity</label>
-                                                            <input
-                                                                id="item-{{ $product->ProductID }}"
-                                                                type="number"
-                                                                min="0"
-                                                                step="1"
-                                                                max="{{ $product->available_quantity }}"
-                                                                class="form-control item-quantity"
-                                                                name="items[{{ $product->ProductID }}]"
-                                                                value="{{ $product->is_available ? old('items.' . $product->ProductID, (string) $selectedProductId === (string) $product->ProductID ? 1 : 0) : 0 }}"
-                                                                data-name="{{ $product->ProductName }}"
-                                                                data-price="{{ $product->display_price }}"
-                                                                data-max="{{ $product->available_quantity }}"
-                                                                @disabled(!$product->is_available)
-                                                            >
+                                @php
+                                    $productsByCategory = $products
+                                        ->sortBy([
+                                            ['is_available', 'desc'],
+                                            ['available_quantity', 'desc'],
+                                            ['ProductName', 'asc'],
+                                        ])
+                                        ->groupBy('ProductCategoryID');
+                                @endphp
+
+                                @foreach ($productsByCategory as $categoryName => $categoryProducts)
+                                    <div class="mb-4">
+                                        <div class="d-flex align-items-center justify-content-between mb-3">
+                                            <h4 class="mb-0">Category {{ $categoryName }}</h4>
+                                            <small class="text-muted">Available items appear first</small>
+                                        </div>
+
+                                        <div class="row g-4">
+                                            @foreach ($categoryProducts as $product)
+                                                <div class="col-md-6">
+                                                    <div class="card h-100 border-0 shadow-sm {{ $product->is_available ? '' : 'bg-light-subtle' }}">
+                                                        <img
+                                                            src="{{ asset($product->ProductImagePath ?: 'assets/images/products/default.png') }}"
+                                                            class="card-img-top {{ $product->is_available ? '' : 'opacity-50' }}"
+                                                            alt="{{ $product->ProductName }}"
+                                                            style="height: 220px; object-fit: cover;"
+                                                        >
+                                                        <div class="card-body d-flex flex-column">
+                                                            <div class="d-flex justify-content-between align-items-start mb-2">
+                                                                <h5 class="card-title mb-0">{{ $product->ProductName }}</h5>
+                                                                @if ($product->is_available)
+                                                                    <span class="badge bg-primary rounded-pill">PHP {{ number_format($product->display_price, 2) }}</span>
+                                                                @else
+                                                                    <span class="badge bg-danger rounded-pill">NOT AVAILABLE</span>
+                                                                @endif
+                                                            </div>
+                                                            <p class="card-text text-muted flex-grow-1">
+                                                                {{ $product->ProductDescription ?: 'Freshly prepared and ready for your order.' }}
+                                                            </p>
+                                                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                                                <small class="text-muted">Available stock</small>
+                                                                <strong class="{{ $product->is_available ? 'text-success' : 'text-danger' }}">
+                                                                    {{ $product->available_quantity }}
+                                                                </strong>
+                                                            </div>
+                                                            <div class="row g-2 align-items-end">
+                                                                <div class="col-12">
+                                                                    <label class="form-label mb-1" for="item-{{ $product->ProductID }}">Quantity</label>
+                                                                    <input
+                                                                        id="item-{{ $product->ProductID }}"
+                                                                        type="number"
+                                                                        min="0"
+                                                                        step="1"
+                                                                        max="{{ $product->available_quantity }}"
+                                                                        class="form-control item-quantity"
+                                                                        name="items[{{ $product->ProductID }}]"
+                                                                        value="{{ $product->is_available ? old('items.' . $product->ProductID, (string) $selectedProductId === (string) $product->ProductID ? 1 : 0) : 0 }}"
+                                                                        data-name="{{ $product->ProductName }}"
+                                                                        data-price="{{ $product->display_price }}"
+                                                                        data-max="{{ $product->available_quantity }}"
+                                                                        @disabled(!$product->is_available)
+                                                                    >
+                                                                    @if ($product->is_available)
+                                                                        <div class="d-flex align-items-center gap-2 mt-3">
+                                                                            <button
+                                                                                type="button"
+                                                                                class="btn btn-outline-secondary qty-minus"
+                                                                                data-target="item-{{ $product->ProductID }}"
+                                                                            >
+                                                                                -
+                                                                            </button>
+
+                                                                            <button
+                                                                                type="button"
+                                                                                class="btn btn-primary flex-grow-1 qty-plus"
+                                                                                data-target="item-{{ $product->ProductID }}"
+                                                                            >
+                                                                                +
+                                                                            </button>
+                                                                        </div>
+                                                                    @else
+                                                                        <button type="button" class="btn btn-secondary w-100 mt-3" disabled>
+                                                                            Out of Stock
+                                                                        </button>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            @endforeach
                                         </div>
-                                    @endforeach
-                                </div>
+                                    </div>
+                                @endforeach
                             @endif
                         </div>
 
@@ -138,64 +180,7 @@
                             <div class="bg-light rounded p-4 p-lg-5 shadow-sm">
                                 <div class="section-title text-start">
                                     <h5 class="ff-secondary text-primary fw-normal">Checkout</h5>
-                                    <h2 class="mb-4">Customer Details</h2>
-                                </div>
-
-                                <div class="row g-3">
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="CustomerName" name="CustomerName" placeholder="Full Name" value="{{ old('CustomerName') }}">
-                                            <label for="CustomerName">Full Name</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="email" class="form-control" id="CustomerEmail" name="CustomerEmail" placeholder="Email Address" value="{{ old('CustomerEmail') }}">
-                                            <label for="CustomerEmail">Email Address</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="CustomerContactNumber" name="CustomerContactNumber" placeholder="Contact Number" value="{{ old('CustomerContactNumber') }}">
-                                            <label for="CustomerContactNumber">Contact Number</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="CustomerAddressLine1" name="CustomerAddressLine1" placeholder="Address Line 1" value="{{ old('CustomerAddressLine1') }}">
-                                            <label for="CustomerAddressLine1">Address Line 1</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-12">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="CustomerAddressLine2" name="CustomerAddressLine2" placeholder="Address Line 2" value="{{ old('CustomerAddressLine2') }}">
-                                            <label for="CustomerAddressLine2">Address Line 2</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="CustomerStreet" name="CustomerStreet" placeholder="Street" value="{{ old('CustomerStreet') }}">
-                                            <label for="CustomerStreet">Street</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="CustomerCity" name="CustomerCity" placeholder="City" value="{{ old('CustomerCity') }}">
-                                            <label for="CustomerCity">City</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="CustomerProvince" name="CustomerProvince" placeholder="Province" value="{{ old('CustomerProvince') }}">
-                                            <label for="CustomerProvince">Province</label>
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-floating">
-                                            <input type="text" class="form-control" id="CustomerPostalCode" name="CustomerPostalCode" placeholder="Postal Code" value="{{ old('CustomerPostalCode') }}">
-                                            <label for="CustomerPostalCode">Postal Code</label>
-                                        </div>
-                                    </div>
+                                    <h2 class="mb-4">Order Summary</h2>
                                 </div>
 
                                 <hr class="my-4">
@@ -209,7 +194,7 @@
                                     <strong id="estimated-total">PHP 0.00</strong>
                                 </div>
                                 <div id="order-summary" class="small text-muted mb-4">
-                                    Add quantities to see your live order summary.
+                                    Select item quantities to review your order.
                                 </div>
 
                                 <button type="submit" class="btn btn-primary py-3 px-5 w-100" @if($products->isEmpty()) disabled @endif>
@@ -230,6 +215,8 @@
     <script>
         (function () {
             const quantityInputs = document.querySelectorAll('.item-quantity');
+            const plusButtons = document.querySelectorAll('.qty-plus');
+            const minusButtons = document.querySelectorAll('.qty-minus');
             const selectedCount = document.getElementById('selected-count');
             const estimatedTotal = document.getElementById('estimated-total');
             const orderSummary = document.getElementById('order-summary');
@@ -265,11 +252,46 @@
                 estimatedTotal.textContent = formatCurrency(total);
                 orderSummary.innerHTML = lines.length
                     ? lines.join('<br>')
-                    : 'Add quantities to see your live order summary.';
+                    : 'Select item quantities to review your order.';
             }
 
             quantityInputs.forEach((input) => {
                 input.addEventListener('input', updateSummary);
+            });
+
+            plusButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const input = document.getElementById(button.dataset.target);
+                    if (!input || input.disabled) {
+                        return;
+                    }
+
+                    const currentQuantity = parseInt(input.value || '0', 10);
+                    const maxQuantity = parseInt(input.dataset.max || '0', 10);
+
+                    if (currentQuantity < maxQuantity) {
+                        input.value = currentQuantity + 1;
+                    }
+
+                    updateSummary();
+                });
+            });
+
+            minusButtons.forEach((button) => {
+                button.addEventListener('click', () => {
+                    const input = document.getElementById(button.dataset.target);
+                    if (!input || input.disabled) {
+                        return;
+                    }
+
+                    const currentQuantity = parseInt(input.value || '0', 10);
+
+                    if (currentQuantity > 0) {
+                        input.value = currentQuantity - 1;
+                    }
+
+                    updateSummary();
+                });
             });
 
             updateSummary();

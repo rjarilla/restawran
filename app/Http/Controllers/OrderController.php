@@ -32,15 +32,6 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'CustomerName' => 'required|string|max:200',
-            'CustomerAddressLine1' => 'required|string|max:200',
-            'CustomerAddressLine2' => 'nullable|string|max:200',
-            'CustomerStreet' => 'required|string|max:200',
-            'CustomerCity' => 'required|string|max:200',
-            'CustomerProvince' => 'required|string|max:200',
-            'CustomerPostalCode' => 'required|string|max:200',
-            'CustomerEmail' => 'required|email|max:200',
-            'CustomerContactNumber' => 'required|string|max:200',
             'items' => 'required|array',
             'items.*' => 'nullable|integer|min:0',
         ]);
@@ -172,15 +163,15 @@ class OrderController extends Controller
         session([
             'pending_order' => [
                 'customer_details' => [
-                    'CustomerName' => $request->input('CustomerName'),
-                    'CustomerAddressLine1' => $request->input('CustomerAddressLine1'),
-                    'CustomerAddressLine2' => $request->input('CustomerAddressLine2', ''),
-                    'CustomerStreet' => $request->input('CustomerStreet'),
-                    'CustomerCity' => $request->input('CustomerCity'),
-                    'CustomerProvince' => $request->input('CustomerProvince'),
-                    'CustomerPostalCode' => $request->input('CustomerPostalCode'),
-                    'CustomerEmail' => $request->input('CustomerEmail'),
-                    'CustomerContactNumber' => $request->input('CustomerContactNumber'),
+                    'CustomerName' => 'Walk-in Customer',
+                    'CustomerAddressLine1' => '',
+                    'CustomerAddressLine2' => '',
+                    'CustomerStreet' => '',
+                    'CustomerCity' => '',
+                    'CustomerProvince' => '',
+                    'CustomerPostalCode' => '',
+                    'CustomerEmail' => '',
+                    'CustomerContactNumber' => '',
                 ],
                 'items' => $lineItems->map(function ($lineItem) {
                     return [
