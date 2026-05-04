@@ -94,7 +94,8 @@
                                          aria-labelledby="pills-{{ $category->LookupID }}-tab">
                                         
                                         @php
-                                            $categoryProducts = $groupedProducts->get($category->LookupID, collect());
+                                            $categoryProducts = $groupedProducts->get($category->LookupID, collect())
+                                                ->sortByDesc('available_quantity');
                                         @endphp
 
                                         <div class="d-flex justify-content-between align-items-center mb-4">
@@ -108,8 +109,13 @@
                                             <div class="row g-4">
                                                 @foreach ($categoryProducts as $product)
                                                     <div class="col-md-6">
-                                                        <div class="card h-100 border-0 shadow-sm overflow-hidden">
+                                                        <div class="card h-100 border-0 shadow-sm overflow-hidden {{ $product->available_quantity <= 0 ? 'opacity-75' : '' }}">
                                                             <div class="position-relative">
+                                                                @if($product->available_quantity <= 0)
+                                                                    <div class="position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(255,255,255,0.7); z-index: 2;">
+                                                                        <span class="badge bg-danger fs-5 px-3 py-2 shadow">SOLD OUT</span>
+                                                                    </div>
+                                                                @endif
                                                                 @if($product->ProductImagePath)
                                                                     <img src="{{ asset($product->ProductImagePath) }}" class="card-img-top" alt="{{ $product->ProductName }}" style="height: 200px; object-fit: cover;">
                                                                 @else
@@ -135,7 +141,7 @@
                                                                 
                                                                 <div class="quantity-control">
                                                                     <label class="form-label small fw-bold text-muted mb-1">Quantity</label>
-                                                                    <input type="number"
+                                                                     <input type="number"
                                                                            id="qty-{{ $product->ProductID }}"
                                                                            name="items[{{ $product->ProductID }}]"
                                                                            data-name="{{ $product->ProductName }}"
@@ -144,16 +150,19 @@
                                                                            max="{{ $product->available_quantity }}"
                                                                            class="form-control mb-2 text-center qty-input"
                                                                            value="{{ old('items.'.$product->ProductID, 0) }}"
+                                                                           {{ $product->available_quantity <= 0 ? 'disabled' : '' }}
                                                                            onchange="updateSummary()">
                                                                     
                                                                     <div class="d-flex gap-2">
                                                                         <button type="button" 
                                                                                 class="btn btn-outline-secondary btn-sm px-3" 
+                                                                                {{ $product->available_quantity <= 0 ? 'disabled' : '' }}
                                                                                 onclick="updateQty('{{ $product->ProductID }}', -1)">
                                                                             <i class="fa fa-minus"></i>
                                                                         </button>
                                                                         <button type="button" 
                                                                                 class="btn btn-primary w-100 fw-bold" 
+                                                                                {{ $product->available_quantity <= 0 ? 'disabled' : '' }}
                                                                                 onclick="updateQty('{{ $product->ProductID }}', 1, {{ $product->available_quantity }})">
                                                                             <i class="fa fa-plus"></i>
                                                                         </button>
