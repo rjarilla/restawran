@@ -65,8 +65,9 @@ class OrdersController extends Controller
                 $products = $this->getProductsWithAvailability($requestedItems->keys()->all())->keyBy('ProductID');
                 $lineItems = $this->buildLineItems($requestedItems, $products);
 
-                $customer = Customer::create([
-                    'CustomerCode' => $this->nextCustomerCode(),
+                $customerCode = $this->nextCustomerCode();
+                $customer = Customer::create($this->customerData([
+                    'CustomerCode' => $customerCode,
                     'CustomerName' => $request->input('CustomerName'),
                     'CustomerAddressLine1' => $request->input('CustomerAddressLine1'),
                     'CustomerAddressLine2' => $request->input('CustomerAddressLine2', ''),
@@ -78,15 +79,16 @@ class OrdersController extends Controller
                     'CustomerContactNumber' => $request->input('CustomerContactNumber', ''),
                     'CustomerUpdateBy' => session('user_name', 'admin'),
                     'CustomerUpdateDate' => now(),
-                ]);
+                ]));
+                $customer = $this->resolveCustomerRecord($customer, $customerCode);
 
-                $order = Orders::create([
+                $order = Orders::create($this->orderData([
                     'OrderID' => (string) Str::uuid(),
                     'OrderDate' => now()->toDateString(),
                     'CustomerID' => $customer->CustomerID,
                     'OrderTotalAmount' => round($lineItems->sum('line_total'), 2),
                     'OrderFulfilledBy' => session('user_name', 'admin'),
-                ]);
+                ]));
 
                 foreach ($lineItems as $lineItem) {
                     $this->consumeInventory($lineItem['product']->ProductID, $lineItem['quantity']);
@@ -99,6 +101,7 @@ class OrdersController extends Controller
                     'PaymentMode' => $request->input('PaymentMode'),
                     'PaymentTotal' => round($lineItems->sum('line_total'), 2),
                     'PaymentChange' => 0,
+                    'PaymentStatus' => 'resolved',
                 ]));
             });
         } catch (RuntimeException $exception) {
@@ -259,11 +262,7 @@ class OrdersController extends Controller
 
     private function paymentData(array $data): array
     {
-        if (!Schema::hasColumn('payments', 'PaymentStatus')) {
-            unset($data['PaymentStatus']);
-        }
-
-        return $data;
+        return $this->filterTableColumns('payments', $data);
     }
 
     private function requestedItems(Request $request): Collection
@@ -295,14 +294,14 @@ class OrdersController extends Controller
 
     private function saveOrderDetail(string $orderId, array $lineItem): void
     {
-        OrderDetails::create([
+        OrderDetails::create($this->orderDetailData([
             'OrderDetailsID' => (string) Str::uuid(),
             'OrderID' => $orderId,
             'ProductID' => $lineItem['product']->ProductID,
             'OrderQuantity' => $lineItem['quantity'],
             'OrderQuantityPrice' => $lineItem['unit_price'],
             'OrderItemTotal' => $lineItem['line_total'],
-        ]);
+        ]));
     }
 
     private function getProductsWithAvailability(array $productIds = []): Collection
@@ -311,18 +310,13 @@ class OrdersController extends Controller
         $productColumns = Schema::getColumnListing('product');
         $inventoryColumns = Schema::getColumnListing('productinventory');
         $usesProductRemaining = in_array('ProductQuantityRemaining', $productColumns, true);
+        $usesInventoryRemaining = in_array('ProductQuantityRemaining', $inventoryColumns, true);
 
         return Product::query()
             ->when($productIds !== [], fn ($query) => $query->whereIn('ProductID', $productIds))
-            ->when(in_array('ProductStatus', $productColumns, true), function ($query) {
-                $query->where(function ($statusQuery) {
-                    $statusQuery->whereNull('ProductStatus')->orWhereIn('ProductStatus', ['Active', 'ACTIVE']);
-                });
-            })
-            ->when(!$usesProductRemaining, function ($query) use ($today, $inventoryColumns) {
-                $query->with(['inventories' => function ($inventoryQuery) use ($today, $inventoryColumns) {
+            ->with(['inventories' => function ($inventoryQuery) use ($today, $inventoryColumns, $usesInventoryRemaining) {
                     $inventoryQuery
-                        ->where('ProductQuantity', '>', 0)
+                        ->where($usesInventoryRemaining ? 'ProductQuantityRemaining' : 'ProductQuantity', '>', 0)
                         ->when(in_array('ProductBatchDeliveryDate', $inventoryColumns, true), function ($dateQuery) use ($today) {
                             $dateQuery->where(function ($deliveryQuery) use ($today) {
                                 $deliveryQuery->whereNull('ProductBatchDeliveryDate')
@@ -334,19 +328,20 @@ class OrdersController extends Controller
                         })
                         ->when(in_array('ProductBatchExpiry', $inventoryColumns, true), fn ($orderQuery) => $orderQuery->orderBy('ProductBatchExpiry'))
                         ->when(in_array('ProductBatchDeliveryDate', $inventoryColumns, true), fn ($orderQuery) => $orderQuery->orderBy('ProductBatchDeliveryDate'));
-                }]);
-            })
+                }])
             ->orderBy('ProductName')
             ->get()
-            ->map(function (Product $product) use ($usesProductRemaining) {
-                $product->available_quantity = $usesProductRemaining
-                    ? max(0, (int) $product->ProductQuantityRemaining)
-                    : (int) $product->inventories->sum(fn (ProductInventory $inventory) => max(0, (int) $inventory->ProductQuantity));
+            ->map(function (Product $product) use ($usesProductRemaining, $usesInventoryRemaining) {
+                $product->available_quantity = $this->resolveAvailableQuantity(
+                    $product,
+                    $usesProductRemaining,
+                    $usesInventoryRemaining
+                );
+                $product->is_available = $product->available_quantity > 0;
                 $product->display_price = $this->resolveProductPrice($product);
 
                 return $product;
             })
-            ->filter(fn (Product $product) => $productIds !== [] || $product->available_quantity > 0)
             ->values();
     }
 
@@ -356,27 +351,14 @@ class OrdersController extends Controller
             return;
         }
 
-        if (Schema::hasColumn('product', 'ProductQuantityRemaining')) {
-            $product = Product::query()->where('ProductID', $productId)->lockForUpdate()->first();
-            $available = $product ? max(0, (int) $product->ProductQuantityRemaining) : 0;
-
-            if (!$product || $available < $quantity) {
-                throw new RuntimeException('Not enough inventory remains to complete the order.');
-            }
-
-            $product->ProductQuantityRemaining = $available - $quantity;
-            $product->save();
-
-            return;
-        }
-
         $remaining = $quantity;
         $today = now()->toDateString();
         $inventoryColumns = Schema::getColumnListing('productinventory');
+        $usesInventoryRemaining = in_array('ProductQuantityRemaining', $inventoryColumns, true);
 
         $batches = ProductInventory::query()
             ->where('ProductID', $productId)
-            ->where('ProductQuantity', '>', 0)
+            ->where($usesInventoryRemaining ? 'ProductQuantityRemaining' : 'ProductQuantity', '>', 0)
             ->when(in_array('ProductBatchDeliveryDate', $inventoryColumns, true), function ($query) use ($today) {
                 $query->where(function ($deliveryQuery) use ($today) {
                     $deliveryQuery->whereNull('ProductBatchDeliveryDate')
@@ -391,9 +373,24 @@ class OrdersController extends Controller
             ->lockForUpdate()
             ->get();
 
+        if ($batches->isEmpty() && Schema::hasColumn('product', 'ProductQuantityRemaining')) {
+            $product = Product::query()->where('ProductID', $productId)->lockForUpdate()->first();
+            $available = $product ? max(0, (int) $product->ProductQuantityRemaining) : 0;
+
+            if (!$product || $available < $quantity) {
+                throw new RuntimeException('Not enough inventory remains to complete the order.');
+            }
+
+            $product->ProductQuantityRemaining = $available - $quantity;
+            $product->save();
+
+            return;
+        }
+
         foreach ($batches as $batch) {
-            $deducted = min((int) $batch->ProductQuantity, $remaining);
-            $this->updateInventoryBatchQuantity($batch, (int) $batch->ProductQuantity - $deducted);
+            $availableInBatch = (int) ($usesInventoryRemaining ? $batch->ProductQuantityRemaining : $batch->ProductQuantity);
+            $deducted = min($availableInBatch, $remaining);
+            $this->updateInventoryBatchQuantity($batch, $availableInBatch - $deducted);
             $remaining -= $deducted;
 
             if ($remaining <= 0) {
@@ -410,6 +407,22 @@ class OrdersController extends Controller
             return;
         }
 
+        $inventoryColumns = Schema::getColumnListing('productinventory');
+        $usesInventoryRemaining = in_array('ProductQuantityRemaining', $inventoryColumns, true);
+
+        $batch = ProductInventory::query()
+            ->where('ProductID', $productId)
+            ->when($usesInventoryRemaining, fn ($query) => $query->orderByDesc('ProductQuantityRemaining'))
+            ->orderByDesc('ProductQuantity')
+            ->lockForUpdate()
+            ->first();
+
+        if ($batch) {
+            $currentQuantity = (int) ($usesInventoryRemaining ? $batch->ProductQuantityRemaining : $batch->ProductQuantity);
+            $this->updateInventoryBatchQuantity($batch, $currentQuantity + $quantity);
+            return;
+        }
+
         if (Schema::hasColumn('product', 'ProductQuantityRemaining')) {
             Product::query()
                 ->where('ProductID', $productId)
@@ -419,21 +432,11 @@ class OrdersController extends Controller
             return;
         }
 
-        $batch = ProductInventory::query()
-            ->where('ProductID', $productId)
-            ->orderByDesc('ProductQuantity')
-            ->lockForUpdate()
-            ->first();
-
-        if ($batch) {
-            $this->updateInventoryBatchQuantity($batch, (int) $batch->ProductQuantity + $quantity);
-            return;
-        }
-
         ProductInventory::create([
             'ProductBatchID' => (string) Str::uuid(),
             'ProductID' => $productId,
             'ProductQuantity' => $quantity,
+            'ProductQuantityRemaining' => $quantity,
             'ProductBatchDeliveryDate' => now()->toDateString(),
             'ProductReceivedBy' => session('user_name', 'admin'),
         ]);
@@ -449,7 +452,25 @@ class OrdersController extends Controller
             $query->where('ProductBatchID', $batch->ProductBatchID);
         }
 
-        $query->update(['ProductQuantity' => $quantity]);
+        $payload = Schema::hasColumn('productinventory', 'ProductQuantityRemaining')
+            ? ['ProductQuantityRemaining' => $quantity]
+            : ['ProductQuantity' => $quantity];
+
+        $query->update($payload);
+    }
+
+    private function resolveAvailableQuantity(Product $product, bool $usesProductRemaining, bool $usesInventoryRemaining): int
+    {
+        $inventoryAvailable = (int) $product->inventories
+            ->sum(fn (ProductInventory $inventory) => max(0, (int) ($usesInventoryRemaining
+                ? $inventory->ProductQuantityRemaining
+                : $inventory->ProductQuantity)));
+
+        if ($inventoryAvailable > 0 || !$usesProductRemaining) {
+            return $inventoryAvailable;
+        }
+
+        return max(0, (int) $product->ProductQuantityRemaining);
     }
 
     private function resolveProductPrice(Product $product): float
@@ -467,7 +488,7 @@ class OrdersController extends Controller
 
     private function nextCustomerCode(): string
     {
-        $lastCustomer = Customer::query()
+        $lastCustomer = DB::table($this->customerTable())
             ->whereNotNull('CustomerCode')
             ->orderByDesc('CustomerID')
             ->first();
@@ -477,5 +498,52 @@ class OrdersController extends Controller
             : 1;
 
         return 'CUST-' . str_pad((string) $nextNumber, 4, '0', STR_PAD_LEFT);
+    }
+
+    private function customerData(array $data): array
+    {
+        return $this->filterTableColumns($this->customerTable(), $data);
+    }
+
+    private function orderData(array $data): array
+    {
+        return $this->filterTableColumns('orders', $data);
+    }
+
+    private function orderDetailData(array $data): array
+    {
+        return $this->filterTableColumns('orderdetails', $data);
+    }
+
+    private function filterTableColumns(string $table, array $data): array
+    {
+        $columns = Schema::getColumnListing($table);
+
+        return collect($data)
+            ->filter(fn ($value, $column) => in_array($column, $columns, true))
+            ->all();
+    }
+
+    private function resolveCustomerRecord(Customer $customer, string $customerCode): Customer
+    {
+        if (!empty($customer->CustomerID)) {
+            return $customer;
+        }
+
+        $reloadedCustomer = Customer::query()
+            ->where('CustomerCode', $customerCode)
+            ->orderByDesc('CustomerID')
+            ->first();
+
+        if (!$reloadedCustomer || empty($reloadedCustomer->CustomerID)) {
+            throw new RuntimeException('Customer record was created without an ID.');
+        }
+
+        return $reloadedCustomer;
+    }
+
+    private function customerTable(): string
+    {
+        return Schema::hasTable('customer') ? 'customer' : 'customers';
     }
 }

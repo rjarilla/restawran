@@ -205,18 +205,13 @@ class OrderController extends Controller
         $productColumns = Schema::getColumnListing('product');
         $inventoryColumns = Schema::getColumnListing('productinventory');
         $usesProductRemaining = in_array('ProductQuantityRemaining', $productColumns, true);
+        $usesInventoryRemaining = in_array('ProductQuantityRemaining', $inventoryColumns, true);
 
         $products = Product::query()
-            ->when(in_array('ProductStatus', $productColumns, true), function ($query) {
-                $query->where(function ($statusQuery) {
-                    $statusQuery->whereNull('ProductStatus')
-                        ->orWhereIn('ProductStatus', ['Active', 'ACTIVE']);
-                });
-            })
             ->when($productIds !== [], fn ($query) => $query->whereIn('ProductID', $productIds))
-            ->when(!$usesProductRemaining, function ($query) use ($today, $inventoryColumns) {
-                $query->with(['inventories' => function ($inventoryQuery) use ($today, $inventoryColumns) {
+            ->with(['inventories' => function ($inventoryQuery) use ($today, $inventoryColumns, $usesInventoryRemaining) {
                     $inventoryQuery
+                        ->where($usesInventoryRemaining ? 'ProductQuantityRemaining' : 'ProductQuantity', '>', 0)
                         ->when(in_array('ProductBatchDeliveryDate', $inventoryColumns, true), function ($dateQuery) use ($today) {
                             $dateQuery->where(function ($deliveryQuery) use ($today) {
                                 $deliveryQuery->whereNull('ProductBatchDeliveryDate')
@@ -228,15 +223,15 @@ class OrderController extends Controller
                         })
                         ->when(in_array('ProductBatchExpiry', $inventoryColumns, true), fn ($orderQuery) => $orderQuery->orderBy('ProductBatchExpiry'))
                         ->when(in_array('ProductBatchDeliveryDate', $inventoryColumns, true), fn ($orderQuery) => $orderQuery->orderBy('ProductBatchDeliveryDate'));
-                }]);
-            })
+                }])
             ->orderBy('ProductName')
             ->get()
-            ->map(function (Product $product) use ($usesProductRemaining) {
-                $product->available_quantity = $usesProductRemaining
-                    ? max(0, (int) $product->ProductQuantityRemaining)
-                    : (int) $product->inventories
-                        ->sum(fn (ProductInventory $inventory) => max(0, (int) $inventory->ProductQuantity));
+            ->map(function (Product $product) use ($usesProductRemaining, $usesInventoryRemaining) {
+                $product->available_quantity = $this->resolveAvailableQuantity(
+                    $product,
+                    $usesProductRemaining,
+                    $usesInventoryRemaining
+                );
                 $product->is_available = $product->available_quantity > 0;
                 $product->display_price = $this->resolveProductPrice($product);
 
@@ -244,7 +239,7 @@ class OrderController extends Controller
             });
 
         if ($productIds === []) {
-            return $products;
+            return $products->values();
         }
 
         return collect($productIds)
@@ -254,7 +249,29 @@ class OrderController extends Controller
 
     private function consumeInventory(string $productId, int $quantity): void
     {
-        if (Schema::hasColumn('product', 'ProductQuantityRemaining')) {
+        $remaining = $quantity;
+        $today = now()->toDateString();
+        $inventoryColumns = Schema::getColumnListing('productinventory');
+        $usesInventoryRemaining = in_array('ProductQuantityRemaining', $inventoryColumns, true);
+
+        $batches = ProductInventory::query()
+            ->where('ProductID', $productId)
+            ->where($usesInventoryRemaining ? 'ProductQuantityRemaining' : 'ProductQuantity', '>', 0)
+            ->when(in_array('ProductBatchDeliveryDate', $inventoryColumns, true), function ($query) use ($today) {
+                $query->where(function ($deliveryQuery) use ($today) {
+                    $deliveryQuery->whereNull('ProductBatchDeliveryDate')
+                        ->orWhereDate('ProductBatchDeliveryDate', '<=', $today);
+                });
+            })
+            ->when(in_array('ProductBatchExpiry', $inventoryColumns, true), function ($query) use ($today) {
+                $query->whereDate('ProductBatchExpiry', '>=', $today);
+            })
+            ->when(in_array('ProductBatchExpiry', $inventoryColumns, true), fn ($query) => $query->orderBy('ProductBatchExpiry'))
+            ->when(in_array('ProductBatchDeliveryDate', $inventoryColumns, true), fn ($query) => $query->orderBy('ProductBatchDeliveryDate'))
+            ->lockForUpdate()
+            ->get();
+
+        if ($batches->isEmpty() && Schema::hasColumn('product', 'ProductQuantityRemaining')) {
             $product = Product::query()
                 ->where('ProductID', $productId)
                 ->lockForUpdate()
@@ -276,28 +293,12 @@ class OrderController extends Controller
             return;
         }
 
-        $remaining = $quantity;
-        $today = now()->toDateString();
-
-        $batches = ProductInventory::query()
-            ->where('ProductID', $productId)
-            ->where(function ($query) use ($today) {
-                $query->whereNull('ProductBatchDeliveryDate')
-                    ->orWhereDate('ProductBatchDeliveryDate', '<=', $today);
-            })
-            ->whereDate('ProductBatchExpiry', '>=', $today)
-            ->where('ProductQuantity', '>', 0)
-            ->orderBy('ProductBatchExpiry')
-            ->orderBy('ProductBatchDeliveryDate')
-            ->lockForUpdate()
-            ->get();
-
         foreach ($batches as $batch) {
             if ($remaining <= 0) {
                 break;
             }
 
-            $availableInBatch = (int) $batch->ProductQuantity;
+            $availableInBatch = (int) ($usesInventoryRemaining ? $batch->ProductQuantityRemaining : $batch->ProductQuantity);
             $deducted = min($availableInBatch, $remaining);
 
             if ($deducted <= 0) {
@@ -326,11 +327,29 @@ class OrderController extends Controller
             throw new RuntimeException('Inventory batch cannot be updated.');
         }
 
-        $updated = $query->update(['ProductQuantity' => $quantity]);
+        $payload = Schema::hasColumn('productinventory', 'ProductQuantityRemaining')
+            ? ['ProductQuantityRemaining' => $quantity]
+            : ['ProductQuantity' => $quantity];
+
+        $updated = $query->update($payload);
 
         if ($updated === 0) {
             throw new RuntimeException('Inventory batch changed while processing.');
         }
+    }
+
+    private function resolveAvailableQuantity(Product $product, bool $usesProductRemaining, bool $usesInventoryRemaining): int
+    {
+        $inventoryAvailable = (int) $product->inventories
+            ->sum(fn (ProductInventory $inventory) => max(0, (int) ($usesInventoryRemaining
+                ? $inventory->ProductQuantityRemaining
+                : $inventory->ProductQuantity)));
+
+        if ($inventoryAvailable > 0 || !$usesProductRemaining) {
+            return $inventoryAvailable;
+        }
+
+        return max(0, (int) $product->ProductQuantityRemaining);
     }
 
     private function resolveProductPrice(Product $product): float

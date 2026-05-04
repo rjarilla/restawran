@@ -15,6 +15,7 @@ class ProductInventory extends Model
         'ProductBatchID',
         'ProductID',
         'ProductQuantity',
+        'ProductQuantityRemaining',
         'ProductBatchDeliveryDate',
         'ProductBatchExpiry',
         'ProductReceivedBy',
@@ -25,4 +26,3 @@ class ProductInventory extends Model
         return $this->belongsTo(Product::class, 'ProductID', 'ProductID');
     }
 }
-

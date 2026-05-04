@@ -108,7 +108,7 @@
                                                         </strong>
                                                     </div>
                                                     <div class="row g-2 align-items-end">
-                                                        <div class="col-6">
+                                                        <div class="col-12">
                                                             <label class="form-label mb-1" for="item-{{ $product->ProductID }}">Quantity</label>
                                                             <input
                                                                 id="item-{{ $product->ProductID }}"
@@ -124,10 +124,6 @@
                                                                 data-max="{{ $product->available_quantity }}"
                                                                 @disabled(!$product->is_available)
                                                             >
-                                                        </div>
-                                                        <div class="col-6 text-end">
-                                                            <small class="text-muted d-block">Category</small>
-                                                            <strong>{{ $product->ProductCategoryID }}</strong>
                                                         </div>
                                                     </div>
                                                 </div>
