@@ -173,28 +173,10 @@ class ReportsController extends Controller
 
     public function monthlySales(Request $request)
     {
-        $month = $request->input('month', now()->month);
-        $year = $request->input('year', now()->year);
+        // Always use current month for breakdown data
+        $month = now()->month;
+        $year = now()->year;
         $export = $request->input('export');
-        
-        // Handle daily date filter
-        $dailyDate = $request->input('daily_date');
-        if ($dailyDate) {
-            $dailyDate = \Carbon\Carbon::parse($dailyDate);
-        } else {
-            $dailyDate = now();
-        }
-        
-        // Handle weekly date range filter
-        $weeklyStartDate = $request->input('weekly_start');
-        $weeklyEndDate = $request->input('weekly_end');
-        if ($weeklyStartDate && $weeklyEndDate) {
-            $weeklyStartDate = \Carbon\Carbon::parse($weeklyStartDate);
-            $weeklyEndDate = \Carbon\Carbon::parse($weeklyEndDate);
-        } else {
-            $weeklyStartDate = now()->startOfWeek();
-            $weeklyEndDate = now()->endOfWeek();
-        }
 
         // Get monthly orders with payments and order details
         $monthlyOrders = Orders::with(['customer', 'payment', 'orderDetails.product'])
@@ -224,50 +206,6 @@ class ReportsController extends Controller
                 'average_order_value' => $dailyOrders > 0 ? $dailyRevenue / $dailyOrders : 0,
             ];
         })->sortBy('date')->values();
-        
-        // Get daily payment trend data for specific date
-        $dailyPaymentTrend = [];
-        if ($dailyDate) {
-            $dailyPaymentTrend = Orders::with(['payment', 'orderDetails'])
-                ->whereHas('payment')
-                ->has('orderDetails')
-                ->whereDate('OrderDate', $dailyDate->format('Y-m-d'))
-                ->get()
-                ->groupBy(function ($order) {
-                    return \Carbon\Carbon::parse($order->created_at)->format('H:00');
-                })
-                ->map(function ($hourlyOrders, $hour) {
-                    return [
-                        'hour' => $hour,
-                        'revenue' => $hourlyOrders->sum(function ($order) {
-                            return $order->payment ? $order->payment->PaymentTotal : $order->OrderTotalAmount;
-                        }),
-                        'transactions' => $hourlyOrders->count()
-                    ];
-                })->sortBy('hour')->values();
-        }
-        
-        // Get weekly payment trend data
-        $weeklyPaymentTrend = [];
-        if ($weeklyStartDate && $weeklyEndDate) {
-            $weeklyPaymentTrend = Orders::with(['payment', 'orderDetails'])
-                ->whereHas('payment')
-                ->has('orderDetails')
-                ->whereBetween('OrderDate', [$weeklyStartDate->format('Y-m-d'), $weeklyEndDate->format('Y-m-d')])
-                ->get()
-                ->groupBy(function ($order) {
-                    return \Carbon\Carbon::parse($order->OrderDate)->format('Y-m-d');
-                })
-                ->map(function ($dayOrders, $date) {
-                    return [
-                        'date' => $date,
-                        'revenue' => $dayOrders->sum(function ($order) {
-                            return $order->payment ? $order->payment->PaymentTotal : $order->OrderTotalAmount;
-                        }),
-                        'transactions' => $dayOrders->count()
-                    ];
-                })->sortBy('date')->values();
-        }
 
         // Get top selling products for the month
         $topProducts = \DB::table('orderdetails as od')
@@ -334,6 +272,19 @@ class ReportsController extends Controller
             'best_product' => $topProducts->first(),
         ];
 
+        // Prepare data for monthly payments chart
+        $monthlyPaymentsData = $monthlyOrders->groupBy(function($order) {
+            return \Carbon\Carbon::parse($order->OrderDate)->format('Y-m-d');
+        })->map(function($dayOrders, $date) {
+            return [
+                'date' => $date,
+                'payments' => $dayOrders->count(),
+                'revenue' => $dayOrders->sum(function($order) {
+                    return $order->payment ? $order->payment->PaymentTotal : $order->OrderTotalAmount;
+                })
+            ];
+        })->sortBy('date')->values();
+
         // Handle PDF export
         if ($export === 'pdf') {
             // You can implement PDF generation here using DomPDF or similar library
@@ -357,15 +308,11 @@ class ReportsController extends Controller
             'monthlyOrders',
             'monthlyRevenue',
             'dailySales',
-            'dailyPaymentTrend',
-            'weeklyPaymentTrend',
-            'weeklyStartDate',
-            'weeklyEndDate',
-            'dailyDate',
             'topProducts',
             'paymentModes',
             'customerStats',
-            'monthlySummary'
+            'monthlySummary',
+            'monthlyPaymentsData'
         ));
     }
 

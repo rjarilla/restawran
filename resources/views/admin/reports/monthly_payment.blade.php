@@ -73,90 +73,15 @@
             </div>
         </div>
 
-        <div class="row">
-            {{-- Daily Payment Trend Chart --}}
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">DAILY PAYMENT TREND</h5>
-                            <div class="d-flex gap-2">
-                                <input type="date" 
-                                       id="dailyDateSelect" 
-                                       class="form-control form-control-sm" 
-                                       style="width: auto;"
-                                       value="{{ request('daily_date') ?? now()->format('Y-m-d') }}">
-                                <button id="updateDailyBtn" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-filter me-1"></i>Filter
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="dailySalesChart" height="150"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            {{-- Weekly Payment Trend Chart --}}
-            <div class="col-md-6 mb-4">
-                <div class="card">
-                    <div class="card-header">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0">WEEKLY PAYMENT TREND</h5>
-                            <div class="d-flex gap-2">
-                                <input type="date" 
-                                       id="weeklyStartDate" 
-                                       class="form-control form-control-sm" 
-                                       style="width: auto;"
-                                       placeholder="Start Date"
-                                       value="{{ request('weekly_start') ?? now()->startOfWeek()->format('Y-m-d') }}">
-                                <input type="date" 
-                                       id="weeklyEndDate" 
-                                       class="form-control form-control-sm" 
-                                       style="width: auto;"
-                                       placeholder="End Date"
-                                       value="{{ request('weekly_end') ?? now()->endOfWeek()->format('Y-m-d') }}">
-                                <button id="updateWeeklyBtn" class="btn btn-sm btn-outline-primary">
-                                    <i class="fas fa-filter me-1"></i>Filter
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <canvas id="weeklySalesChart" height="150"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-
+        
         
         {{-- MONTHLY BREAKDOWN Section --}}
         <div class="row mb-4">
             <div class="col-12">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                     <h4 class="text-warning mb-0">
-                        <i class="fas fa-calendar-alt me-2"></i>MONTHLY BREAKDOWN
+                        <i class="fas fa-calendar-alt me-2"></i>MONTHLY BREAKDOWN - {{ DateTime::createFromFormat('!m', $month)->format('F') }} {{ $year }}
                     </h4>
-                    <div class="d-flex gap-2">
-                        <select id="breakdownMonthSelect" class="form-select form-select-sm" style="width: auto;">
-                            @foreach(range(1, 12) as $m)
-                                <option value="{{ $m }}" {{ (request('breakdown_month') ?? $month) == $m ? 'selected' : '' }}>
-                                    {{ DateTime::createFromFormat('!m', $m)->format('F') }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <input type="number" 
-                               id="breakdownYearSelect" 
-                               class="form-control form-control-sm" 
-                               style="width: 100px;"
-                               min="2000" 
-                               max="2100" 
-                               value="{{ request('breakdown_year') ?? $year }}">
-                        <button id="updateBreakdownBtn" class="btn btn-sm btn-outline-warning">
-                            <i class="fas fa-filter me-1"></i>Filter
-                        </button>
-                    </div>
                 </div>
             </div>
         </div>
@@ -272,64 +197,22 @@
 </div>
 
 @push('scripts')
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
+// Basic test to see if JavaScript is working
+console.log('Script loading test - monthly payment report');
+
 document.addEventListener('DOMContentLoaded', function() {
-    // Daily Chart Filter
-    document.getElementById('updateDailyBtn').addEventListener('click', function() {
-        const dailyDate = document.getElementById('dailyDateSelect').value;
-        const month = document.getElementById('monthSelect').value;
-        const year = document.getElementById('yearSelect').value;
-        
-        let url = new URL(window.location);
-        url.searchParams.set('daily_date', dailyDate);
-        url.searchParams.set('month', month);
-        url.searchParams.set('year', year);
-        url.searchParams.delete('export');
-        url.searchParams.delete('weekly');
-        url.searchParams.delete('breakdown_period');
-        
-        window.location.href = url.toString();
-    });
+    console.log('DOM loaded, initializing filters...'); // Debug log
     
-    // Weekly Chart Filter
-    document.getElementById('updateWeeklyBtn').addEventListener('click', function() {
-        const weeklyStartDate = document.getElementById('weeklyStartDate').value;
-        const weeklyEndDate = document.getElementById('weeklyEndDate').value;
-        const month = document.getElementById('monthSelect').value;
-        const year = document.getElementById('yearSelect').value;
-        
-        let url = new URL(window.location);
-        url.searchParams.set('weekly_start', weeklyStartDate);
-        url.searchParams.set('weekly_end', weeklyEndDate);
-        url.searchParams.set('month', month);
-        url.searchParams.set('year', year);
-        url.searchParams.delete('export');
-        url.searchParams.delete('daily_date');
-        url.searchParams.delete('weekly');
-        url.searchParams.delete('breakdown_month');
-        url.searchParams.delete('breakdown_year');
-        
-        window.location.href = url.toString();
-    });
+    // Hide the test element to confirm JS is working
+    const testElement = document.getElementById('jsTest');
+    if (testElement) {
+        testElement.style.display = 'none';
+        console.log('JavaScript is working - test element hidden');
+    }
     
-    // MONTHLY BREAKDOWN Section Filter
-    document.getElementById('updateBreakdownBtn').addEventListener('click', function() {
-        const breakdownMonth = document.getElementById('breakdownMonthSelect').value;
-        const breakdownYear = document.getElementById('breakdownYearSelect').value;
         
-        let url = new URL(window.location);
-        url.searchParams.set('breakdown_month', breakdownMonth);
-        url.searchParams.set('breakdown_year', breakdownYear);
-        url.searchParams.delete('export');
-        url.searchParams.delete('daily_date');
-        url.searchParams.delete('weekly_start');
-        url.searchParams.delete('weekly_end');
-        url.searchParams.delete('breakdown_period');
-        
-        window.location.href = url.toString();
-    });
-    
     // PDF Export functionality
     document.getElementById('exportPdfBtn').addEventListener('click', function() {
         const month = document.getElementById('monthSelect').value;
@@ -342,245 +225,35 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('PDF URL:', pdfUrl); // Debug log
         window.open(pdfUrl, '_blank');
     });
-    // Prepare data arrays for daily chart
+    // Prepare data for monthly payments chart
     @php
-        $dailyLabels = [];
-        $dailyRevenueArray = [];
-        $dailyTransactionsArray = [];
+        $monthlyChartLabels = [];
+        $monthlyChartPayments = [];
+        $monthlyChartRevenue = [];
         
-        // Always generate hourly labels for a full day
-        for($i = 0; $i < 24; $i++):
-            $dailyLabels[] = sprintf('%02d:00', $i);
-            $dailyRevenueArray[] = 0;
-            $dailyTransactionsArray[] = 0;
-        endfor;
-        
-        // Add actual data if available
-        if(isset($dailyPaymentTrend) && $dailyPaymentTrend->isNotEmpty()):
-            foreach($dailyPaymentTrend as $hour):
-                $hourIndex = (int)str_replace(':00', '', $hour['hour']);
-                if($hourIndex >= 0 && $hourIndex < 24):
-                    $dailyRevenueArray[$hourIndex] = $hour['revenue'];
-                    $dailyTransactionsArray[$hourIndex] = $hour['transactions'];
-                endif;
+        if($monthlyPaymentsData->isNotEmpty()):
+            foreach($monthlyPaymentsData as $day):
+                $monthlyChartLabels[] = \Carbon\Carbon::parse($day['date'])->format('M d');
+                $monthlyChartPayments[] = $day['payments'];
+                $monthlyChartRevenue[] = $day['revenue'];
             endforeach;
+        else:
+            $daysInMonth = \Carbon\Carbon::createFromDate($year, $month, 1)->daysInMonth;
+            for($i = 1; $i <= $daysInMonth; $i++):
+                $monthlyChartLabels[] = \Carbon\Carbon::createFromDate($year, $month, $i)->format('M d');
+                $monthlyChartPayments[] = 0;
+                $monthlyChartRevenue[] = 0;
+            endfor;
         endif;
     @endphp
     
-    // Prepare data arrays for weekly chart
-    @php
-        $weeklyLabels = [];
-        $weeklyRevenueArray = [];
-        $weeklyTransactionsArray = [];
-        
-        // Always generate date labels for the week
-        $currentDate = clone $weeklyStartDate;
-        $dayCount = 0;
-        while($currentDate <= $weeklyEndDate && $dayCount < 7):
-            $weeklyLabels[] = $currentDate->format('M d');
-            $weeklyRevenueArray[] = 0;
-            $weeklyTransactionsArray[] = 0;
-            $currentDate->addDay();
-            $dayCount++;
-        endwhile;
-        
-        // Add actual data if available
-        if(isset($weeklyPaymentTrend) && $weeklyPaymentTrend->isNotEmpty()):
-            foreach($weeklyPaymentTrend as $day):
-                $dateFormatted = \Carbon\Carbon::parse($day['date'])->format('M d');
-                $index = array_search($dateFormatted, $weeklyLabels);
-                if($index !== false):
-                    $weeklyRevenueArray[$index] = $day['revenue'];
-                    $weeklyTransactionsArray[$index] = $day['transactions'];
-                endif;
-            endforeach;
-        endif;
-    @endphp
-    
-    const dailyLabels = @json($dailyLabels);
-    const dailyRevenue = @json($dailyRevenueArray);
-    const dailyTransactions = @json($dailyTransactionsArray);
-    const weeklyLabels = @json($weeklyLabels);
-    const weeklyRevenue = @json($weeklyRevenueArray);
-    const weeklyTransactions = @json($weeklyTransactionsArray);
+    const monthlyChartLabels = @json($monthlyChartLabels);
+    const monthlyChartPayments = @json($monthlyChartPayments);
+    const monthlyChartRevenue = @json($monthlyChartRevenue);
 
-    @php
-        $weeklyData = [0, 0, 0, 0, 0, 0, 0];
-        if(isset($dailySales) && $dailySales->isNotEmpty()):
-            foreach($dailySales as $day):
-                $dayOfWeek = \Carbon\Carbon::parse($day['date'])->dayOfWeek;
-                $weeklyData[$dayOfWeek] = $day['revenue'];
-            endforeach;
-        endif;
-        
-        $valueRanges = [0, 0, 0, 0, 0];
-        if(isset($dailySales) && $dailySales->isNotEmpty()):
-            foreach($dailySales as $day):
-                $avgValue = $day['average_order_value'];
-                if($avgValue <= 100) $valueRanges[0] += $day['orders'];
-                elseif($avgValue <= 500) $valueRanges[1] += $day['orders'];
-                elseif($avgValue <= 1000) $valueRanges[2] += $day['orders'];
-                elseif($avgValue <= 5000) $valueRanges[3] += $day['orders'];
-                else $valueRanges[4] += $day['orders'];
-            endforeach;
-        endif;
-        
-        // Weekly data preparation for weekly trend chart
-        $weeklyTrendData = [0, 0, 0, 0, 0];
-        $weeklyTrendTransactions = [0, 0, 0, 0, 0];
-        
-        if(isset($dailySales) && $dailySales->isNotEmpty()):
-            foreach($dailySales as $day):
-                $date = \Carbon\Carbon::parse($day['date']);
-                $weekOfMonth = ceil($date->day / 7);
-                if($weekOfMonth > 5) $weekOfMonth = 5;
-                
-                $weekIndex = $weekOfMonth - 1;
-                $weeklyTrendData[$weekIndex] += $day['revenue'];
-                $weeklyTrendTransactions[$weekIndex] += $day['orders'];
-            endforeach;
-        endif;
-    @endphp
     
-    // Daily Payment Trend Chart
-    console.log('Daily chart data:', { dailyLabels, dailyRevenue, dailyTransactions });
-    const dailySalesCtx = document.getElementById('dailySalesChart');
-    console.log('Daily chart canvas found:', !!dailySalesCtx);
-    if (dailySalesCtx) {
-        try {
-            new Chart(dailySalesCtx, {
-            type: 'line',
-            data: {
-                labels: dailyLabels,
-                datasets: [{
-                    label: 'Hourly Payment Revenue',
-                    data: dailyRevenue,
-                    borderColor: 'rgb(75, 192, 192)',
-                    backgroundColor: 'rgba(75, 192, 192, 0.1)',
-                    tension: 0.1,
-                    fill: true
-                }, {
-                    label: 'Hourly Transactions',
-                    data: dailyTransactions,
-                    borderColor: 'rgb(255, 99, 132)',
-                    backgroundColor: 'rgba(255, 99, 132, 0.1)',
-                    tension: 0.1,
-                    fill: true,
-                    yAxisID: 'y1'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Daily Payment Trend - {{ $dailyDate->format('M d, Y') }}'
-                    }
-                },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Payment Revenue (₱)'
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Transactions'
-                        },
-                        grid: {
-                            drawOnChartArea: false,
-                        },
-                    },
-                }
-            }
-        });
-        } catch (error) {
-            console.error('Daily chart initialization error:', error);
-        }
-    }
-
-    // Weekly Payment Trend Chart
-    console.log('Weekly chart data:', { weeklyLabels, weeklyRevenue, weeklyTransactions });
-    const weeklySalesCtx = document.getElementById('weeklySalesChart');
-    console.log('Weekly chart canvas found:', !!weeklySalesCtx);
-    if (weeklySalesCtx) {
-        try {
-            new Chart(weeklySalesCtx, {
-            type: 'bar',
-            data: {
-                labels: weeklyLabels,
-                datasets: [{
-                    label: 'Daily Payment Revenue',
-                    data: weeklyRevenue,
-                    backgroundColor: 'rgba(54, 162, 235, 0.8)',
-                    borderColor: 'rgba(54, 162, 235, 1)',
-                    borderWidth: 1
-                }, {
-                    label: 'Daily Transactions',
-                    data: weeklyTransactions,
-                    backgroundColor: 'rgba(255, 99, 132, 0.8)',
-                    borderColor: 'rgba(255, 99, 132, 1)',
-                    borderWidth: 1,
-                    yAxisID: 'y1'
-                }]
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                interaction: {
-                    mode: 'index',
-                    intersect: false,
-                },
-                plugins: {
-                    title: {
-                        display: true,
-                        text: 'Weekly Payment Trend - {{ $weeklyStartDate->format('M d') }} to {{ $weeklyEndDate->format('M d, Y') }}'
-                    }
-                },
-                scales: {
-                    y: {
-                        type: 'linear',
-                        display: true,
-                        position: 'left',
-                        title: {
-                            display: true,
-                            text: 'Payment Revenue (₱)'
-                        }
-                    },
-                    y1: {
-                        type: 'linear',
-                        display: true,
-                        position: 'right',
-                        title: {
-                            display: true,
-                            text: 'Transactions'
-                        },
-                        grid: {
-                            drawOnChartArea: false,
-                        },
-                    },
-                }
-            }
-        });
-        } catch (error) {
-            console.error('Weekly chart initialization error:', error);
-        }
-    }
     
-});
+    });
 </script>
 @endpush
 @endsection
