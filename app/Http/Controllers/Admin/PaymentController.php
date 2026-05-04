@@ -13,10 +13,28 @@ class PaymentController extends Controller
         $period = $request->input('period', 'week');
         $dateFrom = $request->input('date_from');
         $dateTo = $request->input('date_to');
+        $searchPaymentId = $request->input('search_payment_id');
+        $searchOrderId = $request->input('search_order_id');
+        $paymentMode = $request->input('payment_mode');
 
         $query = Payment::with(['order.customer', 'order.orderDetails.product'])
             ->whereHas('order.orderDetails')
             ->orderBy('PaymentID', 'desc');
+
+        // PaymentID search
+        if ($searchPaymentId) {
+            $query->where('PaymentID', 'LIKE', '%' . $searchPaymentId . '%');
+        }
+
+        // OrderID search
+        if ($searchOrderId) {
+            $query->where('OrderID', 'LIKE', '%' . $searchOrderId . '%');
+        }
+
+        // Payment mode filter
+        if ($paymentMode) {
+            $query->where('PaymentMode', $paymentMode);
+        }
 
         if ($period) {
             $query->whereHas('order', function ($q) use ($period) {
@@ -93,7 +111,10 @@ class PaymentController extends Controller
             'totalCustomers',
             'period',
             'dateFrom',
-            'dateTo'
+            'dateTo',
+            'searchPaymentId',
+            'searchOrderId',
+            'paymentMode'
         ));
     }
 
