@@ -108,6 +108,7 @@ Route::prefix('admin')->name('admin.')->middleware(['check.admin.session'])->gro
     Route::get('orders', [OrdersController::class, 'index'])->name('orders.index');
     Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
     Route::get('/reports/product-sales', [ReportsController::class, 'productSales'])->name('reports.productSales');
+    Route::get('/reports/payment-analytics', [ReportsController::class, 'monthlySales'])->name('reports.paymentAnalytics');
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
     Route::get('payments/{id}', [AdminPaymentController::class, 'show'])->name('payments.show');
     Route::delete('payments/{id}', [AdminPaymentController::class, 'destroy'])->name('payments.destroy');
