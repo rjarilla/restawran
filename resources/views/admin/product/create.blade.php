@@ -27,6 +27,7 @@
         </div>
         <button type="submit" class="btn btn-success">Save</button>
         <a href="{{ route('admin.product.index') }}" class="btn btn-secondary">Cancel</a>
+        <!-- need to push -->
     </form>
 </div>
 @endsection

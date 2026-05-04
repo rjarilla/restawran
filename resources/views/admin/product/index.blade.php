@@ -61,7 +61,7 @@
         </tbody>
     </table>
     <div class="d-flex justify-content-center">
-        {{ $products->links() }}
+        {{ $products->links() }}<!-- need to push -->
     </div>
 </div>
 @endsection
