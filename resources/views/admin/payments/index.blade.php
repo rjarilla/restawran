@@ -107,46 +107,103 @@
 
     <div class="card">
         <div class="card-header">
-            <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <h5 class="mb-0">Payment Records</h5>
             </div>
             
+            <!-- Search Form -->
+            <form method="GET" action="{{ route('admin.payments.index') }}" class="mb-3">
+                <div class="row g-2">
+                    <div class="col-md-3">
+                        <input type="text" 
+                               name="search_payment_id" 
+                               class="form-control" 
+                               placeholder="Search by Payment ID..." 
+                               value="{{ $searchPaymentId ?? '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <input type="text" 
+                               name="search_order_id" 
+                               class="form-control" 
+                               placeholder="Search by Order ID..." 
+                               value="{{ $searchOrderId ?? '' }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="payment_mode" class="form-control">
+                            <option value="">All Payment Modes</option>
+                            <option value="gcash" {{ $paymentMode == 'gcash' ? 'selected' : '' }}>GCash</option>
+                            <option value="cash" {{ $paymentMode == 'cash' ? 'selected' : '' }}>Cash</option>
+                            <option value="credit_card" {{ $paymentMode == 'credit_card' ? 'selected' : '' }}>Credit Card</option>
+                            <option value="bank_transfer" {{ $paymentMode == 'bank_transfer' ? 'selected' : '' }}>Bank Transfer</option>
+                            <option value="cash_on_delivery" {{ $paymentMode == 'cash_on_delivery' ? 'selected' : '' }}>Cash on Delivery</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="btn-group w-100">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-search"></i> Search
+                            </button>
+                            @if($searchPaymentId || $searchOrderId || $paymentMode)
+                                <a href="{{ route('admin.payments.index') }}" class="btn btn-outline-secondary">
+                                    <i class="fas fa-times"></i> Clear
+                                </a>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Preserve existing filters in hidden fields -->
+                @if($period)
+                    <input type="hidden" name="period" value="{{ $period }}">
+                @endif
+                @if($dateFrom)
+                    <input type="hidden" name="date_from" value="{{ $dateFrom }}">
+                @endif
+                @if($dateTo)
+                    <input type="hidden" name="date_to" value="{{ $dateTo }}">
+                @endif
+            </form>
+            
             <!-- Filter Buttons -->
             <div class="d-flex flex-wrap gap-2 align-items-center mb-2">
-                <a href="{{ route('admin.payments.index', ['period' => 'today']) }}" 
+                <a href="{{ route('admin.payments.index', array_merge(['period' => 'today'], $searchPaymentId ? ['search_payment_id' => $searchPaymentId] : [], $searchOrderId ? ['search_order_id' => $searchOrderId] : [], $paymentMode ? ['payment_mode' => $paymentMode] : [])) }}" 
                    class="btn btn-sm {{ $period == 'today' ? 'btn-primary' : 'btn-outline-primary' }}">
                     Today
                 </a>
-                <a href="{{ route('admin.payments.index', ['period' => 'yesterday']) }}" 
+                <a href="{{ route('admin.payments.index', array_merge(['period' => 'yesterday'], $searchPaymentId ? ['search_payment_id' => $searchPaymentId] : [], $searchOrderId ? ['search_order_id' => $searchOrderId] : [], $paymentMode ? ['payment_mode' => $paymentMode] : [])) }}" 
                    class="btn btn-sm {{ $period == 'yesterday' ? 'btn-primary' : 'btn-outline-primary' }}">
                     Yesterday
                 </a>
-                <a href="{{ route('admin.payments.index', ['period' => 'last_7_days']) }}" 
+                <a href="{{ route('admin.payments.index', array_merge(['period' => 'last_7_days'], $searchPaymentId ? ['search_payment_id' => $searchPaymentId] : [], $searchOrderId ? ['search_order_id' => $searchOrderId] : [], $paymentMode ? ['payment_mode' => $paymentMode] : [])) }}" 
                    class="btn btn-sm {{ $period == 'last_7_days' ? 'btn-primary' : 'btn-outline-primary' }}">
                     Last 7 Days
                 </a>
-                <a href="{{ route('admin.payments.index', ['period' => 'week']) }}" 
+                <a href="{{ route('admin.payments.index', array_merge(['period' => 'week'], $searchPaymentId ? ['search_payment_id' => $searchPaymentId] : [], $searchOrderId ? ['search_order_id' => $searchOrderId] : [], $paymentMode ? ['payment_mode' => $paymentMode] : [])) }}" 
                    class="btn btn-sm {{ $period == 'week' ? 'btn-primary' : 'btn-outline-primary' }}">
                     This Week
                 </a>
-                <a href="{{ route('admin.payments.index', ['period' => 'last_30_days']) }}" 
+                <a href="{{ route('admin.payments.index', array_merge(['period' => 'last_30_days'], $searchPaymentId ? ['search_payment_id' => $searchPaymentId] : [], $searchOrderId ? ['search_order_id' => $searchOrderId] : [], $paymentMode ? ['payment_mode' => $paymentMode] : [])) }}" 
                    class="btn btn-sm {{ $period == 'last_30_days' ? 'btn-primary' : 'btn-outline-primary' }}">
                     Last 30 Days
                 </a>
-                <a href="{{ route('admin.payments.index', ['period' => 'month']) }}" 
+                <a href="{{ route('admin.payments.index', array_merge(['period' => 'month'], $searchPaymentId ? ['search_payment_id' => $searchPaymentId] : [], $searchOrderId ? ['search_order_id' => $searchOrderId] : [], $paymentMode ? ['payment_mode' => $paymentMode] : [])) }}" 
                    class="btn btn-sm {{ $period == 'month' ? 'btn-primary' : 'btn-outline-primary' }}">
                     This Month
                 </a>
                 @if($period)
-                    <a href="{{ route('admin.payments.index') }}" class="btn btn-sm btn-outline-secondary">
-                        <i class="fas fa-times"></i> Clear
+                    <a href="{{ route('admin.payments.index', array_merge($searchPaymentId ? ['search_payment_id' => $searchPaymentId] : [], $searchOrderId ? ['search_order_id' => $searchOrderId] : [], $paymentMode ? ['payment_mode' => $paymentMode] : [])) }}" class="btn btn-sm btn-outline-secondary">
+                        <i class="fas fa-times"></i> Clear Period
                     </a>
                 @endif
             </div>
             
-            @if($period)
+            @if($period || $searchPaymentId || $searchOrderId || $paymentMode)
                 <small class="text-muted">
                     Showing: 
+                    @if($searchPaymentId) Payment ID containing "{{ $searchPaymentId }}" @endif
+                    @if($searchOrderId) Order ID containing "{{ $searchOrderId }}" @endif
+                    @if($paymentMode) Payment mode: {{ ucfirst(str_replace('_', ' ', $paymentMode)) }} @endif
+                    @if($period && ($searchPaymentId || $searchOrderId || $paymentMode)) for @endif
                     @if($period == 'today') Today's payments @endif
                     @if($period == 'yesterday') Yesterday's payments @endif
                     @if($period == 'last_7_days') Last 7 days payments @endif
