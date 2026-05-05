@@ -300,8 +300,8 @@
                 <div class="collapse {{ $reportOpen ? 'show' : '' }}" id="reportSubmenu">
                     <ul class="list-unstyled ms-4">
                         <li class="nav-item">
-                            <a class="nav-link {{ request()->routeIs('admin.reports.index') ? 'active' : '' }}"
-                                href="{{ route('admin.reports.index') }}">
+                            <a class="nav-link {{ request()->routeIs('admin.reports.customer_purchase') ? 'active' : '' }}"
+                                href="{{ route('admin.reports.customer_purchase') }}">
                                 <span class="nav-icon">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
                                         viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
@@ -310,7 +310,21 @@
                                         <path d="M20 18l-6 -6l-4 4l-6 -6" />
                                     </svg>
                                 </span>
-                                <span class="text">All Reports</span>
+                                <span class="text">Customer Purchase</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link {{ request()->routeIs('admin.reports.inventory_movement') ? 'active' : '' }}"
+                                href="{{ route('admin.reports.inventory_movement') }}">
+                                <span class="nav-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20"
+                                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                                        stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="M3 3v18h18" />
+                                        <path d="M20 18l-6 -6l-4 4l-6 -6" />
+                                    </svg>
+                                </span>
+                                <span class="text">Inventory Movement</span>
                             </a>
                         </li>
                         <li class="nav-item">

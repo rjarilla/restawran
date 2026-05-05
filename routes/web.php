@@ -106,7 +106,8 @@ Route::prefix('admin')->name('admin.')->middleware(['check.admin.session'])->gro
     Route::resource('payments', AdminPaymentController::class);
 
     Route::get('orders', [OrdersController::class, 'index'])->name('orders.index');
-    Route::get('reports', [ReportsController::class, 'index'])->name('reports.index');
+    Route::get('/reports/customer-purchase', [ReportsController::class, 'customerPurchase'])->name('reports.customer_purchase');
+    Route::get('/reports/inventory-movement', [ReportsController::class, 'inventoryMovement'])->name('reports.inventory_movement');
     Route::get('/reports/product-sales', [ReportsController::class, 'productSales'])->name('reports.productSales');
     Route::get('/reports/payment-analytics', [ReportsController::class, 'monthlySales'])->name('reports.paymentAnalytics');
     Route::get('payments', [AdminPaymentController::class, 'index'])->name('payments.index');
